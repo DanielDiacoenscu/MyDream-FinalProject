@@ -1,0 +1,6 @@
+/* src/styles/pdp/ProductDescriptionAccordion.module.css */
+.accordion { border-top: 1px solid #e5e5e5; border-bottom: 1px solid #e5e5e5; }
+.header { display: flex; justify-content: space-between; align-items: center; width: 100%; background: none; border: none; padding: 20px 0; cursor: pointer; font-family: var(--font-secondary); font-size: 14px; }
+.icon { transition: transform 0.2s ease; }
+.icon.open { transform: rotate(180deg); }
+.content { padding-bottom: 20px; font-family: var(--font-primary); font-size: 14px; line-height: 1.7; }

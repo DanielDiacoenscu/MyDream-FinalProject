@@ -1,0 +1,66 @@
+/* src/styles/AccountPage.module.css */
+
+.accountContainer {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 80px 20px;
+  min-height: 70vh;
+  background-color: #fdfdfd;
+}
+
+.accountWrapper {
+  width: 100%;
+  max-width: 600px;
+  background-color: #fff;
+  padding: 40px;
+  border: 1px solid #e5e5e5;
+}
+
+.title {
+  font-family: var(--font-secondary);
+  font-size: 28px;
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.userInfo {
+  font-family: var(--font-primary);
+  font-size: 16px;
+  line-height: 1.8;
+  margin-bottom: 30px;
+}
+
+.userInfo p {
+  margin-bottom: 10px;
+}
+
+.logoutButton {
+  font-family: var(--font-secondary);
+  background-color: #111;
+  color: #fff;
+  border: none;
+  padding: 15px;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+
+.logoutButton:hover {
+  background-color: #444;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+  font-family: var(--font-secondary);
+  font-size: 24px;
+}

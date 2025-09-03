@@ -1,0 +1,19 @@
+/* src/styles/page-builder/RichTextBlock.module.css - UPDATED */
+.richTextContent {
+  font-family: "JHATimesNow", "TimesNewRoman", "Times New Roman", "Times", "Baskerville", "Georgia", serif;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #333;
+  margin-top: 5px;
+  /* --- MODIFIED --- */
+  text-align: left;
+}
+
+.richTextContent a {
+  color: #111;
+  text-decoration: underline;
+}
+
+.richTextContent p {
+  margin-bottom: 30px;
+}

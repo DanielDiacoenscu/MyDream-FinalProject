@@ -1,0 +1,30 @@
+/* src/app/globals.css - DEFINITIVE OVERRIDE */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-secondary: 'Bodoni Moda', "Times New Roman", Times, serif;
+  --color-text: #111111;
+  --color-background: #ffffff;
+}
+
+html, body {
+  padding: 0;
+  margin: 0;
+  font-family: var(--font-primary);
+  color: var(--color-text);
+  background-color: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-secondary);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+a { color: inherit; text-decoration: none; }
+* { box-sizing: border-box; }
+/* Add this to the bottom of src/app/globals.css */
+

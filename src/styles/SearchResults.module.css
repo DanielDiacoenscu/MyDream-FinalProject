@@ -1,0 +1,34 @@
+/* src/styles/SearchResults.module.css - CORRECTED */
+
+.resultsPanel {
+  /* --- NECESSARY ADDITIONS --- */
+  position: absolute;
+  top: 100%; /* This places it directly below the parent (the header container) */
+  left: 0;
+  z-index: 998; /* Ensures it's on top of page content but below the header */
+  
+  /* --- Your existing styles --- */
+  background-color: #ffffff;
+  width: 100%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.resultsContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.message {
+  color: #888;
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.resultsList { list-style: none; padding: 0; margin: 0; }
+.resultItem { display: flex; align-items: center; padding: 1rem 0; text-decoration: none; color: inherit; border-bottom: 1px solid #f0f0f0; }
+.resultItem:hover { background-color: #f9f9f9; }
+.resultImage { width: 60px; height: 60px; margin-right: 1.5rem; position: relative; flex-shrink: 0; }
+.resultName { font-family: var(--font-primary); font-size: 1rem; }

@@ -1,0 +1,6 @@
+/* src/styles/pdp/ProductActions.module.css */
+.actions { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
+.discoverButton { background: #fff; border: 1px solid #ccc; padding: 15px; width: 100%; cursor: pointer; font-family: var(--font-secondary); }
+.addToBagWrapper { display: flex; }
+.addToBagButton { flex-grow: 1; background: #111; color: #fff; border: 1px solid #111; padding: 15px; cursor: pointer; font-family: var(--font-secondary); text-transform: uppercase; }
+.wishlistButton { background: #111; border: 1px solid #111; border-left: 1px solid #555; color: #fff; padding: 0 15px; cursor: pointer; }

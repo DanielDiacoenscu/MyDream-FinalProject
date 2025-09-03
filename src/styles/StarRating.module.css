@@ -1,0 +1,11 @@
+/* src/styles/StarRating.module.css */
+.starContainer {
+  display: flex;
+  align-items: center;
+  color: #111;
+}
+.star {
+  width: 14px;
+  height: 14px;
+  margin-right: 2px;
+}

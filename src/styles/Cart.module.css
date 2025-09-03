@@ -1,0 +1,110 @@
+/* src/styles/Cart.module.css - FINAL CORRECTED VERSION BY CANPoly */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Tenor+Sans&display=swap');
+
+.overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0; visibility: hidden;
+  transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 999;
+}
+.overlay.open { opacity: 1; visibility: visible; }
+
+.drawer {
+  position: fixed; top: 0; right: 0; width: 100%; max-width: 480px; height: 100%;
+  background-color: #ffffff;
+  box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 1000;
+  display: flex; flex-direction: column;
+  font-family: "Montserrat", -apple-system, sans-serif;
+}
+.drawer.open { transform: translateX(0); }
+
+.drawerHeader {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 32px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.drawerTitle {
+  font-family: "Tenor Sans", serif;
+  font-size: 17px; /* MODIFIED */
+  font-weight: 400;
+  letter-spacing: normal; /* MODIFIED */
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+.cartCountCircle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 20px; /* MODIFIED */
+  height: 20px; /* MODIFIED */
+  background-color: #111; color: #fff;
+  border-radius: 50%;
+  font-size: 10px; /* MODIFIED */
+  font-weight: 700;
+  margin-left: 12px;
+  font-family: "Montserrat", sans-serif;
+  line-height: 1;
+}
+
+.closeButton { background: none; border: none; cursor: pointer; padding: 8px; color: #111; }
+
+.drawerContent { flex-grow: 1; overflow-y: auto; padding: 0 32px; }
+.emptyMessage { text-align: center; color: #666; margin-top: 32px; padding: 32px 0; font-family: "Tenor Sans", serif; font-size: 18px; }
+.cartList { list-style: none; padding: 0; margin: 0; }
+
+.cartItem { display: flex; gap: 20px; padding: 24px 0; border-bottom: 1px solid #f0f0f0; }
+.itemImage { flex-shrink: 0; }
+.itemInfo { flex-grow: 1; display: flex; flex-direction: column; }
+
+.itemName {
+  font-family: "Tenor Sans", serif; font-size: 12px; line-height: 1.4;
+  margin: 0 0 4px; font-weight: 400; text-transform: uppercase;
+}
+.itemSubtitle {
+  font-family: "Montserrat", sans-serif; font-size: 13px; color: #666;
+  margin-bottom: 8px; font-weight: 400;
+}
+.itemTag {
+  display: inline-block; background-color: #f0f0f0; color: #555;
+  padding: 4px 8px; font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.1em; margin-top: 8px;
+  align-self: flex-start;
+}
+
+.itemQuantity { display: flex; align-items: center; gap: 16px; margin-top: auto; }
+.itemQuantity button {
+  background: none; border: none; cursor: pointer; font-size: 16px;
+  color: #888; padding: 4px; font-family: "Montserrat", sans-serif;
+}
+.itemQuantity span { font-size: 14px; font-weight: 400; min-width: 20px; text-align: center; }
+
+.itemActions { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; text-align: right; }
+.itemPrice { font-family: "Montserrat", sans-serif; font-size: 15px; font-weight: 400; flex-shrink: 0; }
+.removeItem {
+  background: none; border: none; cursor: pointer; font-size: 10px;
+  text-transform: uppercase; letter-spacing: 0.1em; color: #888;
+  padding: 0; margin-top: 4px;
+}
+
+.drawerFooter { padding: 24px 32px; border-top: 1px solid #e5e5e5; background-color: #fff; }
+.total {
+  display: flex; justify-content: space-between;
+  font-family: "Tenor Sans", serif;
+  font-size: 13px; /* MODIFIED */
+  text-transform: uppercase;
+  letter-spacing: normal; /* MODIFIED */
+  margin-bottom: 24px;
+}
+.checkoutButton {
+  display: flex; align-items: center; justify-content: center; width: 100%;
+  padding: 18px; background-color: #111; color: #fff; text-align: center;
+  text-decoration: none; font-weight: 700; text-transform: uppercase;
+  font-size: 12px; letter-spacing: 0.1em; transition: background-color 0.2s; border: none;
+}
+.checkoutButton:hover { background-color: #444; }

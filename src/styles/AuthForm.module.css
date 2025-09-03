@@ -1,0 +1,110 @@
+/* src/styles/AuthForm.module.css */
+
+.authContainer {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 80px 20px;
+  min-height: 70vh;
+  background-color: #fdfdfd;
+}
+
+.authFormWrapper {
+  width: 100%;
+  max-width: 450px;
+  background-color: #fff;
+  padding: 40px;
+  border: 1px solid #e5e5e5;
+}
+
+.title {
+  font-family: var(--font-secondary);
+  font-size: 28px;
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-family: var(--font-primary);
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+.input {
+  font-family: var(--font-primary);
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #111;
+}
+
+.button {
+  font-family: var(--font-secondary);
+  background-color: #111;
+  color: #fff;
+  border: none;
+  padding: 15px;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 10px;
+}
+
+.button:hover {
+  background-color: #444;
+}
+
+.error {
+  color: #d9534f;
+  background-color: #f2dede;
+  border: 1px solid #ebccd1;
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.redirect {
+  text-align: center;
+  margin-top: 25px;
+  font-size: 14px;
+}
+
+.redirect a {
+  color: #111;
+  text-decoration: underline;
+}
+
+
+/* Add to the bottom of BOTH AuthForm.module.css AND Checkout.module.css */
+
+.inputError {
+  border-color: #D32F2F !important; /* A red border to show an error */
+}
+
+.fieldError {
+  color: #D32F2F;
+  font-size: 0.8rem;
+  margin-top: 4px;
+}

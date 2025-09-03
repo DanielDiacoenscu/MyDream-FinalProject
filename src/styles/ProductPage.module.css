@@ -1,0 +1,39 @@
+/* src/styles/ProductPage.module.css - CSS-ONLY FIX */
+
+.pageWrapper { 
+  max-width: 1200px; 
+  margin: 40px auto; 
+  padding: 0 20px; 
+}
+
+.mainGrid { 
+  display: grid; 
+  grid-template-columns: 1fr; /* Mobile-first: single column */
+  gap: 20px; 
+}
+
+.detailsColumn { 
+  /* By default, the column scrolls normally with the page. */
+  position: static; 
+}
+
+/* Tablet and larger screens */
+@media (min-width: 768px) { 
+  .mainGrid { 
+    grid-template-columns: 1fr 1fr; 
+    gap: 40px; 
+  } 
+
+  /*
+    NOTE: The 'position: sticky' rule that was here has been REMOVED.
+    This prevents the "jump" and makes the column scroll normally.
+  */
+}
+
+/* Desktop and larger screens */
+@media (min-width: 1024px) { 
+  .mainGrid { 
+    grid-template-columns: 0.8fr 1.2fr; 
+    gap: 60px; 
+  } 
+}

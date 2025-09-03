@@ -1,0 +1,121 @@
+/* src/styles/BestSellers.module.css - THE DEFINITIVE VB-STYLE VERSION */
+
+/* --- DESKTOP STYLES (UNCHANGED) --- */
+.section {
+  padding: 4rem 0;
+  background-color: #fff;
+  overflow-x: hidden;
+}
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.introText {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #333;
+  font-weight: 600;
+}
+.divider {
+  width: 70px;
+  height: 1px;
+  background-color: #ccc;
+  margin: 1.5rem auto;
+}
+.title {
+  font-family:JHATimesNow, TimesNewRoman, "Times New Roman", Times, Baskerville, Georgia, serif;
+  font-size: 2.5rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: #111;
+}
+.carouselContainer {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 40px;
+  position: relative;
+}
+.slide {
+  padding: 0 10px;
+}
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+  color: #888;
+  transition: color 0.2s ease;
+}
+.arrow:hover {
+  color: #111;
+}
+.prevArrow {
+  left: 0;
+}
+.nextArrow {
+  right: 0;
+}
+
+/* --- NEW, VB-STYLE MOBILE SLIDER --- */
+.mobileSliderWrapper {
+  position: relative;
+}
+
+.mobileSliderContainer {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.mobileSliderContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.mobileSlide {
+  scroll-snap-align: center;
+  /* This is the key: Each slide is now 100% of the width */
+  flex: 0 0 100%;
+  /* This gives the card inside some breathing room from the screen edges */
+  padding: 0 40px;
+  box-sizing: border-box;
+}
+
+.mobileArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+  color: #333; /* Darker for better visibility */
+}
+.mobilePrevArrow {
+  left: 5px; /* Positioned inside the container */
+}
+.mobileNextArrow {
+  right: 5px; /* Positioned inside the container */
+}
+
+
+/* --- MEDIA QUERY TO ADJUST LAYOUTS --- */
+@media (max-width: 768px) {
+  .section {
+    padding: 3rem 0;
+  }
+  .title {
+    font-size: 2rem;
+  }
+  .carouselContainer {
+    padding: 0;
+  }
+  .arrow {
+    display: none !important;
+  }
+}

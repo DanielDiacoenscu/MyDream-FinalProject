@@ -1,0 +1,74 @@
+/* src/styles/OurStory.module.css */
+
+.pageContainer {
+  width: 100%;
+  padding: 4rem 0; /* Adds space at the top and bottom of the page */
+}
+
+.mainContent {
+  max-width: 1400px; /* Limits the maximum width of the content */
+  margin: 0 auto;
+  padding: 0 2rem; /* Padding on the sides */
+}
+
+.storySection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4rem; /* Space between the text and image */
+  margin-bottom: 5rem; /* Space between the two sections */
+}
+
+.textBlock {
+  flex: 1;
+  max-width: 500px; /* Prevents text lines from becoming too long */
+}
+
+.imageBlock {
+  flex: 1;
+  max-width: 450px; 
+}
+
+.storyImage {
+  width: 100%;
+  height: auto; /* Ensures the image scales proportionally */
+  object-fit: cover;
+}
+
+.title {
+  font-family: var(--font-secondary); /* Using the serif font from your theme */
+  font-size: 2rem;
+  font-weight: 400;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.paragraph {
+  font-family: var(--font-primary); /* Using the sans-serif font */
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: #333;
+}
+
+/* --- Responsiveness --- */
+@media (max-width: 900px) {
+  .storySection {
+    flex-direction: column; /* Stacks the columns on top of each other */
+    gap: 2rem;
+  }
+
+  /* --- THIS IS THE FIX --- */
+  /* This rule targets only the second section on mobile and reverses its stacking order,
+     so the text block appears before the image block. */
+  .storySection.reversed {
+    flex-direction: column-reverse;
+  }
+
+  .textBlock {
+    text-align: center; /* Centers the text on mobile */
+  }
+  
+  .title {
+    font-size: 1.5rem;
+  }
+}

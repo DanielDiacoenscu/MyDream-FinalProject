@@ -1,0 +1,322 @@
+/* src/styles/Checkout.module.css - DEFINITIVE RESPONSIVE VERSION */
+
+/* --- 1. CORE LAYOUT --- */
+.checkoutContainer {
+  display: grid;
+  grid-template-columns: 1fr; /* Mobile-first: single column */
+  gap: 30px; /* Reduced gap for mobile */
+  max-width: 1200px;
+  margin: 20px auto; /* Reduced margin for mobile */
+  padding: 20px 15px; /* Reduced side padding for mobile */
+  font-family: "Montserrat", sans-serif;
+}
+
+/* Two columns on larger screens (tablets and up) */
+@media (min-width: 992px) {
+  .checkoutContainer {
+    grid-template-columns: 1.2fr 1fr; /* Main content is slightly larger */
+    gap: 60px;
+    margin: 40px auto;
+    padding: 20px;
+  }
+}
+
+.checkoutMain {
+  order: 2; /* On mobile, the form comes AFTER the summary */
+}
+
+.checkoutSidebar {
+  order: 1; /* On mobile, the summary comes FIRST */
+  background-color: #f9f9f9;
+  padding: 25px; /* Slightly reduced padding for mobile */
+  height: fit-content;
+}
+
+@media (min-width: 992px) {
+  .checkoutMain {
+    order: 1; /* Restore desktop order */
+  }
+  .checkoutSidebar {
+    order: 2; /* Restore desktop order */
+    padding: 30px;
+  }
+}
+
+
+/* --- 2. TYPOGRAPHY & HEADERS --- */
+.checkoutTitle {
+  font-size: 20px; /* Slightly smaller for mobile */
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+@media (min-width: 768px) {
+  .checkoutTitle {
+    font-size: 24px;
+  }
+}
+
+/* --- 3. SHIPPING FORM STYLING --- */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* --- THIS IS THE KEY RESPONSIVE FIX --- */
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr; /* Mobile-first: Stacks fields vertically */
+  gap: 20px;
+}
+
+/* On tablets and larger, switch to two columns */
+@media (min-width: 768px) {
+  .formRow {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formLabel {
+  font-size: 12px;
+  color: #555;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+
+.formInput {
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  padding: 14px;
+  border: 1px solid #ccc;
+  border-radius: 0;
+  background-color: #fff;
+  -webkit-appearance: none;
+  transition: border-color 0.2s;
+}
+
+.formInput::placeholder {
+  color: #999;
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: #111;
+}
+
+.formButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 18px;
+  margin-top: 20px;
+  background-color: #111;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.formButton:hover {
+  background-color: #333;
+}
+
+/* --- 4. REVIEW ORDER STYLING --- */
+.review {
+  font-size: 14px;
+  color: #333;
+}
+
+.reviewSection {
+  padding: 20px;
+  border: 1px solid #e5e5e5;
+  margin-bottom: 30px;
+}
+
+.reviewTitle {
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 15px;
+}
+
+.review p {
+  margin: 0 0 8px 0;
+  line-height: 1.6;
+}
+
+/* --- 5. CHECKOUT SUMMARY (SIDEBAR) STYLING --- */
+.summaryTitle {
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.summaryItemList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.summaryItem {
+  display: flex;
+  gap: 15px;
+  padding: 20px 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.summaryItemImage {
+  width: 65px; /* Smaller image for mobile */
+  height: 78px;
+  object-fit: cover;
+}
+
+@media (min-width: 768px) {
+  .summaryItemImage {
+    width: 80px;
+    height: 96px;
+  }
+}
+
+.summaryItemInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.summaryItemName {
+  font-weight: 600;
+  font-size: 14px;
+  margin: 0 0 5px 0;
+}
+
+.summaryItemSubtitle {
+  font-size: 12px;
+  color: #666;
+  margin: 0 0 10px 0;
+}
+
+.summaryItemQuantity {
+  font-size: 13px;
+  color: #666;
+  margin-top: auto;
+}
+
+.summaryItemPrice {
+  font-size: 14px;
+  font-weight: 600;
+  margin-left: auto;
+}
+
+.summaryTotals {
+  padding-top: 20px;
+  font-size: 14px;
+}
+
+.summaryTotalRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.summaryTotalRow.grandTotal {
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #e5e5e5;
+}
+
+/* APPEND THIS to src/styles/Checkout.module.css */
+
+/* --- 6. SHIPPING METHOD STYLING --- */
+.shippingMethodSection {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.shippingMethodTitle {
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+}
+
+.shippingOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.shippingOption {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.shippingOption:has(input:checked) {
+  border-color: #111;
+  background-color: #f9f9f9;
+}
+
+.shippingOption input {
+  margin-right: 15px;
+}
+
+.shippingOptionLabel {
+  flex-grow: 1;
+  font-size: 14px;
+}
+
+.shippingOptionPrice {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.freeShippingMessage {
+  text-align: center;
+  color: #0b7a3e;
+  font-weight: 600;
+  font-size: 14px;
+  margin-top: 15px;
+}
+
+
+/* Add to the bottom of BOTH AuthForm.module.css AND Checkout.module.css */
+
+.inputError {
+  border-color: #D32F2F !important; /* A red border to show an error */
+}
+
+.fieldError {
+  color: #D32F2F;
+  font-size: 0.8rem;
+  margin-top: 4px;
+}

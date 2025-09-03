@@ -1,0 +1,24 @@
+/* src/styles/StaticPage.module.css - UPDATED */
+.pageContainer {
+  background-color: #fff;
+  padding: 40px 20px 100px;
+}
+
+.contentWrapper {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.pageTitle {
+  font-family: "JHATimesNow", "TimesNewRoman", "Times New Roman", "Times", "Baskerville", "Georgia", serif;
+  font-size: 21px; 
+  
+  /* --- MODIFIED --- */
+  text-align: left;
+
+  margin-bottom: 30px;
+  font-weight: 400;
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: 0.05em;
+}

@@ -1,0 +1,228 @@
+/* src/styles/ShopByCollection.module.css - FINAL REFINEMENT FOR MOBILE */
+.collectionSection {
+    text-align: center;
+    padding: 5rem 0;
+    background-color: #fdfdfd;
+    overflow: hidden;
+}
+
+.mainTitle {
+    font-family: 'Bodoni Moda', serif;
+    font-weight: 400;
+    font-size: 2.2rem;
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+}
+
+.collectionNav {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin: 0 auto 1rem auto;
+    width: fit-content;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.navButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 1rem 0.5rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #888;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.navButton:hover {
+    color: #000;
+}
+
+.navButton.active {
+    color: #000;
+    font-weight: 600;
+}
+
+.navButton.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #000;
+}
+
+.carouselContainer {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carouselSlider {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.slidesWrapper {
+    display: flex;
+    transition: transform 0.7s cubic-bezier(0.45, 0.05, 0.55, 0.95);
+}
+
+.collectionCard {
+    flex: 0 0 33.333%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 1.5rem;
+    box-sizing: border-box;
+    opacity: 0.6;
+    transform: scale(0.85);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.collectionCard.activeCard {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.discoverText {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 1.5rem;
+    height: 2em;
+}
+
+.imageContainer {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 5; 
+}
+
+.arrowButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #aaa;
+    padding: 1rem;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    transition: color 0.3s ease;
+}
+.arrowButton:hover {
+    color: #000;
+}
+.leftArrow {
+    left: 2rem;
+}
+.rightArrow {
+    right: 2rem;
+}
+
+.shopNowContainer {
+    margin-top: 3rem;
+    text-align: center;
+}
+
+.shopNowButton {
+    display: inline-block;
+    background-color: #121212;
+    color: #fff;
+    padding: 0.8rem 2.5rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.shopNowButton:hover {
+    background-color: #444;
+}
+
+/* --- THIS IS THE FINAL MOBILE REFINEMENT --- */
+@media (max-width: 768px) {
+    .collectionSection {
+        padding: 3rem 0;
+    }
+
+    .mainTitle {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+    }
+
+    .collectionNav {
+        /* Ensure the container doesn't overflow */
+        width: 90%;
+        gap: 0;
+        justify-content: space-around; /* Distribute items evenly */
+        margin-bottom: 1.5rem;
+    }
+
+    .navButton {
+        /* Allow buttons to have flexible width based on their content */
+        flex: 1;
+        font-size: 0.6rem; /* Slightly smaller font to help with wrapping */
+        padding: 0.8rem 5px;
+        /* This is the key for text wrapping */
+        white-space: normal;
+	line-height: 1.4;
+        height: 3.5em; /* Give it a fixed height to align items */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .collectionCard {
+        /* --- THIS MAKES THE IMAGES LARGER --- */
+        /* Reducing the padding gives more space to the card content */
+        padding: 0 4px;
+    }
+
+    .discoverText {
+        font-size: 0.65rem;
+        margin-bottom: 3rem;
+    }
+
+    .arrowButton {
+        /* Make arrows smaller to not overlap the larger images */
+        transform: translateY(-50%) scale(0.8);
+    }
+    .leftArrow {
+        left: 0.2rem;
+    }
+    .rightArrow {
+        right: 0.2rem;
+    }
+
+    .shopNowContainer {
+        margin-top: 2.5rem;
+    }
+
+    .shopNowButton {
+        font-size: 0.7rem;
+        padding: 0.7rem 2rem;
+    }
+}
+
+.slidesWrapper {
+    display: flex;
+    /* --- THIS IS THE FIX --- */
+    /* Duration increased to 1s and a smoother easing curve is applied. */
+    transition: transform 1s cubic-bezier(0.42, 0, 0.58, 1);
+}
