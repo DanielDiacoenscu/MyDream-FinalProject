@@ -1,4 +1,3 @@
 {
   "buildCommand": "next build",
-  "note": "Forcing a fresh build on Vercel by making a valid change."
 }
