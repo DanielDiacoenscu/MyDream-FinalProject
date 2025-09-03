@@ -1,17 +1,18 @@
+// src/components/ProductCard.tsx - IMPORTS CORRECTED
+
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Heart } from 'lucide-react';
 import StarRating from './StarRating';
-import styles from '../styles/ProductCard.module.css';
-import { useCart } from '../context/CartContext';
-import { useWishlist } from '../context/WishlistContext';
 
-// This uses the flexible interface that we now know is required.
-export interface StrapiProduct {
-  id: number;
-  [key: string]: any;
-}
+// --- CORRECTED IMPORTS ---
+import styles from '@/styles/ProductCard.module.css';
+import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
+import { StrapiProduct } from '@/types/strapi'; // Uses the new central type
+// --- END OF CORRECTIONS ---
+
 interface ProductCardProps { product: StrapiProduct; }
 
 const ProductCard = ({ product }: ProductCardProps) => {
