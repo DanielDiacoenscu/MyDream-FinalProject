@@ -1,4 +1,4 @@
-use client';
+'use client';
 
 import ProductCard from './ProductCard';
 import { StrapiProduct } from '@/types/strapi'; // Import the central type
