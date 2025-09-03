@@ -1,23 +1,19 @@
-// src/components/ProductCard.tsx - IMPORTS CORRECTED
-
+// src/components/ProductCard.tsx - USING THE CORRECT HOOKS
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Heart } from 'lucide-react';
 import StarRating from './StarRating';
-
-// --- CORRECTED IMPORTS ---
 import styles from '@/styles/ProductCard.module.css';
-import { useCart } from '@/context/CartContext';
-import { useWishlist } from '@/context/WishlistContext';
-import { StrapiProduct } from '@/types/strapi'; // Uses the new central type
-// --- END OF CORRECTIONS ---
+import { useCart } from '@/context/CartContext'; // <-- USE THE SAFE HOOK
+import { useWishlist } from '@/context/WishlistContext'; // <-- USE THE SAFE HOOK
+import { StrapiProduct } from '@/types/strapi';
 
 interface ProductCardProps { product: StrapiProduct; }
 
 const ProductCard = ({ product }: ProductCardProps) => {
-  const { addToCart } = useCart();
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { addToCart } = useCart(); // <-- Correct usage
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist(); // <-- Correct usage
 
   const primaryImage = product.Images?.[0];
   const imageUrl = primaryImage 
@@ -50,7 +46,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
         {product.Rating && <div className={styles.ratings}><StarRating rating={product.Rating} /></div>}
         {product.Tag && <div className={styles.productTileInfoBadge}>{product.Tag}</div>}
       </div>
-
       <a href={`/products/${product.slug || product.id}`} className={styles.productTileImageLink}>
         <div className={styles.productTileImageContainer}>
           <Image 
@@ -63,7 +58,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
           />
         </div>
       </a>
-
       <div className={styles.productTileVariantsAndCta}>
         <div className={styles.productTileCta}>
           <button className={styles.addToCart} onClick={handleAddToCart}>Добави</button>

@@ -1,8 +1,7 @@
 // src/components/ProductClientView.tsx - CORRECTED
 'use client';
 
-import { useContext } from 'react';
-import { CartContext } from '@/context/CartContext';
+import { useCart } from '@/context/CartContext'; // <-- The necessary import
 import ProductImageGallery from '@/components/pdp/ProductImageGallery';
 import ProductInfo from '@/components/pdp/ProductInfo';
 import ProductActions from '@/components/pdp/ProductActions';
@@ -10,7 +9,7 @@ import ProductDescriptionAccordion from '@/components/pdp/ProductDescriptionAcco
 import styles from '@/styles/ProductPage.module.css';
 
 export default function ProductClientView({ product }: { product: any }) {
-  const { addToCart } = useContext(CartContext);
+  const { addToCart } = useCart(); // <-- The necessary change: use the safe hook
 
   if (!product) {
     return null;
@@ -38,7 +37,6 @@ export default function ProductClientView({ product }: { product: any }) {
           />
           <ProductActions product={product} />
 
-          {/* --- NECESSARY CHANGE: Pass the string to the 'description' prop --- */}
           <ProductDescriptionAccordion description={descriptionText} />
 
         </div>
