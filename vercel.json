@@ -1,6 +1,4 @@
-// vercel.json - ADDING A COMMENT TO FORCE A CLEAN BUILD
-
 {
-  // This comment forces Vercel to perform a fresh build.
-  "buildCommand": "next build"
+  "buildCommand": "next build",
+  "note": "Forcing a fresh build on Vercel by making a valid change."
 }
