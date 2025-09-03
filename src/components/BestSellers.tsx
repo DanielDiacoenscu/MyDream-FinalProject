@@ -1,13 +1,17 @@
-// src/components/BestSellers.tsx - THE DEFINITIVE VERSION WITH ARROWS
+// src/components/BestSellers.tsx - FINAL, CORRECTED PATHS
 'use client';
 
-import { useState, useEffect, useRef } from 'react'; // <-- Import useRef
+import { useState, useEffect, useRef } from 'react';
 import Slider from 'react-slick';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import ProductCard, { StrapiProduct } from './ProductCard';
-import { getBestsellerProducts } from '../lib/api';
-import styles from '../styles/BestSellers.module.css';
-import { useIsMobile } from '../hooks/useIsMobile';
+
+// --- CORRECTED IMPORTS ---
+import ProductCard from './ProductCard';
+import { StrapiProduct } from '@/types/strapi'; // <-- The necessary change
+import { getBestsellerProducts } from '@/lib/api';
+import styles from '@/styles/BestSellers.module.css';
+import { useIsMobile } from '@/hooks/useIsMobile';
+// --- END OF CORRECTIONS ---
 
 // Desktop-only arrows
 const NextArrow = (props: any) => {
@@ -23,7 +27,7 @@ const BestSellers = () => {
   const [bestsellers, setBestsellers] = useState<StrapiProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const isMobile = useIsMobile();
-  const mobileSliderRef = useRef<HTMLDivElement>(null); // <-- Ref for the mobile slider
+  const mobileSliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchBestsellers = async () => {
@@ -35,10 +39,9 @@ const BestSellers = () => {
     fetchBestsellers();
   }, []);
 
-  // --- LOGIC FOR MOBILE SCROLLING ---
   const handleMobileScroll = (direction: 'left' | 'right') => {
     if (mobileSliderRef.current) {
-      const scrollAmount = mobileSliderRef.current.clientWidth * 0.8; // Scroll by 80% of the container width
+      const scrollAmount = mobileSliderRef.current.clientWidth * 0.8;
       const newScrollLeft = direction === 'left' 
         ? mobileSliderRef.current.scrollLeft - scrollAmount
         : mobileSliderRef.current.scrollLeft + scrollAmount;
@@ -62,7 +65,6 @@ const BestSellers = () => {
   };
 
   const MobileSlider = () => (
-    // The container now has the ref and the arrow buttons
     <div className={styles.mobileSliderWrapper}>
       <button 
         className={`${styles.mobileArrow} ${styles.mobilePrevArrow}`} 
@@ -112,4 +114,4 @@ const BestSellers = () => {
   );
 };
 
-export default BestSellers
+export default BestSellers;
