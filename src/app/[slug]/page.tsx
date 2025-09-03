@@ -6,14 +6,11 @@ import styles from '@/styles/StaticPage.module.css';
 import ComponentRenderer from '@/components/page-builder/ComponentRenderer';
 import { Metadata } from 'next';
 
-// This is the full, official props type for a Next.js page.
-// Using this exact structure satisfies the Vercel build system.
 type Props = {
   params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
 };
 
-// The metadata function, correctly typed with the official Props type.
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const page = await getPageBySlug(params.slug);
   if (!page || !page.attributes) {
@@ -22,7 +19,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: `${page.attributes.title} | MyDreamBeauty` };
 }
 
-// The main page component, using the standard `export default async function` syntax.
 export default async function Page({ params }: Props) {
   const { slug } = params;
   const page = await getPageBySlug(slug);
@@ -43,7 +39,6 @@ export default async function Page({ params }: Props) {
   );
 }
 
-// Your generateStaticParams function is correct and remains unchanged.
 export async function generateStaticParams() {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/pages`);
