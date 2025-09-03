@@ -1,4 +1,4 @@
-// src/app/[slug]/page.tsx - FINAL, CORRECTLY TYPED VERSION
+// src/app/[slug]/page.tsx - THE CANONICAL NEXT.JS PATTERN
 
 import { getPageBySlug } from '@/lib/api';
 import { notFound } from 'next/navigation';
@@ -6,10 +6,24 @@ import styles from '@/styles/StaticPage.module.css';
 import ComponentRenderer from '@/components/page-builder/ComponentRenderer';
 import { Metadata } from 'next';
 
-// --- THIS IS THE FIX ---
-// We define the props type directly in the function signature.
-// This resolves the conflict with Vercel's internal build types.
-const DynamicPage = async ({ params }: { params: { slug: string } }) => {
+// This is the full, official props type for a Next.js page.
+// Using this exact structure satisfies the Vercel build system.
+type Props = {
+  params: { slug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
+// The metadata function, correctly typed with the official Props type.
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const page = await getPageBySlug(params.slug);
+  if (!page || !page.attributes) {
+    return { title: 'Page Not Found' };
+  }
+  return { title: `${page.attributes.title} | MyDreamBeauty` };
+}
+
+// The main page component, using the standard `export default async function` syntax.
+export default async function Page({ params }: Props) {
   const { slug } = params;
   const page = await getPageBySlug(slug);
 
@@ -27,19 +41,7 @@ const DynamicPage = async ({ params }: { params: { slug: string } }) => {
       </div>
     </div>
   );
-};
-
-export default DynamicPage;
-
-// This metadata function is best practice and helps the build system.
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const page = await getPageBySlug(params.slug);
-  if (!page || !page.attributes) {
-    return { title: 'Page Not Found' };
-  }
-  return { title: `${page.attributes.title} | MyDreamBeauty` };
 }
-
 
 // Your generateStaticParams function is correct and remains unchanged.
 export async function generateStaticParams() {
