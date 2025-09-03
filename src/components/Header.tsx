@@ -1,17 +1,20 @@
-// src/components/Header.tsx - ADDING MOBILE SEARCH FUNCTIONALITY
+// src/components/Header.tsx - FINAL, CORRECTED PATHS
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Search, User, Heart, ShoppingBag, Menu, X, Plus, Minus } from 'lucide-react';
-import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
-import { useWishlist } from '../context/WishlistContext';
-import styles from '../styles/Header.module.css';
-import { NavigationLink } from '../types/navigation';
+
+// --- CORRECTED PATHS ---
+import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
+import { useWishlist } from '@/context/WishlistContext';
+import styles from '@/styles/Header.module.css';
+import { NavigationLink } from '@/types/navigation';
 import { getNavigationLinks, searchProducts } from '@/lib/api';
 import { Product } from '@/lib/types';
+// --- END OF CORRECTIONS ---
 
 interface StrapiCategory { id: number; name: string; slug: string; }
 
