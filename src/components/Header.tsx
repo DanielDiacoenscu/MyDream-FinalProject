@@ -10,8 +10,8 @@ import { useAuth } from '../context/AuthContext';
 import { useWishlist } from '../context/WishlistContext';
 import styles from '../styles/Header.module.css';
 import { NavigationLink } from '../types/navigation';
-import { getNavigationLinks, searchProducts } from '../lib/api';
-import { Product } from '../lib/types';
+import { getNavigationLinks, searchProducts } from '@/lib/api';
+import { Product } from '@/lib/types';
 
 interface StrapiCategory { id: number; name: string; slug: string; }
 
