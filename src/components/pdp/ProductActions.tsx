@@ -1,12 +1,11 @@
-// src/components/pdp/ProductActions.tsx
+// src/components/pdp/ProductActions.tsx - PATCHED FOR BUILD
 'use client';
-import { useContext } from 'react';
 import { Heart } from 'lucide-react';
-import { CartContext } from '@/context/CartContext';
+import { useCart } from '@/context/CartContext'; // <-- NECESSARY CHANGE: Import the safe hook
 import styles from '@/styles/pdp/ProductActions.module.css';
 
 const ProductActions = ({ product }: { product: any }) => {
-  const { addToCart } = useContext(CartContext);
+  const { addToCart } = useCart(); // <-- NECESSARY CHANGE: Use the safe hook
 
   return (
     <div className={styles.actions}>
