@@ -1,6 +1,4 @@
-cat page.tsx
-cat page.tsx
-// src/app/[slug]/page.tsx - THE CANONICAL NEXT.JS PATTERN
+// src/app/[slug]/page.tsx - FINAL, CLEAN VERSION
 
 import { getPageBySlug } from '@/lib/api';
 import { notFound } from 'next/navigation';
