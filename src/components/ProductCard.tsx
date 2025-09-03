@@ -1,19 +1,27 @@
-// src/components/ProductCard.tsx - USING THE CORRECT HOOKS
+// src/components/ProductCard.tsx - FINAL, BULLETPROOF VERSION
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Heart } from 'lucide-react';
 import StarRating from './StarRating';
 import styles from '@/styles/ProductCard.module.css';
-import { useCart } from '@/context/CartContext'; // <-- USE THE SAFE HOOK
-import { useWishlist } from '@/context/WishlistContext'; // <-- USE THE SAFE HOOK
+import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
 import { StrapiProduct } from '@/types/strapi';
 
 interface ProductCardProps { product: StrapiProduct; }
 
 const ProductCard = ({ product }: ProductCardProps) => {
-  const { addToCart } = useCart(); // <-- Correct usage
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist(); // <-- Correct usage
+  // --- THIS IS THE NECESSARY ADDITION ---
+  // If for any reason the product data is missing,
+  // render nothing instead of crashing the entire page.
+  if (!product) {
+    return null; 
+  }
+  // --- END OF ADDITION ---
+
+  const { addToCart } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
 
   const primaryImage = product.Images?.[0];
   const imageUrl = primaryImage 
