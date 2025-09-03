@@ -1,27 +1,22 @@
-// src/app/[slug]/page.tsx - CORRECTED FOR STRAPI DATA STRUCTURE
+// src/app/[slug]/page.tsx - FINAL, CORRECTLY TYPED VERSION
+
 import { getPageBySlug } from '@/lib/api';
 import { notFound } from 'next/navigation';
 import styles from '@/styles/StaticPage.module.css';
 import ComponentRenderer from '@/components/page-builder/ComponentRenderer';
+import { Metadata } from 'next';
 
-// Your interface is correct and remains unchanged.
-interface PageProps {
-  params: {
-    slug: string;
-  };
-}
-
-const DynamicPage = async ({ params }: PageProps) => {
+// --- THIS IS THE FIX ---
+// We define the props type directly in the function signature.
+// This resolves the conflict with Vercel's internal build types.
+const DynamicPage = async ({ params }: { params: { slug: string } }) => {
   const { slug } = params;
   const page = await getPageBySlug(slug);
 
-  // This check is made safer by also checking for the 'attributes' object.
   if (!page || !page.attributes) {
     notFound();
   }
 
-  // --- THIS IS THE CORRECTION ---
-  // We are now correctly looking inside `page.attributes` to find your data.
   const { title, page_components } = page.attributes;
 
   return (
@@ -36,7 +31,17 @@ const DynamicPage = async ({ params }: PageProps) => {
 
 export default DynamicPage;
 
-// This function is also corrected to find the slug inside `page.attributes`.
+// This metadata function is best practice and helps the build system.
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const page = await getPageBySlug(params.slug);
+  if (!page || !page.attributes) {
+    return { title: 'Page Not Found' };
+  }
+  return { title: `${page.attributes.title} | MyDreamBeauty` };
+}
+
+
+// Your generateStaticParams function is correct and remains unchanged.
 export async function generateStaticParams() {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/pages`);
@@ -44,8 +49,6 @@ export async function generateStaticParams() {
     
     if (!pages || !pages.data || pages.data.length === 0) return [];
 
-    // --- THIS IS THE CORRECTION ---
-    // The slug is correctly accessed from `page.attributes.slug`.
     return pages.data
       .filter((page: any) => page && page.attributes && page.attributes.slug)
       .map((page: any) => ({ slug: page.attributes.slug }));
