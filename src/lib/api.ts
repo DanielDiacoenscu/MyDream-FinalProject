@@ -167,3 +167,8 @@ export async function searchProducts(query: string): Promise<Product[]> {
     return [];
   }
 }
+
+export async function fetchAllCollections(): Promise<any[]> {
+  const response = await fetchAPI('/collections', 'populate=*');
+  return processStrapiResponse(response);
+}
