@@ -1,18 +1,8 @@
-// src/context/CartContext.tsx - CORRECTED
+// src/context/CartContext.tsx - CONNECTED TO THE CENTRAL TYPE
 'use client';
 
 import { createContext, useContext, useState, ReactNode } from 'react';
-
-// This is the data structure for a product as it comes from Strapi
-interface StrapiProduct {
-  id: number;
-  name: string;
-  Price: number;
-  slug: string;
-  Images: { url: string }[];
-  Tag: string | null;
-  Subtitle: string | null;
-}
+import { StrapiProduct } from '@/types/strapi'; // <-- This is the necessary connection
 
 export interface CartItem {
   id: number;
@@ -37,8 +27,6 @@ interface CartContextType {
   cartTotal: number;
 }
 
-// --- THE NECESSARY ADDITION IS HERE ---
-// By adding 'export', we make this context available to other files.
 export const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {

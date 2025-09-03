@@ -1,8 +1,8 @@
-// src/context/WishlistContext.tsx
+// src/context/WishlistContext.tsx - CONNECTED TO THE CENTRAL TYPE
 'use client';
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-import { StrapiProduct } from '@/components/ProductCard'; // Reuse the interface
+import { StrapiProduct } from '@/types/strapi'; // <-- This is the necessary connection
 
 interface WishlistContextType {
   wishlistItems: StrapiProduct[];
@@ -12,7 +12,6 @@ interface WishlistContextType {
   wishlistCount: number;
 }
 
-// IMPORTANT: Export the context itself
 export const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
 
 export const WishlistProvider = ({ children }: { children: ReactNode }) => {
@@ -20,7 +19,6 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
 
   const addToWishlist = (product: StrapiProduct) => {
     setWishlistItems(prevItems => {
-      // Prevent duplicates
       if (!prevItems.some(item => item.id === product.id)) {
         return [...prevItems, product];
       }
@@ -32,7 +30,6 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
     setWishlistItems(prevItems => prevItems.filter(item => item.id !== productId));
   };
 
-  // Crucial helper function to check if an item is already wishlisted
   const isInWishlist = (productId: number) => {
     return wishlistItems.some(item => item.id === productId);
   };
@@ -52,7 +49,6 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Custom hook for easy access
 export const useWishlist = () => {
   const context = useContext(WishlistContext);
   if (context === undefined) {
