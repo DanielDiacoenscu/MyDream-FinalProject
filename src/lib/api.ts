@@ -1,19 +1,17 @@
-// src/lib/api.ts - FINAL VERSION - HANDLES FLAT IMAGE OBJECTS
+// src/lib/api.ts - FINAL VERSION WITH NECESSARY TYPE FIX
 
 import qs from 'qs';
 import { Product } from './types';
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_API_URL || '';
 
-// --- THIS IS THE FIX ---
-// This function now correctly handles both wrapped AND flat image objects.
 function mapProductData(item: any): Product | null {
   if (!item) return null;
 
   const source = item.attributes ? item.attributes : item;
   const id = item.id;
   const { name, slug, price, Description, description, Images } = source;
-  const imagesData = Images?.data || Images || []; // Handle both wrapped and flat image arrays
+  const imagesData = Images?.data || Images || [];
 
   return {
     id,
@@ -22,9 +20,8 @@ function mapProductData(item: any): Product | null {
     price: price || 0,
     description: description || Description || '',
     images: imagesData.map((img: any) => {
-      // Determine if the image object is wrapped or flat
       const imageSource = img.attributes ? img.attributes : img;
-      let imageUrl = '/placeholder.jpg'; // A safe default
+      let imageUrl = '/placeholder.jpg';
 
       if (imageSource && typeof imageSource.url === 'string') {
         const path = imageSource.url;
@@ -77,7 +74,6 @@ function processStrapiResponse(response: any): any[] {
   return [];
 }
 
-// ... (all other functions remain unchanged)
 export async function getNavigationLinks() {
   const response = await fetchAPI('/categories');
   return processStrapiResponse(response);
@@ -149,17 +145,18 @@ export async function searchProducts(query: string): Promise<Product[]> {
 
   const querystring = [filters, populate, pagination].join('&');
   const endpoint = `/products`;
-  
+
   try {
     const data = await fetchAPI(endpoint, querystring);
-    
+  
     if (!data || !Array.isArray(data.data)) {
         return [];
     }
 
     const products = data.data
       .map(mapProductData)
-      .filter((p): p is Product => p !== null);
+      // --- THIS IS THE NECESSARY FIX ---
+      .filter((p: Product | null): p is Product => p !== null);
 
     return products;
   } catch (error) {
