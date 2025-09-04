@@ -1,4 +1,4 @@
-// src/lib/api.ts - FINAL VERSION WITH PROXY FIX
+// src/lib/api.ts - FINAL CORRECTED VERSION
 
 import qs from 'qs';
 import { Product } from './types';
@@ -41,27 +41,26 @@ function mapProductData(item: any): Product | null {
   };
 }
 
-
+// --- THIS IS THE ONLY PART THAT HAS CHANGED ---
 async function fetchAPI(endpoint: string, query: string = '') {
-  // --- THIS IS THE FIX ---
-  // In local development, this relative URL will be caught by the Next.js proxy.
-  // In production, Vercel will correctly route this to the full STRAPI_URL.
-  let requestUrl = `/api${endpoint}`;
-  if (query) {
-    requestUrl += query.startsWith('?') ? query : `?${query}`;
-  }
+  // Server-side fetch needs a full, absolute URL.
+  // We construct it directly from the environment variable.
+  const requestUrl = `${STRAPI_URL}/api${endpoint}`;
+  
+  const fullUrlWithQuery = query ? `${requestUrl}?${query.replace(/^\?/, '')}` : requestUrl;
 
-  console.log(`Fetching from URL: ${requestUrl}`);
+  console.log(`Fetching from URL: ${fullUrlWithQuery}`);
 
   try {
-    const res = await fetch(requestUrl, {
+    const res = await fetch(fullUrlWithQuery, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
-      cache: 'no-cache',
+      // This cache option is better for production builds
+      next: { revalidate: 60 }, // Revalidate the data every 60 seconds
     });
 
     if (!res.ok) {
-      console.error('Failed to fetch API:', res.status, res.statusText);
+      console.error('Failed to fetch API:', res.status, res.statusText, await res.text());
       throw new Error('Failed to fetch API');
     }
     return await res.json();
@@ -70,6 +69,7 @@ async function fetchAPI(endpoint: string, query: string = '') {
     return null;
   }
 }
+// --- END OF THE CHANGED SECTION ---
 
 function processStrapiResponse(response: any): any[] {
   if (response && Array.isArray(response.data)) return response.data;
@@ -158,7 +158,6 @@ export async function searchProducts(query: string): Promise<Product[]> {
 
     const products = data.data
       .map(mapProductData)
-      // --- THIS IS THE NECESSARY FIX ---
       .filter((p: Product | null): p is Product => p !== null);
 
     return products;

@@ -1,21 +1,18 @@
-// next.config.ts - CORRECTED AND FINAL
+// next.config.js - FINAL CORRECTED VERSION
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    // --- THIS IS THE NECESSARY ADDITION ---
-    // This tells Vercel to build the site even if there are minor style warnings.
+    // --- 'rewrites' SECTION REMOVED - IT IS NO LONGER NEEDED ---
+
+    // --- YOUR EXISTING CONFIGS (UNCHANGED) ---
     eslint: {
         ignoreDuringBuilds: true,
     },
-
-    // Your existing devIndicators config (UNCHANGED)
     devIndicators: {
         allowedDevOrigins: [
             'http://164.92.160.227:3000' 
         ],
     },
-
-    // Your existing images config (UNCHANGED)
     images: {
         remotePatterns: [
             {
@@ -40,5 +37,4 @@ const nextConfig = {
     },
 };
 
-// Corrected export syntax for a .ts file
-export default nextConfig;
+module.exports = nextConfig;
