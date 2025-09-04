@@ -1,4 +1,4 @@
-// src/lib/api.ts - FINAL VERSION WITH NECESSARY TYPE FIX
+// src/lib/api.ts - FINAL VERSION WITH PROXY FIX
 
 import qs from 'qs';
 import { Product } from './types';
@@ -43,7 +43,10 @@ function mapProductData(item: any): Product | null {
 
 
 async function fetchAPI(endpoint: string, query: string = '') {
-  let requestUrl = `${STRAPI_URL}/api${endpoint}`;
+  // --- THIS IS THE FIX ---
+  // In local development, this relative URL will be caught by the Next.js proxy.
+  // In production, Vercel will correctly route this to the full STRAPI_URL.
+  let requestUrl = `/api${endpoint}`;
   if (query) {
     requestUrl += query.startsWith('?') ? query : `?${query}`;
   }
@@ -106,7 +109,7 @@ export async function getPageBySlug(slug: string) {
 }
 
 export async function getAllProducts() {
-  const query = 'populate=*'; 
+  const query = 'populate=*';
   const response = await fetchAPI('/products', query);
   return processStrapiResponse(response);
 }
@@ -127,7 +130,7 @@ export async function getCategoryBySlug(slug: string) {
 export async function getCategoryDetails(slug: string) {
   try {
     const response = await fetchAPI(`/categories?filters[slug][$eq]=${slug}`);
-    return response.data[0]; 
+    return response.data[0];
   } catch (error) {
     console.error('Failed to fetch category details:', error);
     return null;
@@ -148,7 +151,7 @@ export async function searchProducts(query: string): Promise<Product[]> {
 
   try {
     const data = await fetchAPI(endpoint, querystring);
-  
+
     if (!data || !Array.isArray(data.data)) {
         return [];
     }
