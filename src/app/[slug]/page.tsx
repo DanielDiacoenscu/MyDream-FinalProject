@@ -1,4 +1,4 @@
-// src/app/[slug]/page.tsx - FINAL, CLEAN VERSION
+// src/app/[slug]/page.tsx - FINAL CORRECTED VERSION
 
 import { getPageBySlug } from '@/lib/api';
 import { notFound } from 'next/navigation';
@@ -13,21 +13,26 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const page = await getPageBySlug(params.slug);
-  if (!page || !page.attributes) {
+  // FIX: Check for page directly, not page.attributes
+  if (!page) {
     return { title: 'Page Not Found' };
   }
-  return { title: `${page.attributes.title} | MyDreamBeauty` };
+  // FIX: Access title directly from page
+  return { title: `${page.title} | MyDreamBeauty` };
 }
 
 export default async function Page({ params }: Props) {
   const { slug } = params;
   const page = await getPageBySlug(slug);
 
-  if (!page || !page.attributes) {
+
+  // FIX: Check for page directly. The attributes property does not exist.
+  if (!page) {
     notFound();
   }
 
-  const { title, page_components } = page.attributes;
+  // FIX: Destructure title and page_components directly from the page object.
+  const { title, page_components } = page;
 
   return (
     <div className={styles.pageContainer} data-slug={slug}>
@@ -41,9 +46,11 @@ export default async function Page({ params }: Props) {
 
 export async function generateStaticParams() {
   try {
+    // This part is more robust now
     const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/pages`);
-    const pages = await response.json();
+    if (!response.ok) throw new Error('Failed to fetch pages for static params');
     
+    const pages = await response.json();
     if (!pages || !pages.data || pages.data.length === 0) return [];
 
     return pages.data
