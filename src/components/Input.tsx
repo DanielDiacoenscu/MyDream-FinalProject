@@ -1,19 +1,22 @@
-// src/components/Input.tsx - UPGRADED
+// src/components/Input.tsx - CORRECTED VERSION
+
 import styles from '@/styles/Checkout.module.css';
+import React from 'react'; // Import React for the Fragment
 
 type InputProps = {
   name: string;
   label: string;
-  value: string; // <-- ADDED
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; // <-- ADDED
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: string;
   placeholder?: string;
   required?: boolean;
 };
 
 const Input = ({ name, label, value, onChange, type = 'text', placeholder, required = false }: InputProps) => {
+  // --- FIX: Removed the wrapper div. Using a Fragment instead. ---
   return (
-    <div className={styles.formGroup}>
+    <>
       <label htmlFor={name} className={styles.formLabel}>
         {label}
       </label>
@@ -21,13 +24,13 @@ const Input = ({ name, label, value, onChange, type = 'text', placeholder, requi
         type={type}
         id={name}
         name={name}
-        value={value} // <-- ADDED
-        onChange={onChange} // <-- ADDED
+        value={value}
+        onChange={onChange}
         placeholder={placeholder}
         required={required}
         className={styles.formInput}
       />
-    </div>
+    </>
   );
 };
 

@@ -28,7 +28,7 @@ const Cart = () => {
       <aside className={`${styles.drawer} ${isCartOpen ? styles.open : ''}`}>
         <header className={styles.drawerHeader}>
           <h2 className={styles.drawerTitle}>
-            YOUR BAG
+            Вашата Кошница
             {/* --- THIS IS THE FIX --- */}
             {/* The variable is now correctly named cartCount */}
             <span className={styles.cartCountCircle}>{cartCount}</span>
@@ -70,7 +70,7 @@ const Cart = () => {
                       <p className={styles.itemPrice}></p>
                     )}
                     <button onClick={() => removeFromCart(item.id)} className={styles.removeItem}>
-                      REMOVE
+                      Премахнете
                     </button>
                   </div>
                 </li>
@@ -82,13 +82,13 @@ const Cart = () => {
         {cartItems.length > 0 && (
           <footer className={styles.drawerFooter}>
             <div className={styles.total}>
-              <span>Total</span>
+              <span>Общо</span>
               <span>{cartTotal.toFixed(2)} лв.</span>
             </div>
             
             <button onClick={handleCheckout} className={styles.checkoutButton}>
               <Lock size={14} style={{ marginRight: '8px' }} />
-              CHECKOUT
+              Завършване на Поръчката
             </button>
 
           </footer>
