@@ -7,7 +7,7 @@ export async function GET(req: Request) {
   const slug = searchParams.get('slug') || 'contact-us';
 
   const base = process.env.NEXT_PUBLIC_STRAPI_API_URL;
-  const url = `${base}/api/pages?filters[slug][$eq]=${encodeURIComponent(slug)}`;
+  const url = `${base}/api/page?filters[slug][$eq]=${encodeURIComponent(slug)}`;
 
   try {
     const res = await fetch(url, { next: { revalidate: 0 } });
