@@ -1,21 +1,14 @@
-// src/types/strapi.ts - Strict type definitions
-
-export interface StrapiImage {
-  url: string;
-  alternativeText?: string;
-  width?: number;
-  height?: number;
-}
-
 export interface StrapiProduct {
   id: number;
   name: string;
+  price: number;
   slug: string;
-  price: number;  // lowercase to match api.ts mapping
-  description?: string;
-  Images?: StrapiImage[];
+  Images: {
+    id: number;
+    url: string;
+    alternativeText: string;
+  }[];
+  tag?: string;
+  subtitle?: string;
   Rating?: number;
-  Tag?: string;
-  bestseller?: boolean;
-  categories?: any[];
 }

@@ -58,8 +58,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         quantity: 1,
         image: `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${imageUrl}`,
         slug: product.slug,
-        tag: product.Tag,
-        subtitle: product.Subtitle,
+        tag: product.tag,
+        subtitle: product.subtitle,
       };
       return [...prevItems, newItem];
     });
