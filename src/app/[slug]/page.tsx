@@ -33,14 +33,14 @@ export default async function Page({ params }: Props) {
     notFound();
   }
 
-  // FIX: Destructure title and page_components directly from the page object.
-  const { title, page_components } = page;
+  // FIX: Destructure title and content directly from the page object.
+  const { title, content } = page;
 
   return (
     <div className={styles.pageContainer} data-slug={slug}>
       <div className={styles.contentWrapper}>
         <h1 className={styles.pageTitle}>{title}</h1>
-        <ComponentRenderer components={page_components} />
+        <ComponentRenderer components={content} />
       </div>
     </div>
   );

@@ -110,8 +110,8 @@ export async function getProductsByCategory(categorySlug: string) {
 
 export async function getPageBySlug(slug: string) {
   const safeSlug = encodeURIComponent(slug);
-  const query = `filters[slug][$eq]=${safeSlug}&populate[page_components][populate]=*`;
-  const response = await fetchAPI('/page', query);
+  const query = `filters[slug][$eq]=${safeSlug}&populate[content][populate]=*`;
+  const response = await fetchAPI('/pages', query);
   const pages = processStrapiResponse(response);
   return pages.length > 0 ? pages[0] : null;
 }
