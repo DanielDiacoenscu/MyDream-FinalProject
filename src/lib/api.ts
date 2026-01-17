@@ -98,7 +98,8 @@ export async function getProductBySlug(slug: string) {
   const query = `filters[slug][$eq]=${encodeURIComponent(slug)}&populate=*`;
   const response = await fetchAPI('/products', query);
   const products = processStrapiResponse(response);
-  return products.length > 0 ? products[0] : null;
+  const product = products.length > 0 ? products[0] : null;
+  return product ? mapProductData(product) : null;
 }
 
 export async function getProductsByCategory(categorySlug: string) {
