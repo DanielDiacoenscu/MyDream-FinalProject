@@ -2,7 +2,7 @@
 'use client';
 
 import { createContext, useContext, useState, ReactNode } from 'react';
-import { StrapiProduct } from '@/types/strapi'; // <-- This is the necessary connection
+import { StrapiProduct } from '@/types/strapi';
 
 export interface CartItem {
   id: number;
@@ -51,7 +51,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       const newItem: CartItem = {
         id: product.id,
         name: product.name,
-        price: product.Price,
+        price: product.price,  // ✅ FIXED: lowercase
         quantity: 1,
         image: `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${product.Images[0].url}`,
         slug: product.slug,
