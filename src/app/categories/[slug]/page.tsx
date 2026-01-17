@@ -1,32 +1,22 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-// --- NECESSARY ADDITION: Import the new API function ---
 import { getProductsByCategory, getCategoryDetails } from '../../../lib/api';
 import ProductCard from '@/components/ProductCard';
-
-// This uses the flexible interface that we now know is required.
-interface StrapiProduct {
-  id: number;
-  [key: string]: any;
-}
+import { Product } from '@/lib/types';
 
 export default function CategoryPage() {
   const params = useParams();
   const slug = params.slug as string;
-  const [products, setProducts] = useState<StrapiProduct[] | null>(null);
+  const [products, setProducts] = useState<Product[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [categoryName, setCategoryName] = useState('');
 
   useEffect(() => {
     if (slug) {
-      // This line is now handled inside fetchData as a fallback
-      // const formattedName = slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-      // setCategoryName(formattedName);
       const fetchData = async () => {
         setIsLoading(true);
         
-        // --- NECESSARY ADDITION: Fetch products and category details simultaneously ---
         const [fetchedProducts, categoryDetails] = await Promise.all([
           getProductsByCategory(slug),
           getCategoryDetails(slug)
@@ -34,9 +24,8 @@ export default function CategoryPage() {
 
         setProducts(fetchedProducts);
 
-        // --- NECESSARY ADDITION: Use the real name from Strapi, or fall back to the old method ---
-        if (categoryDetails && categoryDetails.name) {
-          setCategoryName(categoryDetails.name);
+        if (categoryDetails && (categoryDetails.name || categoryDetails.attributes?.name)) {
+          setCategoryName(categoryDetails.name || categoryDetails.attributes?.name);
         } else {
           const formattedName = slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
           setCategoryName(formattedName);
@@ -62,7 +51,7 @@ export default function CategoryPage() {
       {products.length > 0 ? (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '2rem 1.5rem' }}>
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product as any} />
           ))}
         </div>
       ) : (
