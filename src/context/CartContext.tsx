@@ -36,10 +36,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const toggleCart = () => setIsCartOpen(!isCartOpen);
 
   const addToCart = (product: StrapiProduct) => {
+    // Extract image URL safely outside the setter
     const imageUrl = product.Images?.[0]?.url;
+
     if (!imageUrl) {
       console.error("CRITICAL ERROR: Attempted to add a product to cart with no valid image.", product);
-      return;
+      return; 
     }
 
     setCartItems(prevItems => {
@@ -52,9 +54,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       const newItem: CartItem = {
         id: product.id,
         name: product.name,
-        price: product.price,  // ✅ FIXED: lowercase
+        price: product.price,
         quantity: 1,
-        image: `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${product.Images[0].url}`,
+        image: `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${imageUrl}`,
         slug: product.slug,
         tag: product.Tag,
         subtitle: product.Subtitle,
