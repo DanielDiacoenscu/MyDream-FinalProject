@@ -1,7 +1,21 @@
-// src/types/strapi.ts - NEW FILE
+// src/types/strapi.ts - Strict type definitions
 
-// This is the single, central definition for a product from Strapi.
+export interface StrapiImage {
+  url: string;
+  alternativeText?: string;
+  width?: number;
+  height?: number;
+}
+
 export interface StrapiProduct {
   id: number;
-  [key: string]: any; // Allows for flexible properties like 'name', 'Price', etc.
+  name: string;
+  slug: string;
+  price: number;  // lowercase to match api.ts mapping
+  description?: string;
+  Images?: StrapiImage[];
+  Rating?: number;
+  Tag?: string;
+  bestseller?: boolean;
+  categories?: any[];
 }
