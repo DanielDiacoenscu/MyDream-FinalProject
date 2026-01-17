@@ -51,7 +51,7 @@ async function fetchAPI(endpoint: string, query: string = '') {
     const res = await fetch(fullUrlWithQuery, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
-      cache: 'no-store',
+	next: { revalidate: 60 },
     });
 
     if (!res.ok) {
