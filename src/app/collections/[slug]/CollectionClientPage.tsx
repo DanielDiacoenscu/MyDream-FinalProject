@@ -1,13 +1,8 @@
-// src/app/collections/[slug]/CollectionClientPage.tsx - CORRECTED
-// src/app/collections/[slug]/CollectionClientPage.tsx
 'use client';
 
 import ProductCard from '../../../components/ProductCard';
+import { Product } from '@/lib/types';
 
-interface StrapiProduct {
-  id: number;
-  [key: string]: any;
-}
 interface StrapiCategory {
   id: number;
   attributes?: {
@@ -17,9 +12,10 @@ interface StrapiCategory {
   name?: string;
   slug?: string;
 }
+
 interface CollectionClientPageProps {
   category: StrapiCategory | null;
-  products: StrapiProduct[];
+  products: Product[];
 }
 
 export default function CollectionClientPage({ category, products }: CollectionClientPageProps) {
@@ -40,7 +36,7 @@ export default function CollectionClientPage({ category, products }: CollectionC
       {products.length > 0 ? (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '3rem 2rem' }}>
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product as any} />
           ))}
         </div>
       ) : (
