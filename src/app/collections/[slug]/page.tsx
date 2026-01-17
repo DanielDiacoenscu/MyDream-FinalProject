@@ -1,5 +1,6 @@
 // src/app/collections/[slug]/page.tsx - THE FINAL, HARDCODED TITLE FIX
 'use client';
+export const dynamic = 'force-dynamic';
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 // We only need the function that fetches products, which we know works.
