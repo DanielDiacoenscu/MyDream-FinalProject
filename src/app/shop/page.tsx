@@ -1,4 +1,5 @@
 // src/app/shop/page.tsx - CORRECTED
+export const dynamic = 'force-dynamic';
 import { getAllProducts } from '@/lib/api';
 import ProductCard from '@/components/ProductCard';
 import styles from '@/styles/ShopPage.module.css';
