@@ -1,17 +1,23 @@
-// src/components/page-builder/RichTextBlock.tsx
 import styles from '@/styles/page-builder/RichTextBlock.module.css';
 
 interface RichTextBlockProps {
   data: {
-    body: string;
+    content?: string | null;
+    body?: string | null;
   };
 }
 
 const RichTextBlock = ({ data }: RichTextBlockProps) => {
+  const htmlContent = data.content || data.body;
+
+  if (!htmlContent || htmlContent.trim().length === 0) {
+    return null;
+  }
+
   return (
     <div 
       className={styles.richTextContent}
-      dangerouslySetInnerHTML={{ __html: data.body }} 
+      dangerouslySetInnerHTML={{ __html: htmlContent }} 
     />
   );
 };
