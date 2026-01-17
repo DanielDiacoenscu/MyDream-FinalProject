@@ -46,26 +46,3 @@ export default async function Page({ params }: Props) {
   );
 }
 
-export async function generateStaticParams() {
-  try {
-    // This part is more robust now
-    const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/pages`);
-    if (!response.ok) throw new Error('Failed to fetch pages for static params');
-    
-    const pages = await response.json();
-    if (!pages || !pages.data || pages.data.length === 0) return [];
-
-    // FIX: Strapi 5 compatibility - check both flat and nested structures
-    return pages.data
-      .filter((page: any) => {
-        const slug = page.slug || page.attributes?.slug;
-        return slug;
-      })
-      .map((page: any) => ({ 
-        slug: page.slug || page.attributes?.slug 
-      }));
-  } catch (error) {
-    console.error("Could not generate static params for pages:", error);
-    return [];
-  }
-}
