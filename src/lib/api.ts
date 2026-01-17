@@ -1,5 +1,4 @@
 // src/lib/api.ts - FINAL CORRECTED VERSION
-
 import qs from 'qs';
 import { Product } from './types';
 
@@ -41,10 +40,7 @@ function mapProductData(item: any): Product | null {
   };
 }
 
-// --- THIS IS THE ONLY PART THAT HAS CHANGED ---
 async function fetchAPI(endpoint: string, query: string = '') {
-  // Server-side fetch needs a full, absolute URL.
-  // We construct it directly from the environment variable.
   const requestUrl = `${STRAPI_URL}/api${endpoint}`;
   
   const fullUrlWithQuery = query ? `${requestUrl}?${query.replace(/^\?/, '')}` : requestUrl;
@@ -55,8 +51,7 @@ async function fetchAPI(endpoint: string, query: string = '') {
     const res = await fetch(fullUrlWithQuery, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
-      // This cache option is better for production builds
-      next: { revalidate: 60 }, // Revalidate the data every 60 seconds
+      cache: 'no-store',
     });
 
     if (!res.ok) {
@@ -69,7 +64,6 @@ async function fetchAPI(endpoint: string, query: string = '') {
     return null;
   }
 }
-// --- END OF THE CHANGED SECTION ---
 
 function processStrapiResponse(response: any): any[] {
   if (response && Array.isArray(response.data)) return response.data;
@@ -102,10 +96,15 @@ export async function getProductsByCategory(categorySlug: string) {
 }
 
 export async function getPageBySlug(slug: string) {
-  const query = `filters[slug][$eq]=${slug}&populate=page_components`;
+  const safeSlug = encodeURIComponent(slug);
+  const query = `filters[slug][$eq]=${safeSlug}&populate[page_components][populate]=*`;
   const response = await fetchAPI('/pages', query);
   const pages = processStrapiResponse(response);
-  return pages.length > 0 ? pages[0] : null;
+  
+  if (pages.length === 0) return null;
+  
+  const page = pages[0];
+  return page.attributes ? { id: page.id, ...page.attributes } : page;
 }
 
 export async function getAllProducts() {

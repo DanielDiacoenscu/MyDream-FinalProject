@@ -6,6 +6,8 @@ import styles from '@/styles/StaticPage.module.css';
 import ComponentRenderer from '@/components/page-builder/ComponentRenderer';
 import { Metadata } from 'next';
 
+export const dynamic = 'force-dynamic'; // Prevents build-time 404s
+
 type Props = {
   params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
@@ -53,9 +55,15 @@ export async function generateStaticParams() {
     const pages = await response.json();
     if (!pages || !pages.data || pages.data.length === 0) return [];
 
+    // FIX: Strapi 5 compatibility - check both flat and nested structures
     return pages.data
-      .filter((page: any) => page && page.attributes && page.attributes.slug)
-      .map((page: any) => ({ slug: page.attributes.slug }));
+      .filter((page: any) => {
+        const slug = page.slug || page.attributes?.slug;
+        return slug;
+      })
+      .map((page: any) => ({ 
+        slug: page.slug || page.attributes?.slug 
+      }));
   } catch (error) {
     console.error("Could not generate static params for pages:", error);
     return [];
