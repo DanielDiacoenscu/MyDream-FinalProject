@@ -58,8 +58,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
             <StarRating rating={product.Rating} />
           </div>
         )}
-        {product.Tag && (
-          <div className={styles.productTileInfoBadge}>{product.Tag}</div>
+        {product.tag && (
+          <div className={styles.productTileInfoBadge}>{product.tag}</div>
         )}
       </div>
       <a href={`/products/${product.slug || product.id}`} className={styles.productTileImageLink}>
