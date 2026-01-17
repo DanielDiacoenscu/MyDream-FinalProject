@@ -36,9 +36,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const toggleCart = () => setIsCartOpen(!isCartOpen);
 
   const addToCart = (product: StrapiProduct) => {
-    if (!product.Images || product.Images.length === 0 || !product.Images[0].url) {
+    const imageUrl = product.Images?.[0]?.url;
+    if (!imageUrl) {
       console.error("CRITICAL ERROR: Attempted to add a product to cart with no valid image.", product);
-      return; 
+      return;
     }
 
     setCartItems(prevItems => {
