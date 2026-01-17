@@ -17,7 +17,8 @@ function normalizeImageUrl(pathOrUrl: string | undefined | null): string {
   return `${base}${path}`;
 }
 
-function mapProductData(item: any): Product | null {
+// CHANGED: export this function so it can be used in page components
+export function mapProductData(item: any): Product | null {
   if (!item) return null;
 
   const data: any = normalizeStrapiItem(item);
@@ -53,14 +54,12 @@ async function fetchAPI(endpoint: string, query: string = '') {
   const requestUrl = `${STRAPI_URL}/api${endpoint}`;
   const fullUrlWithQuery = query ? `${requestUrl}?${query.replace(/^\?/, '')}` : requestUrl;
 
-  // Helpful for debugging in Vercel logs
   console.log(`Fetching from URL: ${fullUrlWithQuery}`);
 
   try {
     const res = await fetch(fullUrlWithQuery, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
-      // IMPORTANT: no "no-store" here (causes DYNAMIC_SERVER_USAGE in Next builds)
       next: { revalidate: 60 },
     });
 
@@ -105,7 +104,9 @@ export async function getProductBySlug(slug: string) {
 export async function getProductsByCategory(categorySlug: string) {
   const query = `filters[categories][slug][$eq]=${encodeURIComponent(categorySlug)}&populate=*`;
   const response = await fetchAPI('/products', query);
-  return processStrapiResponse(response);
+  const rawProducts = processStrapiResponse(response);
+  // Map to Product type before returning
+  return rawProducts.map(mapProductData).filter((p): p is Product => p !== null);
 }
 
 export async function getPageBySlug(slug: string) {
@@ -118,7 +119,9 @@ export async function getPageBySlug(slug: string) {
 
 export async function getAllProducts() {
   const response = await fetchAPI('/products', 'populate=*');
-  return processStrapiResponse(response);
+  const rawProducts = processStrapiResponse(response);
+  // Map to Product type before returning
+  return rawProducts.map(mapProductData).filter((p): p is Product => p !== null);
 }
 
 export async function getCategories() {
