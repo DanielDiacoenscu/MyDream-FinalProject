@@ -14,11 +14,12 @@
   border: none; 
   padding: 20px 0; 
   cursor: pointer; 
-  /* RESTORED: Correct font family */
-  font-family: var(--font-secondary); 
+  /* FIX: Changed to primary (Sans-Serif) to match screenshot */
+  font-family: var(--font-primary); 
   font-size: 14px; 
   text-transform: uppercase;
-  /* KEEP FIX: Force black color */
+  letter-spacing: 0.05em;
+  /* Keep black color fix */
   color: #000 !important;
   text-decoration: none !important;
   -webkit-appearance: none;
