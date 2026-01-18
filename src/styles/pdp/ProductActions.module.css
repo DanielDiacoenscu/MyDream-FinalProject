@@ -22,15 +22,16 @@
   color: #fff;
 }
 
+/* This wrapper puts the Add button and Wishlist button side-by-side */
 .addToBagWrapper {
   display: flex;
-  gap: 1rem;
+  gap: 10px; /* Space between the black button and the heart box */
+  height: 50px; /* Fixed height to match design */
 }
 
 .addToBagButton {
-  flex: 1;
-  padding: 1rem;
-  background: #111;
+  flex: 1; /* Takes up remaining space */
+  background: #333; /* Dark grey/black */
   color: #fff;
   border: none;
   text-transform: uppercase;
@@ -38,22 +39,25 @@
   font-size: 0.9rem;
   cursor: pointer;
   transition: background 0.3s ease;
-}
-
-.addToBagButton:hover {
-  background: #333;
-}
-
-.wishlistButton {
-  width: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
-  border: 1px solid #e5e5e5;
+}
+
+.addToBagButton:hover {
+  background: #000;
+}
+
+.wishlistButton {
+  width: 50px; /* Square box */
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff; /* White background */
+  border: 1px solid #e5e5e5; /* Light border */
   cursor: pointer;
   transition: all 0.3s ease;
-  /* FIX: Ensure button is clickable */
   position: relative;
   z-index: 10;
 }
