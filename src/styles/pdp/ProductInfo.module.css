@@ -4,7 +4,7 @@
 
 .title { 
   font-family: var(--font-secondary); 
-  font-size: 38px; /* Increased to match screenshot */
+  font-size: 38px; 
   font-weight: 400; 
   margin-bottom: 8px;
   line-height: 1.2;
@@ -16,7 +16,6 @@
   font-size: 16px; 
   color: #555; 
   margin-bottom: 16px; 
-  /* If subtitle is empty, this won't break layout */
 }
 
 .reviews { 
@@ -36,7 +35,7 @@
 
 .price { 
   font-family: var(--font-primary); 
-  font-size: 22px; /* Increased to match screenshot */
+  font-size: 22px; 
   font-weight: 400;
   color: #000;
 }
