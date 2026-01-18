@@ -1,4 +1,4 @@
-// src/context/WishlistContext.tsx - NORMALIZED VERSION
+// src/context/WishlistContext.tsx - FLATTENED & TYPE-SAFE VERSION
 'use client';
 
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
@@ -17,19 +17,19 @@ interface WishlistContextType {
 
 export const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
 
-// --- HELPER: Normalize Product Data ---
+// --- HELPER: Normalize Product Data (FLATTEN IT) ---
 // Ensures that whether data comes from the API (flat) or the App (nested),
-// it always looks like { id, attributes: { ... } }
+// it always looks like { id, name, price, ... } (FLAT)
 const normalizeProduct = (item: any): StrapiProduct => {
   if (item.attributes) {
-    return item as StrapiProduct;
+    // If it has attributes, flatten it!
+    return {
+      id: item.id,
+      ...item.attributes
+    } as unknown as StrapiProduct;
   }
-  // If attributes are missing, wrap the properties
-  const { id, ...rest } = item;
-  return {
-    id,
-    attributes: rest,
-  } as StrapiProduct;
+  // It is already flat
+  return item as StrapiProduct;
 };
 
 export const WishlistProvider = ({ children }: { children: ReactNode }) => {
@@ -56,7 +56,7 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
 
     const syncWishlist = async () => {
       if (user && user.wishlist && Array.isArray(user.wishlist)) {
-        // Normalize the user's items first
+        // Normalize (FLATTEN) the user's items first
         const userItems = user.wishlist.map(normalizeProduct);
         
         // Create a map of existing IDs
