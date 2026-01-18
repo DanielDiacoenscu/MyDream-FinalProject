@@ -1,66 +1,76 @@
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_API_URL || 'https://api.mydreambeauty.net';
+// src/lib/api.ts - FINAL CORRECTED VERSION WITH CREATEORDER
 
-export async function fetchAPI(endpoint: string, query: string = '') {
-  const url = `${STRAPI_URL}/api${endpoint}${query ? `?${query}` : ''}`;
-  const res = await fetch(url, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    cache: 'no-store',
-  });
-  if (!res.ok) throw new Error(`Failed to fetch API: ${res.statusText}`);
-  return res.json();
-}
+import qs from 'qs';
+import { Product } from './types';
 
-export function processStrapiResponse(response: any) {
-  if (!response.data) return [];
-  return Array.isArray(response.data) ? response.data : [response.data];
-}
+const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_API_URL || '';
 
-export function mapProductData(item: any) {
-  const attrs = item.attributes || item;
-  
-  // Handle images safely - check both lowercase and uppercase
-  const rawImages = attrs.images?.data || attrs.Images?.data || attrs.images || attrs.Images || [];
-  
-  const images = rawImages.map((img: any) => {
-    const imgAttrs = img.attributes || img;
-    return {
-      id: img.id,
-      url: imgAttrs.url,
-      alternativeText: imgAttrs.alternativeText || '',
-    };
-  });
+function mapProductData(item: any): Product | null {
+  if (!item) return null;
+
+  const source = item.attributes ? item.attributes : item;
+  const id = item.id;
+  const { name, slug, price, Description, description, Images } = source;
+  const imagesData = Images?.data || Images || [];
 
   return {
-    id: item.id,
-    name: attrs.name || attrs.Name,
-    price: attrs.price || attrs.Price || 0,
-    slug: attrs.slug,
-    subtitle: attrs.subtitle || attrs.Subtitle || '',
-    description: attrs.description || attrs.Description || '',
-    tag: attrs.tag || attrs.Tag || '',
-    rating: attrs.rating || attrs.Rating || 0,
-    images: images, // Normalized to lowercase 'images'
-    Images: images  // Keep uppercase for legacy components just in case
+    id,
+    name: name || 'Unnamed Product',
+    slug: slug || '',
+    price: price || 0,
+    description: description || Description || '',
+    images: imagesData.map((img: any) => {
+      const imageSource = img.attributes ? img.attributes : img;
+      let imageUrl = '/placeholder.jpg';
+
+      if (imageSource && typeof imageSource.url === 'string') {
+        const path = imageSource.url;
+        if (path.startsWith('http')) {
+          imageUrl = path;
+        } else {
+          const strapiUrl = STRAPI_URL.endsWith('/') ? STRAPI_URL.slice(0, -1) : STRAPI_URL;
+          const imagePath = path.startsWith('/') ? path : `/${path}`;
+          imageUrl = `${strapiUrl}${imagePath}`;
+        }
+      }
+      return {
+        url: imageUrl,
+        alternativeText: imageSource.alternativeText || '',
+      };
+    }),
   };
 }
 
-export async function getProducts() {
-  const response = await fetchAPI('/products', 'populate=*');
-  const products = processStrapiResponse(response);
-  return products.map(mapProductData);
+async function fetchAPI(endpoint: string, query: string = '') {
+  const requestUrl = `${STRAPI_URL}/api${endpoint}`;
+  const fullUrlWithQuery = query ? `${requestUrl}?${query.replace(/^\?/, '')}` : requestUrl;
+
+  console.log(`Fetching from URL: ${fullUrlWithQuery}`);
+
+  try {
+    const res = await fetch(fullUrlWithQuery, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      next: { revalidate: 60 },
+    });
+
+    if (!res.ok) {
+      console.error('Failed to fetch API:', res.status, res.statusText, await res.text());
+      throw new Error('Failed to fetch API');
+    }
+    return await res.json();
+  } catch (error) {
+    console.error('Error in fetchAPI:', error);
+    return null;
+  }
 }
 
-export async function getProductBySlug(slug: string) {
-  const query = `filters[slug][$eq]=${encodeURIComponent(slug)}&populate=*`;
-  const response = await fetchAPI('/products', query);
-  const products = processStrapiResponse(response);
-  const product = products.length > 0 ? products[0] : null;
-  return product ? mapProductData(product) : null;
+function processStrapiResponse(response: any): any[] {
+  if (response && Array.isArray(response.data)) return response.data;
+  if (Array.isArray(response)) return response;
+  return [];
 }
 
-// Re-export other functions to prevent build errors
 export async function getNavigationLinks() {
   const response = await fetchAPI('/categories');
   return processStrapiResponse(response);
@@ -72,34 +82,40 @@ export async function getBestsellerProducts() {
   return processStrapiResponse(response);
 }
 
-export async function getProductsByCategory(categorySlug: string) {
-  const query = `filters[categories][slug][$eq]=${encodeURIComponent(categorySlug)}&populate=*`;
+export async function getProductBySlug(slug: string) {
+  const query = `filters[slug][$eq]=${slug}&populate=*`;
   const response = await fetchAPI('/products', query);
-  const rawProducts = processStrapiResponse(response);
-  return rawProducts.map(mapProductData);
+  const products = processStrapiResponse(response);
+  return products.length > 0 ? products[0] : null;
+}
+
+export async function getProductsByCategory(categorySlug: string) {
+  const query = `filters[categories][slug][$eq]=${categorySlug}&populate=*`;
+  const response = await fetchAPI('/products', query);
+  return processStrapiResponse(response);
 }
 
 export async function getPageBySlug(slug: string) {
-  const safeSlug = encodeURIComponent(slug);
-  const query = `filters[slug][$eq]=${safeSlug}&populate[content][populate]=*`;
+  const query = `filters[slug][$eq]=${slug}&populate=page_components`;
   const response = await fetchAPI('/pages', query);
   const pages = processStrapiResponse(response);
   return pages.length > 0 ? pages[0] : null;
 }
 
 export async function getAllProducts() {
-  const response = await fetchAPI('/products', 'populate=*');
-  const rawProducts = processStrapiResponse(response);
-  return rawProducts.map(mapProductData);
+  const query = 'populate=*';
+  const response = await fetchAPI('/products', query);
+  return processStrapiResponse(response);
 }
 
 export async function getCategories() {
-  const response = await fetchAPI('/categories', 'populate=*');
+  const query = 'populate=*';
+  const response = await fetchAPI('/categories', query);
   return processStrapiResponse(response);
 }
 
 export async function getCategoryBySlug(slug: string) {
-  const query = `filters[slug][$eq]=${encodeURIComponent(slug)}`;
+  const query = `filters[slug][$eq]=${slug}`;
   const response = await fetchAPI('/categories', query);
   const categories = processStrapiResponse(response);
   return categories.length > 0 ? categories[0] : null;
@@ -107,36 +123,71 @@ export async function getCategoryBySlug(slug: string) {
 
 export async function getCategoryDetails(slug: string) {
   try {
-    const response = await fetchAPI(
-      '/categories',
-      `filters[slug][$eq]=${encodeURIComponent(slug)}&populate=*`
-    );
-    const categories = processStrapiResponse(response);
-    return categories.length > 0 ? categories[0] : null;
+    const response = await fetchAPI(`/categories?filters[slug][$eq]=${slug}`);
+    return response.data[0];
   } catch (error) {
     console.error('Failed to fetch category details:', error);
     return null;
   }
 }
 
-export async function searchProducts(query: string) {
-  if (!query) return [];
+export async function searchProducts(query: string): Promise<Product[]> {
+  if (!query) {
+    return [];
+  }
+
   const filters = `filters[name][$containsi]=${encodeURIComponent(query)}`;
   const populate = 'populate=*';
   const pagination = 'pagination[limit]=5';
+
   const querystring = [filters, populate, pagination].join('&');
-  const endpoint = '/products';
+  const endpoint = `/products`;
+
   try {
     const data = await fetchAPI(endpoint, querystring);
-    if (!data || !Array.isArray(data.data)) return [];
-    return data.data.map(mapProductData);
+
+    if (!data || !Array.isArray(data.data)) {
+        return [];
+    }
+
+    const products = data.data
+      .map(mapProductData)
+      .filter((p: Product | null): p is Product => p !== null);
+
+    return products;
   } catch (error) {
-    console.error('searchProducts API Error:', error);
+    console.error("searchProducts API Error:", error);
     return [];
   }
 }
 
-export async function fetchAllCollections() {
+export async function fetchAllCollections(): Promise<any[]> {
   const response = await fetchAPI('/collections', 'populate=*');
   return processStrapiResponse(response);
+}
+
+// --- THE MISSING FUNCTION ---
+export async function createOrder(orderData: any) {
+  const url = `${STRAPI_URL}/api/orders`;
+  
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ data: orderData }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Order submission failed:', response.status, errorText);
+      throw new Error(`Failed to create order: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error in createOrder:', error);
+    throw error;
+  }
 }
