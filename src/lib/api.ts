@@ -1,4 +1,4 @@
-// src/lib/api.ts - IMPROVED ERROR LOGGING
+// src/lib/api.ts - BYPASS "ME" ENDPOINT FIX
 
 import qs from 'qs';
 import { Product } from './types';
@@ -192,9 +192,10 @@ export async function createOrder(orderData: any) {
   }
 }
 
-// --- WISHLIST FUNCTION ---
-export async function updateUserWishlist(token: string, productIds: number[]) {
-  const url = `${STRAPI_URL}/api/users/me`;
+// --- WISHLIST FUNCTION (FIXED: USE ID NOT ME) ---
+export async function updateUserWishlist(token: string, userId: number, productIds: number[]) {
+  // FIX: Use the specific User ID endpoint instead of /me
+  const url = `${STRAPI_URL}/api/users/${userId}`;
   
   try {
     const response = await fetch(url, {
@@ -207,7 +208,6 @@ export async function updateUserWishlist(token: string, productIds: number[]) {
     });
 
     if (!response.ok) {
-      // Capture the detailed error from the server
       const errorText = await response.text();
       console.error('Strapi Error Details:', errorText);
       throw new Error(`Failed to update wishlist: ${response.status} ${errorText}`);
