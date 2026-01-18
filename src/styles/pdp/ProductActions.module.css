@@ -22,16 +22,15 @@
   color: #fff;
 }
 
-/* This wrapper puts the Add button and Wishlist button side-by-side */
 .addToBagWrapper {
   display: flex;
-  gap: 10px; /* Space between the black button and the heart box */
-  height: 50px; /* Fixed height to match design */
+  gap: 10px; /* Space between buttons */
+  height: 50px;
 }
 
 .addToBagButton {
-  flex: 1; /* Takes up remaining space */
-  background: #333; /* Dark grey/black */
+  flex: 1;
+  background: #333;
   color: #fff;
   border: none;
   text-transform: uppercase;
@@ -49,13 +48,13 @@
 }
 
 .wishlistButton {
-  width: 50px; /* Square box */
+  width: 50px;
   height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff; /* White background */
-  border: 1px solid #e5e5e5; /* Light border */
+  background: #fff;
+  border: 1px solid #e5e5e5;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
