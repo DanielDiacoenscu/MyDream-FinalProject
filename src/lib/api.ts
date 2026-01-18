@@ -1,4 +1,4 @@
-// src/lib/api.ts - FINAL CORRECTED VERSION WITH CREATEORDER
+// src/lib/api.ts - FINAL CORRECTED VERSION WITH ALL FUNCTIONS
 
 import qs from 'qs';
 import { Product } from './types';
@@ -166,7 +166,7 @@ export async function fetchAllCollections(): Promise<any[]> {
   return processStrapiResponse(response);
 }
 
-// --- THE MISSING FUNCTION ---
+// --- ORDER FUNCTION ---
 export async function createOrder(orderData: any) {
   const url = `${STRAPI_URL}/api/orders`;
   
@@ -188,6 +188,31 @@ export async function createOrder(orderData: any) {
     return await response.json();
   } catch (error) {
     console.error('Error in createOrder:', error);
+    throw error;
+  }
+}
+
+// --- WISHLIST FUNCTION ---
+export async function updateUserWishlist(token: string, productIds: number[]) {
+  const url = `${STRAPI_URL}/api/users/me`;
+  
+  try {
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ wishlist: productIds }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to update wishlist');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error updating wishlist:', error);
     throw error;
   }
 }
