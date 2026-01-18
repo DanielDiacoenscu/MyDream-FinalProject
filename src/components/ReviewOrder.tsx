@@ -1,46 +1,38 @@
-// src/components/ReviewOrder.tsx - DEFINITIVE VERSION
+// src/components/ReviewOrder.tsx - FINAL LOGIC FIX
 'use client';
 
-import { useRouter } from 'next/navigation'; // <-- IMPORT ADDED
+import { useRouter } from 'next/navigation';
 import { useCheckout } from '@/context/CheckoutContext';
 import { useCart } from '@/context/CartContext';
+import { createOrder } from '@/lib/api';
 import styles from '@/styles/Checkout.module.css';
 
-const API_URL = process.env.NEXT_PUBLIC_STRAPI_API_URL || 'http://127.0.0.1:1337';
-
 const ReviewOrder = () => {
-  const router = useRouter(); // <-- HOOK ADDED
-  const { shippingAddress } = useCheckout();
-  const { cartItems, cartTotal, clearCart } = useCart(); // <-- clearCart ADDED
+  const router = useRouter();
+  const { shippingAddress, shippingMethod, shippingCost } = useCheckout();
+  const { cartItems, cartTotal, clearCart } = useCart();
+
+  // Calculate final total including shipping
+  const finalTotal = cartTotal + shippingCost;
 
   const handlePlaceOrder = async () => {
     const orderData = {
       shippingAddress,
+      shippingMethod,
       cartItems,
-      total: cartTotal,
-      orderStatus: 'Pending', // Use the corrected field name
+      total: finalTotal, // <--- FIX: Sending the CORRECT total (inc. shipping)
+      orderStatus: 'Pending',
     };
 
     try {
-      const response = await fetch(`${API_URL}/api/orders`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ data: orderData }), // Strapi expects the data to be wrapped
-      });
+      await createOrder(orderData);
 
-      if (!response.ok) {
-        throw new Error('Failed to submit order.');
-      }
-
-      alert('Order has been placed successfully!');
       clearCart();
-      router.push('/order-confirmation'); // Redirect to a thank you page
+      router.push('/order-confirmation'); 
 
     } catch (error) {
       console.error('Failed to place order:', error);
-      alert('There was an error placing your order.');
+      alert('There was an error placing your order. Please try again.');
     }
   };
 
@@ -53,6 +45,17 @@ const ReviewOrder = () => {
         <p>{shippingAddress.city}, {shippingAddress.postalCode}</p>
         <p>{shippingAddress.phone}</p>
       </div>
+      
+      <div className={styles.reviewSection}>
+        <h3 className={styles.reviewTitle}>Метод на доставка</h3>
+        <p>{shippingMethod === 'address' ? 'До адрес' : shippingMethod === 'office' ? 'До офис' : 'До автомат'}</p>
+        <p>Цена: {shippingCost.toFixed(2)} лв.</p>
+      </div>
+
+      <div className={styles.totalSection}>
+        <h3>Общо за плащане: {finalTotal.toFixed(2)} лв.</h3>
+      </div>
+
       <button onClick={handlePlaceOrder} className={styles.formButton}>
         Направи поръчка (Плащане при доставка)
       </button>
