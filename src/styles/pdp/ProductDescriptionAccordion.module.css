@@ -15,12 +15,13 @@
   padding: 20px 0; 
   cursor: pointer; 
   
-  /* TARGET STYLE: Sans-Serif, Uppercase, Black */
-  font-family: var(--font-primary); 
+  /* RESTORED: Matches the bottom block you pasted */
+  font-family: var(--font-secondary); 
   font-size: 14px; 
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  /* Removed text-transform: uppercase */
+  /* Removed letter-spacing */
   
+  /* Keeping color fix to prevent blue link issue */
   color: #000 !important;
   text-decoration: none !important;
   -webkit-appearance: none;
