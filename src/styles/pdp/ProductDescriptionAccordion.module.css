@@ -14,12 +14,13 @@
   border: none; 
   padding: 20px 0; 
   cursor: pointer; 
-  /* FIX: Changed to primary (Sans-Serif) to match screenshot */
+  
+  /* TARGET STYLE: Sans-Serif, Uppercase, Black */
   font-family: var(--font-primary); 
   font-size: 14px; 
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  /* Keep black color fix */
+  
   color: #000 !important;
   text-decoration: none !important;
   -webkit-appearance: none;
