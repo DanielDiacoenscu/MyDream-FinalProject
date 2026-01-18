@@ -1,4 +1,4 @@
-// src/context/WishlistContext.tsx - ROBUST SYNC FIX
+// src/context/WishlistContext.tsx - SANITIZED IDS
 'use client';
 
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
@@ -51,11 +51,8 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
     if (!isInitialized) return;
 
     const syncWishlist = async () => {
-      // Check if user exists and has a wishlist property
       if (user && user.wishlist) {
         
-        // --- ROBUST DATA EXTRACTION ---
-        // Handle both simple array [..] and Strapi v4 object { data: [..] }
         let rawUserItems: any[] = [];
         
         if (Array.isArray(user.wishlist)) {
@@ -63,21 +60,12 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
         } else if (typeof user.wishlist === 'object' && user.wishlist !== null && 'data' in user.wishlist) {
             // @ts-ignore
             rawUserItems = Array.isArray(user.wishlist.data) ? user.wishlist.data : [];
-        } else {
-            console.warn('Unknown wishlist format:', user.wishlist);
-            return;
         }
 
-        console.log('Syncing Wishlist. User items found:', rawUserItems.length);
-
-        // Normalize (FLATTEN) the user's items
         const userItems = rawUserItems.map(normalizeProduct);
-        
-        // Create a map of existing IDs from the USER'S list
         const combinedItems = [...userItems];
         const existingIds = new Set(userItems.map(i => i.id));
 
-        // Add LOCAL items that aren't in the user's list
         let hasChanges = false;
         wishlistItems.forEach(localItem => {
           if (!existingIds.has(localItem.id)) {
@@ -86,15 +74,13 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
           }
         });
 
-        // Update state with the normalized, combined list
         setWishlistItems(combinedItems);
 
-        // If we merged items (added local to remote), save back to server
         if (hasChanges) {
             const token = getCookie('jwt') as string;
             if (token) {
-                const ids = combinedItems.map(i => i.id);
-                console.log('Saving merged wishlist to server:', ids);
+                // SANITIZE: Ensure IDs are numbers
+                const ids = combinedItems.map(i => Number(i.id)).filter(id => !isNaN(id));
                 await updateUserWishlist(token, ids);
             }
         }
@@ -122,7 +108,9 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
       if (user) {
         const token = getCookie('jwt') as string;
         if (token) {
-            await updateUserWishlist(token, newItems.map(i => i.id));
+            // SANITIZE: Ensure IDs are numbers
+            const ids = newItems.map(i => Number(i.id)).filter(id => !isNaN(id));
+            await updateUserWishlist(token, ids);
         }
       }
     }
@@ -135,7 +123,9 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
     if (user) {
         const token = getCookie('jwt') as string;
         if (token) {
-            await updateUserWishlist(token, newItems.map(i => i.id));
+            // SANITIZE: Ensure IDs are numbers
+            const ids = newItems.map(i => Number(i.id)).filter(id => !isNaN(id));
+            await updateUserWishlist(token, ids);
         }
     }
   };

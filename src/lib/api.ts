@@ -1,4 +1,4 @@
-// src/lib/api.ts - FINAL CORRECTED VERSION WITH ALL FUNCTIONS
+// src/lib/api.ts - IMPROVED ERROR LOGGING
 
 import qs from 'qs';
 import { Product } from './types';
@@ -207,7 +207,10 @@ export async function updateUserWishlist(token: string, productIds: number[]) {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to update wishlist');
+      // Capture the detailed error from the server
+      const errorText = await response.text();
+      console.error('Strapi Error Details:', errorText);
+      throw new Error(`Failed to update wishlist: ${response.status} ${errorText}`);
     }
 
     return await response.json();
