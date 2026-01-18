@@ -47,4 +47,5 @@ export interface IUser {
     blocked: boolean;
     createdAt: string;
     updatedAt: string;
+    wishlist?: any; // <--- The new wire that allows syncing
 }
