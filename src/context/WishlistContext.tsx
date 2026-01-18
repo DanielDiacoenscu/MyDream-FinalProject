@@ -1,4 +1,4 @@
-// src/context/WishlistContext.tsx - FLATTENED & TYPE-SAFE VERSION
+// src/context/WishlistContext.tsx - ROBUST SYNC FIX
 'use client';
 
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
@@ -18,17 +18,13 @@ interface WishlistContextType {
 export const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
 
 // --- HELPER: Normalize Product Data (FLATTEN IT) ---
-// Ensures that whether data comes from the API (flat) or the App (nested),
-// it always looks like { id, name, price, ... } (FLAT)
 const normalizeProduct = (item: any): StrapiProduct => {
   if (item.attributes) {
-    // If it has attributes, flatten it!
     return {
       id: item.id,
       ...item.attributes
     } as unknown as StrapiProduct;
   }
-  // It is already flat
   return item as StrapiProduct;
 };
 
@@ -55,15 +51,33 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
     if (!isInitialized) return;
 
     const syncWishlist = async () => {
-      if (user && user.wishlist && Array.isArray(user.wishlist)) {
-        // Normalize (FLATTEN) the user's items first
-        const userItems = user.wishlist.map(normalizeProduct);
+      // Check if user exists and has a wishlist property
+      if (user && user.wishlist) {
         
-        // Create a map of existing IDs
+        // --- ROBUST DATA EXTRACTION ---
+        // Handle both simple array [..] and Strapi v4 object { data: [..] }
+        let rawUserItems: any[] = [];
+        
+        if (Array.isArray(user.wishlist)) {
+            rawUserItems = user.wishlist;
+        } else if (typeof user.wishlist === 'object' && user.wishlist !== null && 'data' in user.wishlist) {
+            // @ts-ignore
+            rawUserItems = Array.isArray(user.wishlist.data) ? user.wishlist.data : [];
+        } else {
+            console.warn('Unknown wishlist format:', user.wishlist);
+            return;
+        }
+
+        console.log('Syncing Wishlist. User items found:', rawUserItems.length);
+
+        // Normalize (FLATTEN) the user's items
+        const userItems = rawUserItems.map(normalizeProduct);
+        
+        // Create a map of existing IDs from the USER'S list
         const combinedItems = [...userItems];
         const existingIds = new Set(userItems.map(i => i.id));
 
-        // Add local items that aren't in the user's list
+        // Add LOCAL items that aren't in the user's list
         let hasChanges = false;
         wishlistItems.forEach(localItem => {
           if (!existingIds.has(localItem.id)) {
@@ -75,11 +89,12 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
         // Update state with the normalized, combined list
         setWishlistItems(combinedItems);
 
-        // If we merged items, save back to server
-        if (hasChanges || wishlistItems.length > 0) {
+        // If we merged items (added local to remote), save back to server
+        if (hasChanges) {
             const token = getCookie('jwt') as string;
             if (token) {
                 const ids = combinedItems.map(i => i.id);
+                console.log('Saving merged wishlist to server:', ids);
                 await updateUserWishlist(token, ids);
             }
         }
@@ -98,14 +113,12 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
   }, [wishlistItems, isInitialized]);
 
   const addToWishlist = async (product: StrapiProduct) => {
-    // Normalize before adding
     const normalizedProduct = normalizeProduct(product);
     
     if (!wishlistItems.some(item => item.id === normalizedProduct.id)) {
       const newItems = [...wishlistItems, normalizedProduct];
       setWishlistItems(newItems);
       
-      // If logged in, sync to server
       if (user) {
         const token = getCookie('jwt') as string;
         if (token) {
@@ -119,7 +132,6 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
     const newItems = wishlistItems.filter(item => item.id !== productId);
     setWishlistItems(newItems);
 
-    // If logged in, sync to server
     if (user) {
         const token = getCookie('jwt') as string;
         if (token) {
