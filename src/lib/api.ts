@@ -1,88 +1,66 @@
-// src/lib/api.ts
-import { Product } from './types';
+const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_API_URL || 'https://api.mydreambeauty.net';
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_API_URL || '';
-
-function normalizeStrapiItem<T = any>(item: any): T {
-  if (!item) return item;
-  return (item.attributes ?? item) as T;
+export async function fetchAPI(endpoint: string, query: string = '') {
+  const url = `${STRAPI_URL}/api${endpoint}${query ? `?${query}` : ''}`;
+  const res = await fetch(url, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    cache: 'no-store',
+  });
+  if (!res.ok) throw new Error(`Failed to fetch API: ${res.statusText}`);
+  return res.json();
 }
 
-function normalizeImageUrl(pathOrUrl: string | undefined | null): string {
-  if (!pathOrUrl) return '/placeholder.jpg';
-  if (pathOrUrl.startsWith('http')) return pathOrUrl;
-
-  const base = STRAPI_URL.endsWith('/') ? STRAPI_URL.slice(0, -1) : STRAPI_URL;
-  const path = pathOrUrl.startsWith('/') ? pathOrUrl : `/${pathOrUrl}`;
-  return `${base}${path}`;
+export function processStrapiResponse(response: any) {
+  if (!response.data) return [];
+  return Array.isArray(response.data) ? response.data : [response.data];
 }
 
-// CHANGED: export this function so it can be used in page components
-export function mapProductData(item: any): Product | null {
-  if (!item) return null;
-
-  const data: any = normalizeStrapiItem(item);
-  const id = item.id;
-
-  const { name, slug, price, Description, description, Images } = data;
-  const imagesData = Images?.data ?? Images ?? [];
+export function mapProductData(item: any) {
+  const attrs = item.attributes || item;
+  
+  // Handle images safely - check both lowercase and uppercase
+  const rawImages = attrs.images?.data || attrs.Images?.data || attrs.images || attrs.Images || [];
+  
+  const images = rawImages.map((img: any) => {
+    const imgAttrs = img.attributes || img;
+    return {
+      id: img.id,
+      url: imgAttrs.url,
+      alternativeText: imgAttrs.alternativeText || '',
+    };
+  });
 
   return {
-    id,
-    name: name || 'Unnamed Product',
-    slug: slug || '',
-    price: price || 0,
-    description: description || Description || '',
-    images: (Array.isArray(imagesData) ? imagesData : [])
-      .map((img: any) => {
-        const imgData: any = normalizeStrapiItem(img);
-        const url = normalizeImageUrl(imgData?.url);
-        return {
-          url,
-          alternativeText: imgData?.alternativeText || '',
-        };
-      }),
+    id: item.id,
+    name: attrs.name || attrs.Name,
+    price: attrs.price || attrs.Price || 0,
+    slug: attrs.slug,
+    subtitle: attrs.subtitle || attrs.Subtitle || '',
+    description: attrs.description || attrs.Description || '',
+    tag: attrs.tag || attrs.Tag || '',
+    rating: attrs.rating || attrs.Rating || 0,
+    images: images, // Normalized to lowercase 'images'
+    Images: images  // Keep uppercase for legacy components just in case
   };
 }
 
-async function fetchAPI(endpoint: string, query: string = '') {
-  if (!STRAPI_URL) {
-    console.error('STRAPI_URL is empty. Set NEXT_PUBLIC_STRAPI_API_URL in Vercel env vars.');
-    return null;
-  }
-
-  const requestUrl = `${STRAPI_URL}/api${endpoint}`;
-  const fullUrlWithQuery = query ? `${requestUrl}?${query.replace(/^\?/, '')}` : requestUrl;
-
-  console.log(`Fetching from URL: ${fullUrlWithQuery}`);
-
-  try {
-    const res = await fetch(fullUrlWithQuery, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-      next: { revalidate: 60 },
-    });
-
-    if (!res.ok) {
-      const body = await res.text().catch(() => '');
-      console.error('Failed to fetch API:', res.status, res.statusText, body);
-      return null;
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error('Error in fetchAPI:', error);
-    return null;
-  }
+export async function getProducts() {
+  const response = await fetchAPI('/products', 'populate=*');
+  const products = processStrapiResponse(response);
+  return products.map(mapProductData);
 }
 
-function processStrapiResponse(response: any): any[] {
-  if (!response) return [];
-  if (Array.isArray(response.data)) return response.data;
-  if (Array.isArray(response)) return response;
-  return [];
+export async function getProductBySlug(slug: string) {
+  const query = `filters[slug][$eq]=${encodeURIComponent(slug)}&populate=*`;
+  const response = await fetchAPI('/products', query);
+  const products = processStrapiResponse(response);
+  const product = products.length > 0 ? products[0] : null;
+  return product ? mapProductData(product) : null;
 }
 
+// Re-export other functions to prevent build errors
 export async function getNavigationLinks() {
   const response = await fetchAPI('/categories');
   return processStrapiResponse(response);
@@ -94,20 +72,11 @@ export async function getBestsellerProducts() {
   return processStrapiResponse(response);
 }
 
-export async function getProductBySlug(slug: string) {
-  const query = `filters[slug][$eq]=${encodeURIComponent(slug)}&populate=*`;
-  const response = await fetchAPI('/products', query);
-  const products = processStrapiResponse(response);
-  const product = products.length > 0 ? products[0] : null;
-  return product ? mapProductData(product) : null;
-}
-
 export async function getProductsByCategory(categorySlug: string) {
   const query = `filters[categories][slug][$eq]=${encodeURIComponent(categorySlug)}&populate=*`;
   const response = await fetchAPI('/products', query);
   const rawProducts = processStrapiResponse(response);
-  // Map to Product type before returning
-  return rawProducts.map(mapProductData).filter((p): p is Product => p !== null);
+  return rawProducts.map(mapProductData);
 }
 
 export async function getPageBySlug(slug: string) {
@@ -121,8 +90,7 @@ export async function getPageBySlug(slug: string) {
 export async function getAllProducts() {
   const response = await fetchAPI('/products', 'populate=*');
   const rawProducts = processStrapiResponse(response);
-  // Map to Product type before returning
-  return rawProducts.map(mapProductData).filter((p): p is Product => p !== null);
+  return rawProducts.map(mapProductData);
 }
 
 export async function getCategories() {
@@ -151,31 +119,24 @@ export async function getCategoryDetails(slug: string) {
   }
 }
 
-export async function searchProducts(query: string): Promise<Product[]> {
+export async function searchProducts(query: string) {
   if (!query) return [];
-
   const filters = `filters[name][$containsi]=${encodeURIComponent(query)}`;
   const populate = 'populate=*';
   const pagination = 'pagination[limit]=5';
-
   const querystring = [filters, populate, pagination].join('&');
   const endpoint = '/products';
-
   try {
     const data = await fetchAPI(endpoint, querystring);
-
     if (!data || !Array.isArray(data.data)) return [];
-
-    return data.data
-      .map(mapProductData)
-      .filter((p: Product | null): p is Product => p !== null);
+    return data.data.map(mapProductData);
   } catch (error) {
     console.error('searchProducts API Error:', error);
     return [];
   }
 }
 
-export async function fetchAllCollections(): Promise<any[]> {
+export async function fetchAllCollections() {
   const response = await fetchAPI('/collections', 'populate=*');
   return processStrapiResponse(response);
 }
