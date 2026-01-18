@@ -1,12 +1,11 @@
-// src/context/AuthContext.tsx - DEFINITIVE IMPLEMENTATION
+// src/context/AuthContext.tsx - FORCE POPULATE FIX
 'use client';
 
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { setCookie, getCookie, deleteCookie } from 'cookies-next';
-import { IUser } from '@/types'; // We will create this type definition next
+import { IUser } from '@/types';
 
-// Define the shape of the context value
 interface AuthContextType {
   user: IUser | null;
   login: (jwt: string, userData: IUser) => void;
@@ -14,28 +13,24 @@ interface AuthContextType {
   isLoading: boolean;
 }
 
-// Create the context with a default undefined value
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Define the props for the provider component
 interface AuthProviderProps {
   children: ReactNode;
 }
 
-// The AuthProvider component
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    // This effect runs once on mount to check for an existing session
     const checkUserSession = async () => {
       const token = getCookie('jwt');
       if (token) {
         try {
-          // If a token exists, validate it by fetching user data
-          const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/users/me`, {
+          // FIX: Changed to populate=* to ensure we get ALL relations including wishlist
+          const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/users/me?populate=*`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -49,7 +44,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           setUser(userData);
         } catch (error) {
           console.error('Session validation failed:', error);
-          // If validation fails, clear the session
           logout();
         }
       }
@@ -60,20 +54,31 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   const login = (jwt: string, userData: IUser) => {
-    // Set the cookie to be stored by the browser
     setCookie('jwt', jwt, {
       maxAge: 30 * 24 * 60 * 60, // 30 days
       path: '/',
     });
-    setUser(userData);
-    router.push('/account'); // Redirect to account page after login
+    // We immediately fetch the full user data to ensure we have the wishlist
+    // (The initial login response might not have it populated)
+    fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/users/me?populate=*`, {
+        headers: { Authorization: `Bearer ${jwt}` }
+    })
+    .then(res => res.json())
+    .then(fullUserData => {
+        setUser(fullUserData);
+        router.push('/account');
+    })
+    .catch(err => {
+        console.error("Failed to fetch full user data on login", err);
+        setUser(userData); // Fallback
+        router.push('/account');
+    });
   };
 
   const logout = () => {
-    // Delete the cookie and clear the user state
     deleteCookie('jwt');
     setUser(null);
-    router.push('/login'); // Redirect to login page after logout
+    router.push('/login');
   };
 
   const value = { user, login, logout, isLoading };
@@ -85,7 +90,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   );
 };
 
-// Custom hook for easy access to the context
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
