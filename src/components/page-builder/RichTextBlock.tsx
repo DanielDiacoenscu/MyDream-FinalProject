@@ -10,40 +10,66 @@ interface RichTextBlockProps {
   };
 }
 
-// The Dropdown Component
+// The Dropdown Component - POLISHED DESIGN
 const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
   const [isOpen, setIsOpen] = useState(false);
   
-  // Extract text from the H3 block safely (Bypassing TS strictness)
   const firstChild = question.children?.[0] as any;
   const questionText = firstChild?.text || 'Question';
 
   return (
-    <div className={styles.faqItem} style={{ marginBottom: '10px', border: '1px solid #eee', borderRadius: '8px' }}>
+    <div 
+      className={styles.faqItem} 
+      style={{ 
+        marginBottom: '12px', 
+        borderBottom: '1px solid #e5e7eb', // Clean separator line
+        borderRadius: '0', // Remove boxy borders
+        overflow: 'hidden',
+        transition: 'all 0.2s ease'
+      }}
+    >
       <button 
         onClick={() => setIsOpen(!isOpen)}
         style={{ 
           width: '100%', 
           textAlign: 'left', 
-          padding: '15px', 
-          background: '#f9f9f9', 
+          padding: '16px 0', // Vertical padding only
+          background: 'transparent', 
           border: 'none',
-          fontWeight: 'bold',
-          fontSize: '1.1em', 
+          fontWeight: '600', // Semi-bold
+          fontSize: '1.125rem', 
+          color: '#111827', // Dark gray/black
           cursor: 'pointer',
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'center'
+          alignItems: 'center',
+          outline: 'none'
         }}
+        onMouseOver={(e) => e.currentTarget.style.color = '#4f46e5'} // Hover color (Indigo)
+        onMouseOut={(e) => e.currentTarget.style.color = '#111827'}
       >
         <span>{questionText}</span>
-        <span style={{ fontSize: '1.5em', lineHeight: '0.5' }}>{isOpen ? '−' : '+'}</span>
+        <span style={{ 
+          fontSize: '1.25rem', 
+          color: isOpen ? '#4f46e5' : '#9ca3af',
+          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+          transition: 'transform 0.3s ease'
+        }}>
+          {isOpen ? '−' : '+'}
+        </span>
       </button>
-      {isOpen && (
-        <div style={{ padding: '15px', background: '#fff', borderTop: '1px solid #eee' }}>
+      
+      <div style={{ 
+        maxHeight: isOpen ? '1000px' : '0',
+        opacity: isOpen ? 1 : 0,
+        overflow: 'hidden',
+        transition: 'all 0.3s ease-in-out',
+        paddingBottom: isOpen ? '16px' : '0'
+      }}>
+        <div style={{ color: '#4b5563', lineHeight: '1.6' }}>
           <BlocksRenderer content={[answer]} />
         </div>
-      )}
+      </div>
     </div>
   );
 };
@@ -72,14 +98,11 @@ const RichTextBlock = ({ data }: RichTextBlockProps) => {
           );
           i += 2; 
         } else {
-          // Orphan question (no answer), just render it as a normal H3
-          // FIX: Cast to any to avoid TypeScript error
           const firstChild = block.children[0] as any;
           processedContent.push(<h3 key={i}>{firstChild?.text}</h3>);
           i++;
         }
       } else {
-        // Normal block, render as is
         processedContent.push(
           <div key={i}>
             <BlocksRenderer content={[block]} />
