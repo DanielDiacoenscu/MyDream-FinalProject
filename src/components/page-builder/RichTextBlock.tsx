@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import { BlocksRenderer, type BlocksContent } from '@strapi/blocks-react-renderer';
 import styles from '@/styles/page-builder/RichTextBlock.module.css';
 
@@ -9,57 +10,139 @@ interface RichTextBlockProps {
   };
 }
 
+// The Dropdown Component (Triggered by H4)
+const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const firstChild = question.children?.[0] as any;
+  const questionText = firstChild?.text || 'Question';
+  const serifFont = 'JHATimesNow, TimesNewRoman, "Times New Roman", Times, Baskerville, Georgia, serif';
+
+  return (
+    <div 
+      className={styles.faqItem} 
+      style={{ 
+        marginBottom: '12px', 
+        borderBottom: '1px solid #e5e7eb', 
+        borderRadius: '0', 
+        overflow: 'hidden',
+        transition: 'all 0.2s ease'
+      }}
+    >
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        style={{ 
+          width: '100%', 
+          textAlign: 'left', 
+          padding: '16px 0', 
+          background: 'transparent', 
+          border: 'none',
+          fontWeight: 'normal', 
+          fontSize: '1.25rem', 
+          fontFamily: serifFont, 
+          color: '#111827 !important', 
+          cursor: 'pointer',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          outline: 'none', 
+          boxShadow: 'none', 
+          WebkitTapHighlightColor: 'transparent',
+          textDecoration: 'none'
+        }}
+        className={styles.faqButton}
+      >
+        <span style={{ color: '#111827' }}>{questionText}</span>
+        <span style={{ 
+          fontSize: '1.25rem', 
+          color: isOpen ? '#111827' : '#9ca3af', 
+          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+          transition: 'transform 0.3s ease'
+        }}>
+          {isOpen ? '−' : '+'}
+        </span>
+      </button>
+      
+      <div style={{ 
+        maxHeight: isOpen ? '1000px' : '0',
+        opacity: isOpen ? 1 : 0,
+        overflow: 'hidden',
+        transition: 'all 0.3s ease-in-out',
+        paddingBottom: isOpen ? '16px' : '0'
+      }}>
+        <div style={{ 
+            color: '#4b5563', 
+            lineHeight: '1.6',
+            fontFamily: serifFont, 
+            fontSize: '1.1rem' 
+        }}>
+          <BlocksRenderer content={[answer]} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const RichTextBlock = ({ data }: RichTextBlockProps) => {
   if (!data) return null;
   const rawContent = data.content || data.body;
   if (!rawContent) return null;
-
-  // The Serif Font Stack
+  
   const serifFont = 'JHATimesNow, TimesNewRoman, "Times New Roman", Times, Baskerville, Georgia, serif';
 
   // 1. Handle Strapi v5 Blocks (JSON Array)
   if (Array.isArray(rawContent)) {
-    return (
-      <div className={styles.richTextContent}>
-        <BlocksRenderer 
-          content={rawContent} 
-          blocks={{
-            // Custom renderer for H3 to apply Serif font but NO Dropdown
-            heading: ({ children, level }) => {
-              if (level === 3) {
-                return (
-                  <h3 style={{ 
-                    fontFamily: serifFont, 
-                    fontWeight: 'normal', 
-                    fontSize: '1.5rem',
-                    marginTop: '1.5em',
-                    marginBottom: '0.5em',
-                    color: '#111827'
-                  }}>
-                    {children}
-                  </h3>
-                );
-              }
-              // Default rendering for other levels
-              switch (level) {
-                case 1: return <h1>{children}</h1>;
-                case 2: return <h2>{children}</h2>;
-                case 4: return h4({ children }); // Helper if needed, or just standard JSX
-                case 5: return <h5>{children}</h5>;
-                case 6: return <h6>{children}</h6>;
-                default: return <h1>{children}</h1>;
-              }
-            },
-            // Apply Serif font to paragraphs as well if desired, or keep default
-            paragraph: ({ children }) => (
-              <p style={{ fontFamily: serifFont, fontSize: '1.1rem', lineHeight: '1.6', color: '#4b5563' }}>
-                {children}
-              </p>
-            )
-          }}
-        />
-      </div>
-    );
+    const processedContent = [];
+    let i = 0;
+    
+    while (i < rawContent.length) {
+      const block = rawContent[i];
+      
+      // IF H4 -> Make Dropdown
+      if (block.type === 'heading' && block.level === 4) {
+        const questionBlock = block;
+        const answerBlock = rawContent[i + 1];
+        
+        if (answerBlock) {
+          processedContent.push(
+            <FAQItem key={i} question={questionBlock} answer={answerBlock} />
+          );
+          i += 2; 
+        } else {
+          const firstChild = block.children[0] as any;
+          processedContent.push(<h4 key={i}>{firstChild?.text}</h4>);
+          i++;
+        }
+      } 
+      // IF H3 -> Make Static Styled Heading (No Dropdown)
+      else if (block.type === 'heading' && block.level === 3) {
+         const firstChild = block.children[0] as any;
+         processedContent.push(
+            <h3 key={i} style={{ 
+                fontFamily: serifFont, 
+                fontWeight: 'normal', 
+                fontSize: '1.5rem', 
+                color: '#111827',
+                marginTop: '1.5em',
+                marginBottom: '0.5em'
+            }}>
+                {firstChild?.text}
+            </h3>
+         );
+         i++;
+      }
+      else {
+        // Render everything else normally
+        processedContent.push(
+          <div key={i}>
+            <BlocksRenderer content={[block]} />
+          </div>
+        );
+        i++;
+      }
+    }
+
+    return <div className={styles.richTextContent}>{processedContent}</div>;
   }
 
   // 2. Handle Legacy HTML String
@@ -75,8 +158,5 @@ const RichTextBlock = ({ data }: RichTextBlockProps) => {
 
   return null;
 };
-
-// Helper for H4 to keep TS happy if needed, though standard switch above is fine.
-const h4 = ({ children }: { children: React.ReactNode }) => <h4>{children}</h4>;
 
 export default RichTextBlock;
