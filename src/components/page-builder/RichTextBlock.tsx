@@ -10,14 +10,12 @@ interface RichTextBlockProps {
   };
 }
 
-// The Dropdown Component - FORCE BLACK COLOR
+// The Dropdown Component - DEFAULT FONT (No Serif)
 const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
   const [isOpen, setIsOpen] = useState(false);
   
   const firstChild = question.children?.[0] as any;
   const questionText = firstChild?.text || 'Question';
-
-  const serifFont = 'JHATimesNow, TimesNewRoman, "Times New Roman", Times, Baskerville, Georgia, serif';
 
   return (
     <div 
@@ -39,9 +37,9 @@ const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
           background: 'transparent', 
           border: 'none',
           fontWeight: 'normal', 
-          fontSize: '1.25rem', 
-          fontFamily: serifFont, 
-          color: '#111827 !important', // FORCE BLACK
+          fontSize: '1.125rem', // Slightly smaller than the serif version
+          // fontFamily removed to inherit default
+          color: '#111827 !important', 
           cursor: 'pointer',
           display: 'flex',
           justifyContent: 'space-between',
@@ -49,9 +47,9 @@ const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
           outline: 'none', 
           boxShadow: 'none', 
           WebkitTapHighlightColor: 'transparent',
-          textDecoration: 'none' // Ensure no underline
+          textDecoration: 'none'
         }}
-        className={styles.faqButton} // Add class for extra specificity if needed
+        className={styles.faqButton}
       >
         <span style={{ color: '#111827' }}>{questionText}</span>
         <span style={{ 
@@ -74,8 +72,8 @@ const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
         <div style={{ 
             color: '#4b5563', 
             lineHeight: '1.6',
-            fontFamily: serifFont, 
-            fontSize: '1.1rem' 
+            fontSize: '1rem' // Standard body size
+            // fontFamily removed
         }}>
           <BlocksRenderer content={[answer]} />
         </div>
