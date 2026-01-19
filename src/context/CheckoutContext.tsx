@@ -62,7 +62,9 @@ export const CheckoutProvider = ({ children }: { children: ReactNode }) => {
 
   const applyPromoCode = async (code: string, cartTotal: number): Promise<{ success: boolean; message: string }> => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337';
+      // FIX: Default to the real domain if env var is missing
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.mydreambeauty.net';
+      
       const response = await fetch(`${apiUrl}/api/promo-codes?filters[code][$eq]=${code}&filters[isActive][$eq]=true`);
       const data = await response.json();
 
