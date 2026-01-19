@@ -10,12 +10,15 @@ interface RichTextBlockProps {
   };
 }
 
-// The Dropdown Component - DEFAULT FONT (No Serif)
+// The Dropdown Component - SERIF FONT RESTORED
 const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
   const [isOpen, setIsOpen] = useState(false);
   
   const firstChild = question.children?.[0] as any;
   const questionText = firstChild?.text || 'Question';
+
+  // The Serif Font Stack you liked
+  const serifFont = 'JHATimesNow, TimesNewRoman, "Times New Roman", Times, Baskerville, Georgia, serif';
 
   return (
     <div 
@@ -37,8 +40,8 @@ const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
           background: 'transparent', 
           border: 'none',
           fontWeight: 'normal', 
-          fontSize: '1.125rem', // Slightly smaller than the serif version
-          // fontFamily removed to inherit default
+          fontSize: '1.25rem', 
+          fontFamily: serifFont, // RESTORED
           color: '#111827 !important', 
           cursor: 'pointer',
           display: 'flex',
@@ -72,8 +75,8 @@ const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
         <div style={{ 
             color: '#4b5563', 
             lineHeight: '1.6',
-            fontSize: '1rem' // Standard body size
-            // fontFamily removed
+            fontFamily: serifFont, // RESTORED
+            fontSize: '1.1rem' 
         }}>
           <BlocksRenderer content={[answer]} />
         </div>
