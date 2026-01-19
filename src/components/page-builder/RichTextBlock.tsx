@@ -10,7 +10,7 @@ interface RichTextBlockProps {
   };
 }
 
-// The Dropdown Component - CLEAN & NEUTRAL (No Blue)
+// The Dropdown Component - FORCE BLACK COLOR
 const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
   const [isOpen, setIsOpen] = useState(false);
   
@@ -41,21 +41,22 @@ const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
           fontWeight: 'normal', 
           fontSize: '1.25rem', 
           fontFamily: serifFont, 
-          color: '#111827', // Always Black/Dark Gray
+          color: '#111827 !important', // FORCE BLACK
           cursor: 'pointer',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          outline: 'none', // No focus ring
-          boxShadow: 'none', // No focus shadow
-          WebkitTapHighlightColor: 'transparent' // REMOVES BLUE FLASH ON MOBILE
+          outline: 'none', 
+          boxShadow: 'none', 
+          WebkitTapHighlightColor: 'transparent',
+          textDecoration: 'none' // Ensure no underline
         }}
-        // Removed onMouseOver/onMouseOut blue color shift
+        className={styles.faqButton} // Add class for extra specificity if needed
       >
-        <span>{questionText}</span>
+        <span style={{ color: '#111827' }}>{questionText}</span>
         <span style={{ 
           fontSize: '1.25rem', 
-          color: isOpen ? '#111827' : '#9ca3af', // Icon stays neutral (Black when open, Gray when closed)
+          color: isOpen ? '#111827' : '#9ca3af', 
           transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
           transition: 'transform 0.3s ease'
         }}>
