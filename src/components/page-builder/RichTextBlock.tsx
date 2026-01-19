@@ -10,7 +10,7 @@ interface RichTextBlockProps {
   };
 }
 
-// The Dropdown Component - SERIF FONT EDITION
+// The Dropdown Component - SERIF FONT EDITION (UN-BOLD)
 const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
   const [isOpen, setIsOpen] = useState(false);
   
@@ -39,8 +39,8 @@ const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
           padding: '16px 0', 
           background: 'transparent', 
           border: 'none',
-          fontWeight: '600', 
-          fontSize: '1.25rem', // Slightly smaller than H3 version
+          fontWeight: 'normal', // CHANGED: Removed bold
+          fontSize: '1.25rem', 
           fontFamily: serifFont, 
           color: '#111827', 
           cursor: 'pointer',
