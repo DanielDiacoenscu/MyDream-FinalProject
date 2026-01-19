@@ -1,19 +1,50 @@
-/* src/styles/page-builder/RichTextBlock.module.css - UPDATED */
 .richTextContent {
-  font-family: "JHATimesNow", "TimesNewRoman", "Times New Roman", "Times", "Baskerville", "Georgia", serif;
-  font-size: 16px;
-  line-height: 1.8;
-  color: #333;
-  margin-top: 5px;
-  /* --- MODIFIED --- */
-  text-align: left;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  color: #374151;
+  line-height: 1.6;
 }
 
-.richTextContent a {
-  color: #111;
-  text-decoration: underline;
-}
-
+/* Reduce spacing between paragraphs */
 .richTextContent p {
-  margin-bottom: 30px;
+  margin-bottom: 0.75em; /* Was likely 1.5em or more */
+}
+
+/* Ensure the last paragraph has no bottom margin */
+.richTextContent p:last-child {
+  margin-bottom: 0;
+}
+
+/* Tweak heading spacing */
+.richTextContent h1,
+.richTextContent h2,
+.richTextContent h3,
+.richTextContent h4,
+.richTextContent h5,
+.richTextContent h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* List spacing */
+.richTextContent ul,
+.richTextContent ol {
+  margin-bottom: 1em;
+  padding-left: 1.5em;
+}
+
+.richTextContent li {
+  margin-bottom: 0.25em;
+}
+
+/* FAQ Item specific styles */
+.faqItem {
+  /* These are handled inline in the component, but we can add overrides here if needed */
+}
+
+.faqButton:hover {
+  color: #4f46e5;
 }
