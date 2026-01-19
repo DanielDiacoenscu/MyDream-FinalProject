@@ -1,4 +1,3 @@
-// src/context/AuthContext.tsx - FORCE POPULATE FIX
 'use client';
 
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
@@ -24,28 +23,34 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
+  // Helper to fetch fresh user data
+  const fetchUser = async (token: string) => {
+    try {
+      // REVERTED: Back to standard endpoint
+      const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/users/me?populate=*`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        cache: 'no-store', 
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch user');
+      }
+
+      const userData: IUser = await response.json();
+      setUser(userData);
+    } catch (error) {
+      console.error('Session validation failed:', error);
+      logout();
+    }
+  };
+
   useEffect(() => {
     const checkUserSession = async () => {
       const token = getCookie('jwt');
       if (token) {
-        try {
-          // FIX: Changed to populate=* to ensure we get ALL relations including wishlist
-          const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/users/me?populate=*`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-
-          if (!response.ok) {
-            throw new Error('Failed to fetch user');
-          }
-
-          const userData: IUser = await response.json();
-          setUser(userData);
-        } catch (error) {
-          console.error('Session validation failed:', error);
-          logout();
-        }
+        await fetchUser(token);
       }
       setIsLoading(false);
     };
@@ -58,19 +63,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       maxAge: 30 * 24 * 60 * 60, // 30 days
       path: '/',
     });
-    // We immediately fetch the full user data to ensure we have the wishlist
-    // (The initial login response might not have it populated)
-    fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/users/me?populate=*`, {
-        headers: { Authorization: `Bearer ${jwt}` }
-    })
-    .then(res => res.json())
-    .then(fullUserData => {
-        setUser(fullUserData);
-        router.push('/account');
-    })
-    .catch(err => {
-        console.error("Failed to fetch full user data on login", err);
-        setUser(userData); // Fallback
+    
+    fetchUser(jwt).then(() => {
         router.push('/account');
     });
   };
@@ -78,6 +72,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const logout = () => {
     deleteCookie('jwt');
     setUser(null);
+    window.dispatchEvent(new Event('auth:logout'));
     router.push('/login');
   };
 
