@@ -206,7 +206,6 @@
 }
 
 .summaryItemName {
-  font-weight: 600;
   font-size: 14px;
   margin: 0 0 5px 0;
 }
@@ -225,7 +224,6 @@
 
 .summaryItemPrice {
   font-size: 14px;
-  font-weight: 600;
   margin-left: auto;
 }
 
