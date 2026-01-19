@@ -1,4 +1,3 @@
-// src/context/CheckoutContext.tsx - UPGRADED VERSION
 'use client';
 
 import { createContext, useContext, useState, ReactNode } from 'react';
@@ -31,10 +30,17 @@ interface ShippingAddress {
 interface CheckoutContextType {
   step: 'shipping' | 'payment';
   shippingAddress: ShippingAddress;
-  shippingMethod: string; // <-- NEW: ID of the selected method
-  shippingCost: number;   // <-- NEW: Cost of the selected method
+  shippingMethod: string;
+  shippingCost: number;
+  
+  // --- PROMO CODE STATE ---
+  promoCode: string | null;
+  discountAmount: number;
+  applyPromoCode: (code: string, cartTotal: number) => Promise<{ success: boolean; message: string }>;
+  removePromoCode: () => void;
+
   handleShippingChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleShippingMethodChange: (methodId: string) => void; // <-- NEW: Function to change method
+  handleShippingMethodChange: (methodId: string) => void;
   goToNextStep: () => void;
   goToPrevStep: () => void;
 }
@@ -47,16 +53,54 @@ export const CheckoutProvider = ({ children }: { children: ReactNode }) => {
     firstName: '', lastName: '', address: '', apartment: '', city: '', postalCode: '', phone: ''
   });
   
-  // --- NEW STATE FOR SHIPPING ---
-  const [shippingMethod, setShippingMethod] = useState<string>(SHIPPING_OPTIONS[0].id); // Default to first option
-  const [shippingCost, setShippingCost] = useState<number>(SHIPPING_OPTIONS[0].price); // Default to first option's price
+  const [shippingMethod, setShippingMethod] = useState<string>(SHIPPING_OPTIONS[0].id);
+  const [shippingCost, setShippingCost] = useState<number>(SHIPPING_OPTIONS[0].price);
+
+  // --- PROMO CODE LOGIC ---
+  const [promoCode, setPromoCode] = useState<string | null>(null);
+  const [discountAmount, setDiscountAmount] = useState<number>(0);
+
+  const applyPromoCode = async (code: string, cartTotal: number): Promise<{ success: boolean; message: string }> => {
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337';
+      const response = await fetch(`${apiUrl}/api/promo-codes?filters[code][$eq]=${code}&filters[isActive][$eq]=true`);
+      const data = await response.json();
+
+      if (data.data && data.data.length > 0) {
+        const promo = data.data[0];
+        const attributes = promo.attributes || promo; 
+
+        let calculatedDiscount = 0;
+        if (attributes.discountType === 'percentage') {
+          calculatedDiscount = (cartTotal * attributes.discountValue) / 100;
+        } else {
+          calculatedDiscount = attributes.discountValue;
+        }
+
+        if (calculatedDiscount > cartTotal) calculatedDiscount = cartTotal;
+
+        setPromoCode(code);
+        setDiscountAmount(calculatedDiscount);
+        return { success: true, message: 'Promo code applied!' };
+      } else {
+        return { success: false, message: 'Invalid or expired promo code.' };
+      }
+    } catch (error) {
+      console.error('Error applying promo code:', error);
+      return { success: false, message: 'Error checking promo code.' };
+    }
+  };
+
+  const removePromoCode = () => {
+    setPromoCode(null);
+    setDiscountAmount(0);
+  };
 
   const handleShippingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setShippingAddress(prev => ({ ...prev, [name]: value }));
   };
 
-  // --- NEW FUNCTION TO HANDLE SHIPPING METHOD CHANGES ---
   const handleShippingMethodChange = (methodId: string) => {
     const selectedOption = SHIPPING_OPTIONS.find(option => option.id === methodId);
     if (selectedOption) {
@@ -71,6 +115,7 @@ export const CheckoutProvider = ({ children }: { children: ReactNode }) => {
   return (
     <CheckoutContext.Provider value={{ 
       step, shippingAddress, shippingMethod, shippingCost,
+      promoCode, discountAmount, applyPromoCode, removePromoCode,
       handleShippingChange, handleShippingMethodChange, 
       goToNextStep, goToPrevStep 
     }}>

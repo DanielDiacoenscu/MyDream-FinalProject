@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_shared_social_links",
+  "info": {
+    "displayName": "SocialLink"
+  },
+  "options": {},
+  "attributes": {
+    "platform": {
+      "type": "enumeration",
+      "enum": [
+        "Facebook",
+        "Instagram",
+        "Twitter",
+        "YouTube",
+        "TikTok"
+      ]
+    },
+    "url": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

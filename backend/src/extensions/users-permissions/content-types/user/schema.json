@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "up_users",
+  "info": {
+    "name": "user",
+    "description": "",
+    "singularName": "user",
+    "pluralName": "users",
+    "displayName": "User"
+  },
+  "options": {
+    "draftAndPublish": false,
+    "timestamps": true
+  },
+  "attributes": {
+    "username": { "type": "string", "required": true },
+    "email": { "type": "email", "required": true },
+    "provider": { "type": "string" },
+    "password": { "type": "password" },
+    "resetPasswordToken": { "type": "string" },
+    "confirmationToken": { "type": "string" },
+    "confirmed": { "type": "boolean", "default": false },
+    "blocked": { "type": "boolean", "default": false },
+    "role": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.role",
+      "inversedBy": "users"
+    },
+    "wishlist": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::product.product"
+    }
+  }
+}
