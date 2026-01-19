@@ -14,8 +14,9 @@ interface RichTextBlockProps {
 const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
   const [isOpen, setIsOpen] = useState(false);
   
-  // Extract text from the H3 block safely
-  const questionText = question.children?.[0]?.text || 'Question';
+  // Extract text from the H3 block safely (Bypassing TS strictness)
+  const firstChild = question.children?.[0] as any;
+  const questionText = firstChild?.text || 'Question';
 
   return (
     <div className={styles.faqItem} style={{ marginBottom: '10px', border: '1px solid #eee', borderRadius: '8px' }}>
@@ -28,7 +29,7 @@ const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
           background: '#f9f9f9', 
           border: 'none',
           fontWeight: 'bold',
-          fontSize: '1.1em', // Slightly larger for H3
+          fontSize: '1.1em', 
           cursor: 'pointer',
           display: 'flex',
           justifyContent: 'space-between',
@@ -40,7 +41,6 @@ const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
       </button>
       {isOpen && (
         <div style={{ padding: '15px', background: '#fff', borderTop: '1px solid #eee' }}>
-          {/* Render the answer block(s) using the default renderer */}
           <BlocksRenderer content={[answer]} />
         </div>
       )}
@@ -64,17 +64,18 @@ const RichTextBlock = ({ data }: RichTextBlockProps) => {
       // IF we find an H3, we assume it's a Question
       if (block.type === 'heading' && block.level === 3) {
         const questionBlock = block;
-        // The next block is the Answer (if it exists)
         const answerBlock = rawContent[i + 1];
         
         if (answerBlock) {
           processedContent.push(
             <FAQItem key={i} question={questionBlock} answer={answerBlock} />
           );
-          i += 2; // Skip both blocks (Question + Answer)
+          i += 2; 
         } else {
           // Orphan question (no answer), just render it as a normal H3
-          processedContent.push(<h3 key={i}>{block.children[0]?.text}</h3>);
+          // FIX: Cast to any to avoid TypeScript error
+          const firstChild = block.children[0] as any;
+          processedContent.push(<h3 key={i}>{firstChild?.text}</h3>);
           i++;
         }
       } else {
