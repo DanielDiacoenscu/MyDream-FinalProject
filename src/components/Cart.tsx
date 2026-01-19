@@ -41,7 +41,7 @@ const Cart = () => {
         <div id="cart-drawer-items-container" className={styles.drawerContent}>
           {cartItems.length === 0 ? (
             <div className={styles.emptyMessage}>
-              <p>Your bag is empty.</p>
+              <p>Вашата кошница е празна.</p>
             </div>
           ) : (
             <ul className={styles.cartList}>

@@ -12,7 +12,7 @@ const WishlistPage = () => {
     <div className={styles.pageContainer}>
       <h1 className={styles.title}>Харесвани</h1>
       {wishlistItems.length === 0 ? (
-        <p style={{ textAlign: 'center' }}>Your wishlist is empty.</p>
+        <p style={{ textAlign: 'center' }}>Нямате харесани продукти.</p>
       ) : (
         <div className={styles.productGrid}>
           {wishlistItems.map((product) => (
