@@ -8,7 +8,7 @@
   max-width: 1200px;
   margin: 20px auto; /* Reduced margin for mobile */
   padding: 20px 15px; /* Reduced side padding for mobile */
-  font-family: "Montserrat", sans-serif;
+  font-family: "Tenor Sans", sans-serif;
 }
 
 /* Two columns on larger screens (tablets and up) */
@@ -242,9 +242,7 @@
 
 .summaryTotalRow.grandTotal {
   font-size: 16px;
-  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
   margin-top: 15px;
   padding-top: 15px;
   border-top: 1px solid #e5e5e5;
