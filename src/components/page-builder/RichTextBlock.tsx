@@ -10,20 +10,23 @@ interface RichTextBlockProps {
   };
 }
 
-// The Dropdown Component - POLISHED DESIGN
+// The Dropdown Component - SERIF FONT EDITION
 const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
   const [isOpen, setIsOpen] = useState(false);
   
   const firstChild = question.children?.[0] as any;
   const questionText = firstChild?.text || 'Question';
 
+  // Your requested font stack
+  const serifFont = 'JHATimesNow, TimesNewRoman, "Times New Roman", Times, Baskerville, Georgia, serif';
+
   return (
     <div 
       className={styles.faqItem} 
       style={{ 
         marginBottom: '12px', 
-        borderBottom: '1px solid #e5e7eb', // Clean separator line
-        borderRadius: '0', // Remove boxy borders
+        borderBottom: '1px solid #e5e7eb', 
+        borderRadius: '0', 
         overflow: 'hidden',
         transition: 'all 0.2s ease'
       }}
@@ -33,19 +36,20 @@ const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
         style={{ 
           width: '100%', 
           textAlign: 'left', 
-          padding: '16px 0', // Vertical padding only
+          padding: '16px 0', 
           background: 'transparent', 
           border: 'none',
-          fontWeight: '600', // Semi-bold
-          fontSize: '1.125rem', 
-          color: '#111827', // Dark gray/black
+          fontWeight: '600', 
+          fontSize: '1.35rem', // Increased size for elegant serif look
+          fontFamily: serifFont, // APPLY FONT
+          color: '#111827', 
           cursor: 'pointer',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           outline: 'none'
         }}
-        onMouseOver={(e) => e.currentTarget.style.color = '#4f46e5'} // Hover color (Indigo)
+        onMouseOver={(e) => e.currentTarget.style.color = '#4f46e5'} 
         onMouseOut={(e) => e.currentTarget.style.color = '#111827'}
       >
         <span>{questionText}</span>
@@ -66,7 +70,12 @@ const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
         transition: 'all 0.3s ease-in-out',
         paddingBottom: isOpen ? '16px' : '0'
       }}>
-        <div style={{ color: '#4b5563', lineHeight: '1.6' }}>
+        <div style={{ 
+            color: '#4b5563', 
+            lineHeight: '1.6',
+            fontFamily: serifFont, // APPLY FONT
+            fontSize: '1.15rem' // Readable body size
+        }}>
           <BlocksRenderer content={[answer]} />
         </div>
       </div>
