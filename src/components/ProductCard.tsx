@@ -37,7 +37,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
   // Use lowercase 'price' to match the type definition
   const displayPrice = typeof product.price === 'number' 
-    ? `${product.price.toFixed(2)} лв.` 
+    ? `${product.price.toFixed(2)} €.` 
     : 'N/A';
 
   return (

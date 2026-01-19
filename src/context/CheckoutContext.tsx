@@ -13,9 +13,9 @@ interface ShippingOption {
 
 // Define the available shipping options
 export const SHIPPING_OPTIONS: ShippingOption[] = [
-  { id: 'address', name: 'Доставка до адрес (Speedy)', price: 7.90, description: '+7.90 лв.' },
-  { id: 'office', name: 'Доставка до офис на Speedy', price: 6.90, description: '+6.90 лв.' },
-  { id: 'automate', name: 'Доставка до автомат', price: 5.90, description: '+5.90 лв.' },
+  { id: 'address', name: 'Доставка до адрес (Speedy)', price: 4.50, description: '+4.50 €.' },
+  { id: 'office', name: 'Доставка до офис на Speedy', price: 3.50, description: '+3.50 €.' },
+  { id: 'automate', name: 'Доставка до автомат', price: 3.00, description: '+3.00 €.' },
 ];
 
 interface ShippingAddress {

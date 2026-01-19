@@ -32,7 +32,7 @@ const ProductInfo = ({ title, subtitle, price, rating }: ProductInfoProps) => {
         {renderStars()}
         <span className={styles.reviewCount}>168 Reviews</span>
       </div>
-      <p className={styles.price}>{price.toFixed(2)} лв.</p>
+      <p className={styles.price}>{price.toFixed(2)} €.</p>
     </div>
   );
 };

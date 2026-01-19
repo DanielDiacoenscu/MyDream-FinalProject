@@ -33,23 +33,23 @@ const CheckoutSummary = () => {
               {item.subtitle && <p className={styles.summaryItemSubtitle}>{item.subtitle}</p>}
               <p className={styles.summaryItemQuantity}>Qty: {item.quantity}</p>
             </div>
-            <p className={styles.summaryItemPrice}>{(item.price * item.quantity).toFixed(2)} лв.</p>
+            <p className={styles.summaryItemPrice}>{(item.price * item.quantity).toFixed(2)} €.</p>
           </li>
         ))}
       </ul>
       <div className={styles.summaryTotals}>
         <div className={styles.summaryTotalRow}>
           <span>Междинна сума</span>
-          <span>{cartTotal.toFixed(2)} лв.</span>
+          <span>{cartTotal.toFixed(2)} €.</span>
         </div>
         <div className={styles.summaryTotalRow}>
           <span>Доставка</span>
           {/* --- NEW: DYNAMIC SHIPPING DISPLAY --- */}
-          <span>{isEligibleForFreeShipping ? 'FREE' : `${finalShippingCost.toFixed(2)} лв.`}</span>
+          <span>{isEligibleForFreeShipping ? 'FREE' : `${finalShippingCost.toFixed(2)} €.`}</span>
         </div>
         <div className={`${styles.summaryTotalRow} ${styles.grandTotal}`}>
           <span>Общо</span>
-          <span>{grandTotal.toFixed(2)} лв.</span>
+          <span>{grandTotal.toFixed(2)} €.</span>
         </div>
         {isEligibleForFreeShipping && (
           <p className={styles.freeShippingMessage}>Congratulations, you've earned free shipping!</p>

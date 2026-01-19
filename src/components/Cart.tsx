@@ -65,7 +65,7 @@ const Cart = () => {
                   </div>
                   <div className={styles.itemActions}>
                     {item.price > 0 ? (
-                      <p className={styles.itemPrice}>{item.price.toFixed(2)} лв.</p>
+                      <p className={styles.itemPrice}>{item.price.toFixed(2)} €.</p>
                     ) : (
                       <p className={styles.itemPrice}></p>
                     )}
@@ -83,7 +83,7 @@ const Cart = () => {
           <footer className={styles.drawerFooter}>
             <div className={styles.total}>
               <span>Общо</span>
-              <span>{cartTotal.toFixed(2)} лв.</span>
+              <span>{cartTotal.toFixed(2)} €.</span>
             </div>
             
             <button onClick={handleCheckout} className={styles.checkoutButton}>
