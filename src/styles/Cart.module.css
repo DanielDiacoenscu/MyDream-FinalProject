@@ -85,7 +85,7 @@
 .itemQuantity span { font-size: 14px; font-weight: 400; min-width: 20px; text-align: center; }
 
 .itemActions { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; text-align: right; }
-.itemPrice { font-family: "Montserrat", sans-serif; font-size: 15px; font-weight: 400; flex-shrink: 0; }
+.itemPrice { font-family: "Tenor Sans", sans-serif; font-size: 15px; font-weight: 400; flex-shrink: 0; }
 .removeItem {
   background: none; border: none; cursor: pointer; font-size: 10px;
   text-transform: uppercase; letter-spacing: 0.1em; color: #888;
