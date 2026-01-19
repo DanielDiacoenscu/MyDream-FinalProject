@@ -1,9 +1,10 @@
-// src/lib/api.ts - BYPASS "ME" ENDPOINT FIX
+// src/lib/api.ts - FIXED: Added Auth Header & Corrected Populate
 
 import qs from 'qs';
 import { Product } from './types';
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_API_URL || '';
+const API_TOKEN = process.env.STRAPI_API_TOKEN || process.env.NEXT_PUBLIC_API_TOKEN || '';
 
 function mapProductData(item: any): Product | null {
   if (!item) return null;
@@ -47,11 +48,20 @@ async function fetchAPI(endpoint: string, query: string = '') {
 
   console.log(`Fetching from URL: ${fullUrlWithQuery}`);
 
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+  };
+
+  // FIX: Add Authorization Header if Token Exists
+  if (API_TOKEN) {
+    headers['Authorization'] = `Bearer ${API_TOKEN}`;
+  }
+
   try {
     const res = await fetch(fullUrlWithQuery, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-      next: { revalidate: 60 },
+      headers,
+      next: { revalidate: 0 }, // FIX: Disable cache to force fresh data
     });
 
     if (!res.ok) {
@@ -96,7 +106,8 @@ export async function getProductsByCategory(categorySlug: string) {
 }
 
 export async function getPageBySlug(slug: string) {
-  const query = `filters[slug][$eq]=${slug}&populate=page_components`;
+  // FIX: Changed 'page_components' to '*' to catch 'content' dynamic zone
+  const query = `filters[slug][$eq]=${slug}&populate=*`;
   const response = await fetchAPI('/pages', query);
   const pages = processStrapiResponse(response);
   return pages.length > 0 ? pages[0] : null;
@@ -192,9 +203,8 @@ export async function createOrder(orderData: any) {
   }
 }
 
-// --- WISHLIST FUNCTION (FIXED: USE ID NOT ME) ---
+// --- WISHLIST FUNCTION ---
 export async function updateUserWishlist(token: string, userId: number, productIds: number[]) {
-  // FIX: Use the specific User ID endpoint instead of /me
   const url = `${STRAPI_URL}/api/users/${userId}`;
   
   try {
