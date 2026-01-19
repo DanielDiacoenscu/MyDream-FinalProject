@@ -10,14 +10,13 @@ interface RichTextBlockProps {
   };
 }
 
-// The Dropdown Component - SERIF FONT EDITION (UN-BOLD)
+// The Dropdown Component - CLEAN & NEUTRAL (No Blue)
 const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
   const [isOpen, setIsOpen] = useState(false);
   
   const firstChild = question.children?.[0] as any;
   const questionText = firstChild?.text || 'Question';
 
-  // Your requested font stack
   const serifFont = 'JHATimesNow, TimesNewRoman, "Times New Roman", Times, Baskerville, Georgia, serif';
 
   return (
@@ -39,23 +38,24 @@ const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
           padding: '16px 0', 
           background: 'transparent', 
           border: 'none',
-          fontWeight: 'normal', // CHANGED: Removed bold
+          fontWeight: 'normal', 
           fontSize: '1.25rem', 
           fontFamily: serifFont, 
-          color: '#111827', 
+          color: '#111827', // Always Black/Dark Gray
           cursor: 'pointer',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          outline: 'none'
+          outline: 'none', // No focus ring
+          boxShadow: 'none', // No focus shadow
+          WebkitTapHighlightColor: 'transparent' // REMOVES BLUE FLASH ON MOBILE
         }}
-        onMouseOver={(e) => e.currentTarget.style.color = '#4f46e5'} 
-        onMouseOut={(e) => e.currentTarget.style.color = '#111827'}
+        // Removed onMouseOver/onMouseOut blue color shift
       >
         <span>{questionText}</span>
         <span style={{ 
           fontSize: '1.25rem', 
-          color: isOpen ? '#4f46e5' : '#9ca3af',
+          color: isOpen ? '#111827' : '#9ca3af', // Icon stays neutral (Black when open, Gray when closed)
           transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
           transition: 'transform 0.3s ease'
         }}>
