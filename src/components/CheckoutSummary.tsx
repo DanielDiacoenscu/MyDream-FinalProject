@@ -48,7 +48,7 @@ const CheckoutSummary = () => {
           <span>{isEligibleForFreeShipping ? 'FREE' : `${finalShippingCost.toFixed(2)} €.`}</span>
         </div>
         <div className={`${styles.summaryTotalRow} ${styles.grandTotal}`}>
-          <span>Общо</span>
+          <span>Общо:</span>
           <span>{grandTotal.toFixed(2)} €.</span>
         </div>
         {isEligibleForFreeShipping && (
