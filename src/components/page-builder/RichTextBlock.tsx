@@ -10,14 +10,14 @@ interface RichTextBlockProps {
   };
 }
 
-// The Dropdown Component - SERIF FONT RESTORED
+// The Dropdown Component - SERIF FONT, UN-BOLD, BLACK
 const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
   const [isOpen, setIsOpen] = useState(false);
   
   const firstChild = question.children?.[0] as any;
   const questionText = firstChild?.text || 'Question';
 
-  // The Serif Font Stack you liked
+  // The Serif Font Stack
   const serifFont = 'JHATimesNow, TimesNewRoman, "Times New Roman", Times, Baskerville, Georgia, serif';
 
   return (
@@ -41,7 +41,7 @@ const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
           border: 'none',
           fontWeight: 'normal', 
           fontSize: '1.25rem', 
-          fontFamily: serifFont, // RESTORED
+          fontFamily: serifFont, 
           color: '#111827 !important', 
           cursor: 'pointer',
           display: 'flex',
@@ -75,7 +75,7 @@ const FAQItem = ({ question, answer }: { question: any, answer: any }) => {
         <div style={{ 
             color: '#4b5563', 
             lineHeight: '1.6',
-            fontFamily: serifFont, // RESTORED
+            fontFamily: serifFont, 
             fontSize: '1.1rem' 
         }}>
           <BlocksRenderer content={[answer]} />
@@ -98,8 +98,8 @@ const RichTextBlock = ({ data }: RichTextBlockProps) => {
     while (i < rawContent.length) {
       const block = rawContent[i];
       
-      // IF we find an H4, we assume it's a Question
-      if (block.type === 'heading' && block.level === 4) {
+      // IF we find an H3, we assume it's a Question
+      if (block.type === 'heading' && block.level === 3) {
         const questionBlock = block;
         const answerBlock = rawContent[i + 1];
         
@@ -110,7 +110,7 @@ const RichTextBlock = ({ data }: RichTextBlockProps) => {
           i += 2; 
         } else {
           const firstChild = block.children[0] as any;
-          processedContent.push(<h4 key={i}>{firstChild?.text}</h4>);
+          processedContent.push(<h3 key={i}>{firstChild?.text}</h3>);
           i++;
         }
       } else {
