@@ -1,4 +1,4 @@
-/* src/styles/Header.module.css - MOBILE GIANT LOGO FIX */
+/* src/styles/Header.module.css - MOBILE GIANT LOGO (NO WHITE BOX) */
 
 .header {
   position: sticky;
@@ -55,7 +55,7 @@
   height: 340px; /* GIANT INITIAL SIZE */
   object-fit: contain;
   transition: height 0.3s ease-in-out;
-  mix-blend-mode: multiply;
+  mix-blend-mode: multiply; /* Blends white background if present */
 }
 
 /* --- SCROLLED STATE --- */
@@ -174,18 +174,12 @@
     padding: 0;
     height: auto;
     align-items: center;
-    /* Ensure the white background is part of the logo wrapper */
-    background-color: #fff;
-    padding: 0.5rem; /* Add some padding around the logo */
-    border-radius: 0 0 8px 8px; /* Optional: rounded corners at bottom */
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05); /* Optional: subtle shadow */
+    /* REMOVED: background-color, padding, border-radius, box-shadow */
   }
   
   /* MOBILE GIANT LOGO SETTINGS */
   .logoImage { 
-    height: 160px; 
-    width: auto; /* Ensure aspect ratio is preserved */
-    max-width: none; /* Allow it to overflow if needed */
+    height: 160px; /* INCREASED: Mobile Initial Giant Size */
   } 
   
   .header.scrolled .topBar { 
@@ -193,6 +187,6 @@
   }
   
   .header.scrolled .logoImage { 
-    height: 140px; 
+    height: 140px; /* INCREASED: Mobile Scrolled Giant Size */
   }
 }
