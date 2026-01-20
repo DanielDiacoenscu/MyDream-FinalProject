@@ -1,12 +1,10 @@
-// src/components/Header.tsx - FIX WHITE BACKGROUND
+// src/components/Header.tsx
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Search, User, Heart, ShoppingBag, Menu, X, Plus, Minus } from 'lucide-react';
-
-// --- CORRECTED PATHS ---
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { useWishlist } from '@/context/WishlistContext';
@@ -14,7 +12,6 @@ import styles from '@/styles/Header.module.css';
 import { NavigationLink } from '@/types/navigation';
 import { getNavigationLinks, searchProducts } from '@/lib/api';
 import { Product } from '@/lib/types';
-// --- END OF CORRECTIONS ---
 
 interface StrapiCategory { id: number; name: string; slug: string; }
 
@@ -36,32 +33,27 @@ const Header = () => {
   const [dynamicCategories, setDynamicCategories] = useState<StrapiCategory[]>([]);
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
-  // --- Desktop Search State ---
+  // Search State
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [results, setResults] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isResultsVisible, setIsResultsVisible] = useState(false);
-
-  // --- Mobile Search State ---
   const [mobileQuery, setMobileQuery] = useState('');
   const [mobileDebouncedQuery, setMobileDebouncedQuery] = useState('');
   const [mobileResults, setMobileResults] = useState<Product[]>([]);
   const [isMobileLoading, setIsMobileLoading] = useState(false);
 
-  // Debounce for Desktop
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedQuery(query), 300);
     return () => clearTimeout(handler);
   }, [query]);
 
-  // Debounce for Mobile
   useEffect(() => {
     const handler = setTimeout(() => setMobileDebouncedQuery(mobileQuery), 300);
     return () => clearTimeout(handler);
   }, [mobileQuery]);
 
-  // API call for Desktop
   useEffect(() => {
     if (debouncedQuery.length > 1) {
       setIsLoading(true);
@@ -76,7 +68,6 @@ const Header = () => {
     }
   }, [debouncedQuery]);
 
-  // API call for Mobile
   useEffect(() => {
     if (mobileDebouncedQuery.length > 1) {
       setIsMobileLoading(true);
@@ -89,7 +80,6 @@ const Header = () => {
     }
   }, [mobileDebouncedQuery]);
 
-  // Click outside to close desktop results
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
@@ -100,16 +90,8 @@ const Header = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const closeDesktopSearch = () => {
-    setQuery('');
-    setIsResultsVisible(false);
-  };
-
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-    setMobileQuery(''); // Reset mobile search on close
-  };
-
+  const closeDesktopSearch = () => { setQuery(''); setIsResultsVisible(false); };
+  const closeMobileMenu = () => { setIsMobileMenuOpen(false); setMobileQuery(''); };
   const handleAccordionToggle = (id: number) => { setOpenAccordion(openAccordion === id ? null : id); };
 
   useEffect(() => {
@@ -139,24 +121,20 @@ const Header = () => {
             </div>
           </div>
           
-          {/* --- DESKTOP LOGO: 300px + Multiply Blend Mode --- */}
+          {/* --- DESKTOP LOGO FIXED --- */}
           <div className={styles.logoSection}>
-            <Link href="/" style={{ display: 'block', position: 'relative', width: '300px', height: 'auto' }}>
-              {/* Using standard img tag for better control over blend modes than Next/Image sometimes allows */}
-              <img 
+            <Link href="/" className={styles.logoLinkWrapper}>
+              <Image 
                 src="/logo.jpg" 
                 alt="My Dream by Tatyana Gyumisheva" 
-                style={{ 
-                  width: '100%', 
-                  height: 'auto', 
-                  objectFit: 'contain',
-                  mixBlendMode: 'multiply', // This makes white transparent
-                  display: 'block'
-                }} 
+                width={220} 
+                height={80} 
+                className={styles.logoImage}
+                priority
               />
             </Link>
           </div>
-          {/* ------------------------------------------------- */}
+          {/* -------------------------- */}
 
           <div className={styles.rightSection}>
             <Link href={user ? "/account" : "/login"} className={styles.iconButton}><User size={18} /></Link>
@@ -168,59 +146,33 @@ const Header = () => {
         {isResultsVisible && (<div className={styles.resultsPanel}>{isLoading && <div className={styles.resultsMessage}>Searching...</div>}{!isLoading && results.length === 0 && debouncedQuery.length > 1 && (<div className={styles.resultsMessage}>No products found for &quot;{debouncedQuery}&quot;.</div>)}{results.length > 0 && (<ul className={styles.resultsList}>{results.slice(0, 5).map((product) => (<li key={product.id}><Link href={`/products/${product.slug}`} onClick={closeDesktopSearch} className={styles.resultItem}><div className={styles.resultImage}><Image src={product.images[0]?.url || '/placeholder.jpg'} alt={product.name} fill style={{ objectFit: 'cover' }} /></div><span className={styles.resultName}>{product.name}</span></Link></li>))}</ul>)}</div>)}
       </header>
 
-      {/* --- MOBILE NAV DRAWER UPDATES --- */}
       <div className={`${styles.mobileNavDrawer} ${isMobileMenuOpen ? styles.open : ''}`}>
         <div className={styles.drawerHeader}>
           <button onClick={closeMobileMenu} className={styles.iconButton}><X size={24} /></button>
           
-          {/* --- MOBILE LOGO: 180px + Multiply Blend Mode --- */}
-          <div className={styles.drawerLogo} style={{ position: 'relative', width: '180px', height: 'auto' }}>
-             <img 
+          {/* --- MOBILE LOGO FIXED --- */}
+          <div className={styles.drawerLogoWrapper}>
+             <Image 
               src="/logo.jpg" 
               alt="My Dream" 
-              style={{ 
-                width: '100%', 
-                height: 'auto', 
-                objectFit: 'contain',
-                mixBlendMode: 'multiply', // This makes white transparent
-                display: 'block'
-              }} 
+              width={140}
+              height={50}
+              style={{ objectFit: 'contain' }}
             />
           </div>
-          {/* ---------------------------------------------- */}
+          {/* ------------------------- */}
 
         </div>
         <div className={styles.drawerSearchWrapper}>
-          <input
-            type="text"
-            placeholder="Search For..."
-            className={styles.drawerSearchInput}
-            value={mobileQuery}
-            onChange={(e) => setMobileQuery(e.target.value)}
-          />
+          <input type="text" placeholder="Search For..." className={styles.drawerSearchInput} value={mobileQuery} onChange={(e) => setMobileQuery(e.target.value)} />
           <Search size={20} className={styles.drawerSearchIcon} />
         </div>
         <div className={styles.drawerContent}>
           {mobileQuery.length > 1 ? (
             <div className={styles.drawerResultsContainer}>
               {isMobileLoading && <div className={styles.drawerResultsMessage}>Searching...</div>}
-              {!isMobileLoading && mobileResults.length === 0 && (
-                <div className={styles.drawerResultsMessage}>No products found.</div>
-              )}
-              {mobileResults.length > 0 && (
-                <ul className={styles.drawerResultsList}>
-                  {mobileResults.map(product => (
-                    <li key={product.id}>
-                      <Link href={`/products/${product.slug}`} className={styles.drawerResultItem} onClick={closeMobileMenu}>
-                        <div className={styles.drawerResultImage}>
-                          <Image src={product.images[0]?.url || '/placeholder.jpg'} alt={product.name} fill style={{ objectFit: 'cover' }} />
-                        </div>
-                        <span className={styles.drawerResultName}>{product.name}</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
+              {!isMobileLoading && mobileResults.length === 0 && (<div className={styles.drawerResultsMessage}>No products found.</div>)}
+              {mobileResults.length > 0 && (<ul className={styles.drawerResultsList}>{mobileResults.map(product => (<li key={product.id}><Link href={`/products/${product.slug}`} className={styles.drawerResultItem} onClick={closeMobileMenu}><div className={styles.drawerResultImage}><Image src={product.images[0]?.url || '/placeholder.jpg'} alt={product.name} fill style={{ objectFit: 'cover' }} /></div><span className={styles.drawerResultName}>{product.name}</span></Link></li>))}</ul>)}
             </div>
           ) : (
             <nav className={styles.drawerNav}>{navLinks.map((link) => (<div key={link.id} className={styles.accordionItem}>{link.label === 'Категории' ? (<><div className={styles.accordionHeader} onClick={() => handleAccordionToggle(link.id)}><span>{link.label}</span>{openAccordion === link.id ? <Minus size={20} /> : <Plus size={20} />}</div><div className={`${styles.accordionContent} ${openAccordion === link.id ? styles.open : ''}`}>{dynamicCategories.map(subLink => ( subLink && subLink.slug && ( <Link key={subLink.id} href={`/categories/${subLink.slug}`} className={styles.accordionLink} onClick={closeMobileMenu}>{subLink.name}</Link> ))) }</div></>) : ( <div className={styles.accordionHeader}><Link href={link.href} onClick={closeMobileMenu}>{link.label}</Link></div> )}</div>))}</nav>
