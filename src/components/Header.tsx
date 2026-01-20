@@ -127,8 +127,8 @@ const Header = () => {
               <Image 
                 src="/logo.jpg" 
                 alt="My Dream by Tatyana Gyumisheva" 
-                width={300} 
-                height={100} 
+                width={350} 
+                height={120} 
                 className={styles.logoImage}
                 priority
               />

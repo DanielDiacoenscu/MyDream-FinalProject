@@ -1,4 +1,4 @@
-/* src/styles/Header.module.css - FIXED SIZES */
+/* src/styles/Header.module.css - FIXED VISIBILITY & SIZE */
 
 .header {
   position: sticky;
@@ -9,11 +9,15 @@
   border-bottom: 1px solid #e5e7eb;
 }
 
+/* --- VISIBILITY UTILITIES (CRITICAL FIX) --- */
+.mobileOnly { display: none; }
+.desktopOnly { display: flex; }
+
 .topBar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 6.5rem; /* INCREASED for bigger logo */
+  height: 8rem; /* INCREASED to 8rem for very large logo */
   padding: 0 1.5rem;
   max-width: 1600px;
   margin: 0 auto;
@@ -44,22 +48,22 @@
 
 .logoImage {
   width: auto;
-  height: 90px; /* MUCH BIGGER NOW */
+  height: 110px; /* INCREASED SIZE */
   object-fit: contain;
   transition: height 0.3s ease-in-out;
-  mix-blend-mode: multiply; /* Restored for JPG */
+  mix-blend-mode: multiply;
 }
 
 /* --- SCROLLED STATE --- */
-.header.scrolled .topBar { height: 4rem; }
-.header.scrolled .logoImage { height: 50px; }
+.header.scrolled .topBar { height: 5rem; }
+.header.scrolled .logoImage { height: 60px; }
 
 /* --- MEGA MENU POSITIONING --- */
-/* TopBar (6.5rem) + NavBar (3rem) = 9.5rem */
+/* TopBar (8rem) + NavBar (3rem) = 11rem */
 .megaMenu { 
   display: none; 
   position: absolute; 
-  top: 9.5rem; /* FIXED: Pushed down to clear the taller header */
+  top: 11rem; /* Pushed down to clear the 8rem header */
   left: 0; 
   width: 100%; 
   background-color: #fff; 
@@ -71,9 +75,9 @@
   transition: opacity 0.2s, visibility 0.2s, top 0.3s ease-in-out; 
 }
 
-/* Scrolled: TopBar (4rem) + NavBar (3rem) = 7rem */
+/* Scrolled: TopBar (5rem) + NavBar (3rem) = 8rem */
 .header.scrolled .megaMenu { 
-  top: 7rem; /* FIXED: Adjusts perfectly when scrolled */
+  top: 8rem; 
 }
 
 /* --- MOBILE STYLES --- */
@@ -81,7 +85,7 @@
   .desktopOnly { display: none; } 
   .mobileOnly { display: flex; } 
   
-  .topBar { position: relative; height: 5rem; } /* Smaller header on mobile */
+  .topBar { position: relative; height: 5rem; }
   
   .logoSection {
     position: absolute;
