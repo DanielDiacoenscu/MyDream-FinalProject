@@ -1,4 +1,4 @@
-/* src/styles/Header.module.css - MOBILE GIANT LOGO (NO WHITE BOX) */
+/* src/styles/Header.module.css - MOBILE GIANT LOGO FIX (BLEND MODE) */
 
 .header {
   position: sticky;
@@ -43,11 +43,13 @@
   z-index: 1;
   pointer-events: none;
   transition: top 0.3s ease-in-out, transform 0.3s ease-in-out;
+  background: transparent !important; /* Ensure no background on container */
 }
 
 .logoLinkWrapper {
   display: block;
   line-height: 0;
+  background: transparent !important;
 }
 
 .logoImage {
@@ -55,7 +57,9 @@
   height: 340px; /* GIANT INITIAL SIZE */
   object-fit: contain;
   transition: height 0.3s ease-in-out;
-  mix-blend-mode: multiply; /* Blends white background if present */
+  /* KEY FIX: Multiply makes white pixels transparent */
+  mix-blend-mode: multiply; 
+  display: block;
 }
 
 /* --- SCROLLED STATE --- */
@@ -174,12 +178,16 @@
     padding: 0;
     height: auto;
     align-items: center;
-    /* REMOVED: background-color, padding, border-radius, box-shadow */
+    background: transparent !important;
   }
   
   /* MOBILE GIANT LOGO SETTINGS */
   .logoImage { 
-    height: 160px; /* INCREASED: Mobile Initial Giant Size */
+    height: 160px; 
+    /* Try to blend the white background of the JPG/PNG with the hero image */
+    mix-blend-mode: multiply; 
+    /* Fallback: Round the corners so the white box looks like a tag if blending fails */
+    border-radius: 0 0 12px 12px;
   } 
   
   .header.scrolled .topBar { 
@@ -187,6 +195,6 @@
   }
   
   .header.scrolled .logoImage { 
-    height: 140px; /* INCREASED: Mobile Scrolled Giant Size */
+    height: 140px; 
   }
 }
