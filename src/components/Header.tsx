@@ -1,4 +1,4 @@
-// src/components/Header.tsx - FINAL, CORRECTED PATHS & SIZES
+// src/components/Header.tsx - SMALLER LOGO & BLEND MODE
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -139,17 +139,17 @@ const Header = () => {
             </div>
           </div>
           
-          {/* --- DESKTOP LOGO: 700px --- */}
+          {/* --- DESKTOP LOGO: 300px + Blend Mode --- */}
           <div className={styles.logoSection}>
-            <Link href="/" style={{ display: 'block', position: 'relative', width: '700px', height: 'auto' }}>
+            <Link href="/" style={{ display: 'block', position: 'relative', width: '300px', height: 'auto' }}>
               <img 
                 src="/logo.jpg" 
                 alt="My Dream by Tatyana Gyumisheva" 
-                style={{ width: '100%', height: 'auto', objectFit: 'contain' }} 
+                style={{ width: '100%', height: 'auto', objectFit: 'contain', mixBlendMode: 'multiply' }} 
               />
             </Link>
           </div>
-          {/* --------------------------- */}
+          {/* ---------------------------------------- */}
 
           <div className={styles.rightSection}>
             <Link href={user ? "/account" : "/login"} className={styles.iconButton}><User size={18} /></Link>
@@ -166,15 +166,15 @@ const Header = () => {
         <div className={styles.drawerHeader}>
           <button onClick={closeMobileMenu} className={styles.iconButton}><X size={24} /></button>
           
-          {/* --- MOBILE LOGO: 320px --- */}
-          <div className={styles.drawerLogo} style={{ position: 'relative', width: '320px', height: 'auto' }}>
+          {/* --- MOBILE LOGO: 180px + Blend Mode --- */}
+          <div className={styles.drawerLogo} style={{ position: 'relative', width: '180px', height: 'auto' }}>
              <img 
               src="/logo.jpg" 
               alt="My Dream" 
-              style={{ width: '100%', height: 'auto', objectFit: 'contain' }} 
+              style={{ width: '100%', height: 'auto', objectFit: 'contain', mixBlendMode: 'multiply' }} 
             />
           </div>
-          {/* -------------------------- */}
+          {/* --------------------------------------- */}
 
         </div>
         <div className={styles.drawerSearchWrapper}>
