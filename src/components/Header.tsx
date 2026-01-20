@@ -158,26 +158,9 @@ const Header = () => {
           </div>
         </div>
         
-        {/* --- NAV BAR: FIXED EXTERNAL LINKS --- */}
-        <nav className={styles.navBar}>
-          {navLinks.map((link) => {
-            const isExternal = link.href.startsWith('http');
-            return (
-              <div key={link.id} className={styles.navItem}>
-                <Link 
-                  href={link.href} 
-                  className={styles.navLink}
-                  target={isExternal ? "_blank" : undefined}
-                  rel={isExternal ? "noopener noreferrer" : undefined}
-                >
-                  {link.label}
-                </Link>
-                {link.mega_menu && (<div className={styles.megaMenu}><div className={styles.megaMenuContent}><div className={styles.megaMenuColumns}><div className={styles.megaMenuColumn}>{dynamicCategories.map((category) => ( category && category.slug && ( <Link key={category.id} href={`/categories/${category.slug}`}>{category.name}</Link> ))) }</div></div><div className={styles.megaMenuImage}><Link href={link.mega_menu.image_href}><img src={link.mega_menu.image.url} alt={link.mega_menu.image.alt} /><p>{link.mega_menu.image_title}</p></Link></div></div></div>)}
-              </div>
-            );
-          })}
-        </nav>
-        {/* ------------------------------------- */}
+        {/* --- NAV BAR: EXACTLY AS YOU PROVIDED --- */}
+        <nav className={styles.navBar}>{navLinks.map((link) => (<div key={link.id} className={styles.navItem}><Link href={link.href} className={styles.navLink}>{link.label}</Link>{link.mega_menu && (<div className={styles.megaMenu}><div className={styles.megaMenuContent}><div className={styles.megaMenuColumns}><div className={styles.megaMenuColumn}>{dynamicCategories.map((category) => ( category && category.slug && ( <Link key={category.id} href={`/categories/${category.slug}`}>{category.name}</Link> ))) }</div></div><div className={styles.megaMenuImage}><Link href={link.mega_menu.image_href}><img src={link.mega_menu.image.url} alt={link.mega_menu.image.alt} /><p>{link.mega_menu.image_title}</p></Link></div></div></div>)}</div>))}</nav>
+        {/* ---------------------------------------- */}
 
         {isResultsVisible && (<div className={styles.resultsPanel}>{isLoading && <div className={styles.resultsMessage}>Searching...</div>}{!isLoading && results.length === 0 && debouncedQuery.length > 1 && (<div className={styles.resultsMessage}>No products found for &quot;{debouncedQuery}&quot;.</div>)}{results.length > 0 && (<ul className={styles.resultsList}>{results.slice(0, 5).map((product) => (<li key={product.id}><Link href={`/products/${product.slug}`} onClick={closeDesktopSearch} className={styles.resultItem}><div className={styles.resultImage}><Image src={product.images[0]?.url || '/placeholder.jpg'} alt={product.name} fill style={{ objectFit: 'cover' }} /></div><span className={styles.resultName}>{product.name}</span></Link></li>))}</ul>)}</div>)}
       </header>
@@ -209,43 +192,7 @@ const Header = () => {
               {mobileResults.length > 0 && ( <ul className={styles.drawerResultsList}>{mobileResults.map(product => ( <li key={product.id}><Link href={`/products/${product.slug}`} className={styles.drawerResultItem} onClick={closeMobileMenu}><div className={styles.drawerResultImage}><Image src={product.images[0]?.url || '/placeholder.jpg'} alt={product.name} fill style={{ objectFit: 'cover' }} /></div><span className={styles.drawerResultName}>{product.name}</span></Link></li> ))}</ul> )}
             </div>
           ) : (
-            <nav className={styles.drawerNav}>
-              {navLinks.map((link) => {
-                const isExternal = link.href.startsWith('http');
-                return (
-                  <div key={link.id} className={styles.accordionItem}>
-                    {link.label === 'Категории' ? (
-                      <>
-                        <div className={styles.accordionHeader} onClick={() => handleAccordionToggle(link.id)}>
-                          <span>{link.label}</span>
-                          {openAccordion === link.id ? <Minus size={20} /> : <Plus size={20} />}
-                        </div>
-                        <div className={`${styles.accordionContent} ${openAccordion === link.id ? styles.open : ''}`}>
-                          {dynamicCategories.map(subLink => ( 
-                            subLink && subLink.slug && ( 
-                              <Link key={subLink.id} href={`/categories/${subLink.slug}`} className={styles.accordionLink} onClick={closeMobileMenu}>
-                                {subLink.name}
-                              </Link> 
-                            )
-                          ))}
-                        </div>
-                      </>
-                    ) : ( 
-                      <div className={styles.accordionHeader}>
-                        <Link 
-                          href={link.href} 
-                          onClick={closeMobileMenu}
-                          target={isExternal ? "_blank" : undefined}
-                          rel={isExternal ? "noopener noreferrer" : undefined}
-                        >
-                          {link.label}
-                        </Link>
-                      </div> 
-                    )}
-                  </div>
-                );
-              })}
-            </nav>
+            <nav className={styles.drawerNav}>{navLinks.map((link) => (<div key={link.id} className={styles.accordionItem}>{link.label === 'Категории' ? (<><div className={styles.accordionHeader} onClick={() => handleAccordionToggle(link.id)}><span>{link.label}</span>{openAccordion === link.id ? <Minus size={20} /> : <Plus size={20} />}</div><div className={`${styles.accordionContent} ${openAccordion === link.id ? styles.open : ''}`}>{dynamicCategories.map(subLink => ( subLink && subLink.slug && ( <Link key={subLink.id} href={`/categories/${subLink.slug}`} className={styles.accordionLink} onClick={closeMobileMenu}>{subLink.name}</Link> ))) }</div></>) : ( <div className={styles.accordionHeader}><Link href={link.href} onClick={closeMobileMenu}>{link.label}</Link></div> )}</div>))}</nav>
           )}
         </div>
       </div>
