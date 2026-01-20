@@ -1,4 +1,4 @@
-/* src/styles/Header.module.css - COMPACT HEADER, BIG LOGO */
+/* src/styles/Header.module.css - OVERFLOW LOGO */
 
 .header {
   position: sticky;
@@ -13,11 +13,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 6rem; /* MUCH SMALLER BOX (was 10rem) */
+  height: 6rem; /* Box size stays COMPACT */
   padding: 0 1.5rem;
   max-width: 1600px;
   margin: 0 auto;
   transition: height 0.3s ease-in-out;
+  position: relative; /* Needed for absolute logo positioning */
 }
 
 .leftSection, .rightSection {
@@ -25,42 +26,44 @@
   align-items: center;
   flex: 1 0 0%;
   gap: 0.75rem;
+  z-index: 2; /* Ensure icons are clickable above logo area */
 }
 .rightSection { justify-content: flex-end; }
 
 /* --- LOGO STYLES --- */
 .logoSection {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
   display: flex;
   justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
-  padding: 0 1rem;
-  height: 100%;
+  align-items: flex-start; /* Align to top edge */
+  height: auto;
+  z-index: 1;
+  padding-top: 0.5rem;
 }
 
 .logoLinkWrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  width: auto;
+  display: block;
+  line-height: 0;
 }
 
 .logoImage {
   width: auto;
-  height: 5rem; /* BIGGER LOGO RELATIVE TO BOX (approx 80px) */
-  max-height: 90%; /* Ensure it doesn't touch edges */
+  height: 160px; /* MASSIVE LOGO (160px) inside 96px box */
   object-fit: contain;
   transition: height 0.3s ease-in-out;
   mix-blend-mode: multiply;
 }
 
 /* --- SCROLLED STATE --- */
+/* When scrolling, we shrink everything back to normal to save space */
 .header.scrolled .topBar { height: 4rem; }
-.header.scrolled .logoImage { height: 3rem; }
+.header.scrolled .logoImage { height: 60px; } 
+.header.scrolled .logoSection { align-items: center; padding-top: 0; height: 100%; }
 
 /* --- MEGA MENU POSITIONING --- */
-/* TopBar (6rem) + NavBar (3rem) = 9rem */
 .megaMenu { 
   display: none; 
   position: absolute; 
@@ -74,9 +77,9 @@
   opacity: 0; 
   visibility: hidden; 
   transition: opacity 0.2s, visibility 0.2s, top 0.3s ease-in-out; 
+  z-index: 0;
 }
 
-/* Scrolled: TopBar (4rem) + NavBar (3rem) = 7rem */
 .header.scrolled .megaMenu { 
   top: 7rem; 
 }
@@ -161,6 +164,8 @@
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 0;
+    height: 100%;
+    align-items: center;
   }
   
   .logoImage { height: 50px; } 
