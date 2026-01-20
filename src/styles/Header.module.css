@@ -1,4 +1,4 @@
-/* src/styles/Header.module.css - FIXED VISIBILITY & SIZE */
+/* src/styles/Header.module.css - FINAL SIZING FIX */
 
 .header {
   position: sticky;
@@ -9,15 +9,11 @@
   border-bottom: 1px solid #e5e7eb;
 }
 
-/* --- VISIBILITY UTILITIES (CRITICAL FIX) --- */
-.mobileOnly { display: none; }
-.desktopOnly { display: flex; }
-
 .topBar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 8rem; /* INCREASED to 8rem for very large logo */
+  height: 16rem; /* MASSIVE HEADER for x2 Logo */
   padding: 0 1.5rem;
   max-width: 1600px;
   margin: 0 auto;
@@ -48,22 +44,23 @@
 
 .logoImage {
   width: auto;
-  height: 110px; /* INCREASED SIZE */
+  height: 220px; /* x2 SIZE (Was 110px) */
   object-fit: contain;
   transition: height 0.3s ease-in-out;
   mix-blend-mode: multiply;
 }
 
 /* --- SCROLLED STATE --- */
-.header.scrolled .topBar { height: 5rem; }
-.header.scrolled .logoImage { height: 60px; }
+/* When scrolling, we shrink it down significantly so it doesn't take up the whole screen */
+.header.scrolled .topBar { height: 6rem; }
+.header.scrolled .logoImage { height: 80px; }
 
 /* --- MEGA MENU POSITIONING --- */
-/* TopBar (8rem) + NavBar (3rem) = 11rem */
+/* TopBar (16rem) + NavBar (3rem) = 19rem */
 .megaMenu { 
   display: none; 
   position: absolute; 
-  top: 11rem; /* Pushed down to clear the 8rem header */
+  top: 19rem; /* Pushed way down */
   left: 0; 
   width: 100%; 
   background-color: #fff; 
@@ -75,28 +72,9 @@
   transition: opacity 0.2s, visibility 0.2s, top 0.3s ease-in-out; 
 }
 
-/* Scrolled: TopBar (5rem) + NavBar (3rem) = 8rem */
+/* Scrolled: TopBar (6rem) + NavBar (3rem) = 9rem */
 .header.scrolled .megaMenu { 
-  top: 8rem; 
-}
-
-/* --- MOBILE STYLES --- */
-@media (max-width: 1023px) { 
-  .desktopOnly { display: none; } 
-  .mobileOnly { display: flex; } 
-  
-  .topBar { position: relative; height: 5rem; }
-  
-  .logoSection {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 0;
-  }
-  
-  .logoImage { height: 50px; } 
-  .header.scrolled .logoImage { height: 35px; }
+  top: 9rem; 
 }
 
 /* --- DRAWER LOGO --- */
@@ -107,7 +85,7 @@
   width: 100%;
 }
 
-/* ... REST OF STYLES ... */
+/* --- STANDARD STYLES --- */
 .iconButton { background: none; border: none; cursor: pointer; padding: 0.5rem; color: #1a1a1a; display: flex; align-items: center; gap: 0.5rem; }
 .navBar { display: none; height: 3rem; max-width: 1600px; margin: 0 auto; padding: 0 1.5rem; }
 @media (min-width: 1024px) { .navBar { display: flex; justify-content: center; align-items: center; gap: 2.5rem; } }
@@ -160,3 +138,27 @@
 .drawerResultItem { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1rem; text-decoration: none; }
 .drawerResultImage { position: relative; width: 45px; height: 45px; flex-shrink: 0; }
 .drawerResultName { font-family: var(--font-primary); font-size: 0.9rem; color: #333; }
+
+/* --- VISIBILITY UTILITIES (MOVED TO BOTTOM TO OVERRIDE EVERYTHING) --- */
+@media (min-width: 1024px) {
+  .mobileOnly { display: none !important; }
+  .desktopOnly { display: flex !important; }
+}
+
+@media (max-width: 1023px) { 
+  .desktopOnly { display: none !important; } 
+  .mobileOnly { display: flex !important; } 
+  
+  .topBar { position: relative; height: 5rem; }
+  
+  .logoSection {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 0;
+  }
+  
+  .logoImage { height: 50px; } 
+  .header.scrolled .logoImage { height: 35px; }
+}
