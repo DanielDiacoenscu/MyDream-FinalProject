@@ -1,4 +1,4 @@
-// src/components/Header.tsx - SMALLER LOGO & BLEND MODE
+// src/components/Header.tsx - FIX WHITE BACKGROUND
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -139,17 +139,24 @@ const Header = () => {
             </div>
           </div>
           
-          {/* --- DESKTOP LOGO: 300px + Blend Mode --- */}
+          {/* --- DESKTOP LOGO: 300px + Multiply Blend Mode --- */}
           <div className={styles.logoSection}>
             <Link href="/" style={{ display: 'block', position: 'relative', width: '300px', height: 'auto' }}>
+              {/* Using standard img tag for better control over blend modes than Next/Image sometimes allows */}
               <img 
                 src="/logo.jpg" 
                 alt="My Dream by Tatyana Gyumisheva" 
-                style={{ width: '100%', height: 'auto', objectFit: 'contain', mixBlendMode: 'multiply' }} 
+                style={{ 
+                  width: '100%', 
+                  height: 'auto', 
+                  objectFit: 'contain',
+                  mixBlendMode: 'multiply', // This makes white transparent
+                  display: 'block'
+                }} 
               />
             </Link>
           </div>
-          {/* ---------------------------------------- */}
+          {/* ------------------------------------------------- */}
 
           <div className={styles.rightSection}>
             <Link href={user ? "/account" : "/login"} className={styles.iconButton}><User size={18} /></Link>
@@ -166,15 +173,21 @@ const Header = () => {
         <div className={styles.drawerHeader}>
           <button onClick={closeMobileMenu} className={styles.iconButton}><X size={24} /></button>
           
-          {/* --- MOBILE LOGO: 180px + Blend Mode --- */}
+          {/* --- MOBILE LOGO: 180px + Multiply Blend Mode --- */}
           <div className={styles.drawerLogo} style={{ position: 'relative', width: '180px', height: 'auto' }}>
              <img 
               src="/logo.jpg" 
               alt="My Dream" 
-              style={{ width: '100%', height: 'auto', objectFit: 'contain', mixBlendMode: 'multiply' }} 
+              style={{ 
+                width: '100%', 
+                height: 'auto', 
+                objectFit: 'contain',
+                mixBlendMode: 'multiply', // This makes white transparent
+                display: 'block'
+              }} 
             />
           </div>
-          {/* --------------------------------------- */}
+          {/* ---------------------------------------------- */}
 
         </div>
         <div className={styles.drawerSearchWrapper}>
