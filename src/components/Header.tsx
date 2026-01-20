@@ -1,4 +1,4 @@
-// src/components/Header.tsx - DOUBLE SIZE LOGO
+// src/components/Header.tsx - EVEN BIGGER DESKTOP LOGO
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -137,17 +137,17 @@ const Header = () => {
             </div>
           </div>
           
-          {/* --- LOGO SECTION: DOUBLE SIZE --- */}
+          {/* --- LOGO SECTION: INCREASED DESKTOP SIZE --- */}
           <div className={styles.logoSection}>
-            <Link href="/" style={{ display: 'block', position: 'relative', width: '560px', height: '240px' }}>
+            <Link href="/" style={{ display: 'block', position: 'relative', width: '700px', height: '300px' }}>
               <img 
-                src="/logo.png?v=4" 
+                src="/logo.png?v=5" 
                 alt="My Dream by Tatyana Gyumisheva" 
                 style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
               />
             </Link>
           </div>
-          {/* --------------------------------- */}
+          {/* -------------------------------------------- */}
 
           <div className={styles.rightSection}>
             <Link href={user ? "/account" : "/login"} className={styles.iconButton}><User size={18} /></Link>
@@ -163,15 +163,15 @@ const Header = () => {
         <div className={styles.drawerHeader}>
           <button onClick={closeMobileMenu} className={styles.iconButton}><X size={24} /></button>
           
-          {/* --- MOBILE LOGO: DOUBLE SIZE --- */}
+          {/* --- MOBILE LOGO: KEPT SAME (PERFECT) --- */}
           <div className={styles.drawerLogo} style={{ position: 'relative', width: '320px', height: '140px' }}>
              <img 
-              src="/logo.png?v=4" 
+              src="/logo.png?v=5" 
               alt="My Dream" 
               style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
             />
           </div>
-          {/* ------------------------------ */}
+          {/* ---------------------------------------- */}
 
         </div>
         <div className={styles.drawerSearchWrapper}>
