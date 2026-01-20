@@ -179,7 +179,7 @@
   
   /* MOBILE GIANT LOGO SETTINGS */
   .logoImage { 
-    height: 140px; /* Mobile Initial Giant Size */
+    height: 160px; /* INCREASED: Mobile Initial Giant Size */
   } 
   
   .header.scrolled .topBar { 
@@ -187,6 +187,6 @@
   }
   
   .header.scrolled .logoImage { 
-    height: 120px; /* Mobile Scrolled Giant Size */
+    height: 140px; /* INCREASED: Mobile Scrolled Giant Size */
   }
 }
