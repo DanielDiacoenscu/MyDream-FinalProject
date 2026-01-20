@@ -1,4 +1,4 @@
-/* src/styles/Header.module.css - CENTERED EXPLODING LOGO */
+/* src/styles/Header.module.css - PERSISTENT GIANT LOGO */
 
 .header {
   position: sticky;
@@ -41,28 +41,28 @@
   align-items: center;
   height: auto;
   z-index: 1;
-  pointer-events: none;
+  pointer-events: none; /* Allow clicks to pass through the empty area */
 }
 
 .logoLinkWrapper {
   display: block;
   line-height: 0;
-  pointer-events: auto;
+  pointer-events: auto; /* Catch clicks on the logo itself */
 }
 
 .logoImage {
   width: auto;
-  height: 240px; /* MASSIVE SIZE */
+  height: 340px; /* GIANT INITIAL SIZE */
   object-fit: contain;
   transition: height 0.3s ease-in-out;
   mix-blend-mode: multiply;
-  /* No margin needed, transform handles the centering */
 }
 
 /* --- SCROLLED STATE --- */
 .header.scrolled .topBar { height: 4rem; }
-.header.scrolled .logoImage { height: 60px; }
-.header.scrolled .logoSection { transform: translate(-50%, -50%); } /* Keep centered */
+/* Scrolled size is Original (340) - 20 = 320px */
+.header.scrolled .logoImage { height: 320px; } 
+.header.scrolled .logoSection { transform: translate(-50%, -50%); }
 
 /* --- MEGA MENU POSITIONING --- */
 .megaMenu { 
