@@ -1,4 +1,4 @@
-/* src/styles/Header.module.css */
+/* src/styles/Header.module.css - FIXED SIZES */
 
 .header {
   position: sticky;
@@ -13,7 +13,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 5rem; /* Increased slightly to give logo room */
+  height: 6.5rem; /* INCREASED for bigger logo */
   padding: 0 1.5rem;
   max-width: 1600px;
   margin: 0 auto;
@@ -39,25 +39,49 @@
 
 .logoLinkWrapper {
   display: block;
-  line-height: 0; /* Removes bottom spacing from images */
+  line-height: 0;
 }
 
 .logoImage {
   width: auto;
-  height: 70px; /* Default height */
+  height: 90px; /* MUCH BIGGER NOW */
   object-fit: contain;
   transition: height 0.3s ease-in-out;
+  mix-blend-mode: multiply; /* Restored for JPG */
 }
 
+/* --- SCROLLED STATE --- */
 .header.scrolled .topBar { height: 4rem; }
-.header.scrolled .logoImage { height: 50px; } /* Shrink on scroll */
+.header.scrolled .logoImage { height: 50px; }
+
+/* --- MEGA MENU POSITIONING --- */
+/* TopBar (6.5rem) + NavBar (3rem) = 9.5rem */
+.megaMenu { 
+  display: none; 
+  position: absolute; 
+  top: 9.5rem; /* FIXED: Pushed down to clear the taller header */
+  left: 0; 
+  width: 100%; 
+  background-color: #fff; 
+  border-top: 1px solid #e5e7eb; 
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+  padding: 2.5rem 4rem; 
+  opacity: 0; 
+  visibility: hidden; 
+  transition: opacity 0.2s, visibility 0.2s, top 0.3s ease-in-out; 
+}
+
+/* Scrolled: TopBar (4rem) + NavBar (3rem) = 7rem */
+.header.scrolled .megaMenu { 
+  top: 7rem; /* FIXED: Adjusts perfectly when scrolled */
+}
 
 /* --- MOBILE STYLES --- */
 @media (max-width: 1023px) { 
   .desktopOnly { display: none; } 
   .mobileOnly { display: flex; } 
   
-  .topBar { position: relative; }
+  .topBar { position: relative; height: 5rem; } /* Smaller header on mobile */
   
   .logoSection {
     position: absolute;
@@ -67,7 +91,7 @@
     padding: 0;
   }
   
-  .logoImage { height: 45px; } /* Smaller on mobile */
+  .logoImage { height: 50px; } 
   .header.scrolled .logoImage { height: 35px; }
 }
 
@@ -79,14 +103,13 @@
   width: 100%;
 }
 
-/* ... (Keep the rest of your styles: navBar, megaMenu, search, etc.) ... */
+/* ... REST OF STYLES ... */
 .iconButton { background: none; border: none; cursor: pointer; padding: 0.5rem; color: #1a1a1a; display: flex; align-items: center; gap: 0.5rem; }
 .navBar { display: none; height: 3rem; max-width: 1600px; margin: 0 auto; padding: 0 1.5rem; }
 @media (min-width: 1024px) { .navBar { display: flex; justify-content: center; align-items: center; gap: 2.5rem; } }
 .navItem { position: static; height: 100%; display: flex; align-items: center; }
 .navLink { font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: #1a1a1a; padding: 0 0.5rem; height: 100%; display: flex; align-items: center; border-bottom: 2px solid transparent; transition: border-color 0.2s; }
 .navItem:hover .navLink { border-color: #1a1a1a; }
-.megaMenu { display: none; position: absolute; top: 7rem; left: 0; width: 100%; background-color: #fff; border-top: 1px solid #e5e7eb; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 2.5rem 4rem; opacity: 0; visibility: hidden; transition: opacity 0.2s, visibility 0.2s, top 0.3s ease-in-out; }
 .navItem:hover .megaMenu { display: flex; opacity: 1; visibility: visible; }
 .megaMenuContent { display: flex; gap: 4rem; width: 100%; max-width: 1400px; margin: 0 auto; }
 .megaMenuColumns { display: flex; flex: 1; gap: 3rem; }
@@ -97,7 +120,6 @@
 .megaMenuImage img { width: 100%; height: auto; object-fit: cover; }
 .megaMenuImage p { text-align: center; margin-top: 1rem; font-weight: 600; font-size: 0.875rem; letter-spacing: 0.05em; }
 .header.scrolled { box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
-.header.scrolled .megaMenu { top: 6.5rem; }
 .mobileNavDrawer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #fff; z-index: 1300; transform: translateX(-100%); transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1); display: flex; flex-direction: column; }
 .mobileNavDrawer.open { transform: translateX(0); }
 .drawerHeader { display: grid; grid-template-columns: 1fr 2fr 1fr; align-items: center; padding: 0 1rem; height: 4rem; border-bottom: 1px solid #e5e7eb; }

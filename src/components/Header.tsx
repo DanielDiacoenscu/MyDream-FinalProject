@@ -127,8 +127,8 @@ const Header = () => {
               <Image 
                 src="/logo.jpg" 
                 alt="My Dream by Tatyana Gyumisheva" 
-                width={220} 
-                height={80} 
+                width={300} 
+                height={100} 
                 className={styles.logoImage}
                 priority
               />
@@ -155,9 +155,9 @@ const Header = () => {
              <Image 
               src="/logo.jpg" 
               alt="My Dream" 
-              width={140}
-              height={50}
-              style={{ objectFit: 'contain' }}
+              width={180}
+              height={60}
+              style={{ objectFit: 'contain', mixBlendMode: 'multiply' }}
             />
           </div>
           {/* ------------------------- */}
