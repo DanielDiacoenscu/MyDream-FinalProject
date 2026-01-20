@@ -162,7 +162,10 @@
   .desktopOnly { display: none !important; } 
   .mobileOnly { display: flex !important; } 
   
-  .topBar { position: relative; height: 5rem; }
+  .topBar { 
+    position: relative; 
+    height: 5rem; /* Mobile Initial Height */
+  }
   
   .logoSection {
     position: absolute;
@@ -170,10 +173,20 @@
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 0;
-    height: 100%;
+    height: auto;
     align-items: center;
   }
   
-  .logoImage { height: 50px; } 
-  .header.scrolled .logoImage { height: 35px; }
+  /* MOBILE GIANT LOGO SETTINGS */
+  .logoImage { 
+    height: 140px; /* Mobile Initial Giant Size */
+  } 
+  
+  .header.scrolled .topBar { 
+    height: 4rem; /* Mobile Scrolled Height */
+  }
+  
+  .header.scrolled .logoImage { 
+    height: 120px; /* Mobile Scrolled Giant Size */
+  }
 }
