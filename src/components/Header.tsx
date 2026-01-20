@@ -139,7 +139,19 @@ const Header = () => {
               <input type="text" placeholder="Търсене..." className={styles.inlineSearchInput} value={query} onChange={(e) => setQuery(e.target.value)} onFocus={() => { if (query.length > 1) setIsResultsVisible(true); }} />
             </div>
           </div>
-          <div className={styles.logoSection}><Link href="/" className="flex items-baseline gap-2"><div className={styles.logoLink}>MY DREAM</div><div className={styles.logoSubtitle}>by Tatyana Gyumisheva</div></Link></div>
+          
+          {/* --- LOGO SECTION: REPLACED WITH IMAGE (700px) --- */}
+          <div className={styles.logoSection}>
+            <Link href="/" style={{ display: 'block', position: 'relative', width: '700px', height: '300px' }}>
+              <img 
+                src="/logo.png?v=5" 
+                alt="My Dream by Tatyana Gyumisheva" 
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
+              />
+            </Link>
+          </div>
+          {/* ------------------------------------------------- */}
+
           <div className={styles.rightSection}>
             <Link href={user ? "/account" : "/login"} className={styles.iconButton}><User size={18} /></Link>
             <Link href="/wishlist" className={`${styles.iconButton} ${styles.desktopOnly}`} style={{ position: 'relative' }}><Heart size={18} />{wishlistCount > 0 && ( <span className={styles.countBadge}>{wishlistCount}</span> )}</Link>
@@ -154,7 +166,17 @@ const Header = () => {
       <div className={`${styles.mobileNavDrawer} ${isMobileMenuOpen ? styles.open : ''}`}>
         <div className={styles.drawerHeader}>
           <button onClick={closeMobileMenu} className={styles.iconButton}><X size={24} /></button>
-          <div className={styles.drawerLogo}>MY DREAM</div>
+          
+          {/* --- MOBILE LOGO: REPLACED WITH IMAGE (320px) --- */}
+          <div className={styles.drawerLogo} style={{ position: 'relative', width: '320px', height: '140px' }}>
+             <img 
+              src="/logo.png?v=5" 
+              alt="My Dream" 
+              style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
+            />
+          </div>
+          {/* ------------------------------------------------ */}
+
         </div>
         <div className={styles.drawerSearchWrapper}>
           <input
