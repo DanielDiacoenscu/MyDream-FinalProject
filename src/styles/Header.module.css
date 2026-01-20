@@ -1,4 +1,4 @@
-/* src/styles/Header.module.css - REVERTED TO PERFECT CENTERED STATE */
+/* src/styles/Header.module.css - TOP ALIGNED SCROLLED LOGO (FIXED) */
 
 .header {
   position: sticky;
@@ -34,14 +34,15 @@
 .logoSection {
   position: absolute;
   left: 50%;
-  top: 50%; /* Center vertically */
-  transform: translate(-50%, -50%); /* Perfect center alignment */
+  top: 50%; /* Initial: Center vertically */
+  transform: translate(-50%, -50%); /* Initial: Perfect center */
   display: flex;
   justify-content: center;
   align-items: center;
   height: auto;
   z-index: 1;
   pointer-events: none;
+  /* Ensure smooth transition for position changes */
   transition: top 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 
@@ -61,11 +62,12 @@
 
 /* --- SCROLLED STATE --- */
 .header.scrolled .topBar { height: 4rem; }
-.header.scrolled .logoImage { height: 320px; } /* Scrolled size (340 - 20) */
+.header.scrolled .logoImage { height: 320px; } 
+
+/* KEY CHANGE: When scrolled, align to top with 4px gap */
 .header.scrolled .logoSection { 
-  top: 50%; /* Keep centered */
-  transform: translate(-50%, -50%); /* Keep centered */
-  align-items: center;
+  top: 4px; /* A few pixels from the top */
+  transform: translate(-50%, 0); /* Center Horizontal ONLY, respect top: 4px */
 }
 
 /* --- MEGA MENU POSITIONING --- */
