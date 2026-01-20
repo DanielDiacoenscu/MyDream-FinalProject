@@ -1,4 +1,4 @@
-/* src/styles/Header.module.css - TOP ALIGNED SCROLLED LOGO */
+/* src/styles/Header.module.css - REVERTED TO PERFECT CENTERED STATE */
 
 .header {
   position: sticky;
@@ -34,15 +34,15 @@
 .logoSection {
   position: absolute;
   left: 50%;
-  top: 50%; /* Initial state: Center vertically */
-  transform: translate(-50%, -50%); /* Initial state: Perfect center */
+  top: 50%; /* Center vertically */
+  transform: translate(-50%, -50%); /* Perfect center alignment */
   display: flex;
   justify-content: center;
   align-items: center;
   height: auto;
   z-index: 1;
   pointer-events: none;
-  transition: top 0.3s ease-in-out, transform 0.3s ease-in-out; /* Smooth movement */
+  transition: top 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 
 .logoLinkWrapper {
@@ -61,13 +61,11 @@
 
 /* --- SCROLLED STATE --- */
 .header.scrolled .topBar { height: 4rem; }
-.header.scrolled .logoImage { height: 320px; } 
-
-/* KEY CHANGE: Align to top with 2px gap when scrolled */
+.header.scrolled .logoImage { height: 320px; } /* Scrolled size (340 - 20) */
 .header.scrolled .logoSection { 
-  top: 2px; 
-  transform: translateX(-50%); /* Remove vertical centering, keep horizontal */
-  align-items: flex-start;
+  top: 50%; /* Keep centered */
+  transform: translate(-50%, -50%); /* Keep centered */
+  align-items: center;
 }
 
 /* --- MEGA MENU POSITIONING --- */
