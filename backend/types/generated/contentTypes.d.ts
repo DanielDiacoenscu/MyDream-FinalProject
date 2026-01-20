@@ -637,6 +637,9 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
     price: Schema.Attribute.Decimal;
     publishedAt: Schema.Attribute.DateTime;
     slug: Schema.Attribute.String & Schema.Attribute.Unique;
+    stock: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<100>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -646,7 +649,8 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
 export interface ApiPromoCodePromoCode extends Struct.CollectionTypeSchema {
   collectionName: 'promo_codes';
   info: {
-    displayName: 'PromoCode';
+    description: 'Discount codes for checkout';
+    displayName: 'Promo Code';
     pluralName: 'promo-codes';
     singularName: 'promo-code';
   };
@@ -654,12 +658,16 @@ export interface ApiPromoCodePromoCode extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    code: Schema.Attribute.String & Schema.Attribute.Unique;
+    code: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    discountType: Schema.Attribute.Enumeration<['percentage', 'fixed']>;
-    discountValue: Schema.Attribute.Decimal;
+    discountType: Schema.Attribute.Enumeration<['percentage', 'fixed']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'percentage'>;
+    discountValue: Schema.Attribute.Decimal & Schema.Attribute.Required;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<

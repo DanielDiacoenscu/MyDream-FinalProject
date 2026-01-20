@@ -48,6 +48,11 @@
     },
     "bestseller": {
       "type": "boolean"
+    },
+    "stock": {
+      "type": "integer",
+      "required": true,
+      "default": 100
     }
   }
 }
