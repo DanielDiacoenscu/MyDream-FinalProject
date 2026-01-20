@@ -124,13 +124,12 @@ const Header = () => {
           {/* --- DESKTOP LOGO FIXED --- */}
           <div className={styles.logoSection}>
             <Link href="/" className={styles.logoLinkWrapper}>
-              <Image 
+              {/* Using standard img tag for absolute control over sizing in this specific layout context, 
+                  or Next Image with specific styling to ensure it fills the container */}
+              <img 
                 src="/logo.jpg" 
                 alt="My Dream by Tatyana Gyumisheva" 
-                width={600} 
-                height={220} 
                 className={styles.logoImage}
-                priority
               />
             </Link>
           </div>
