@@ -151,7 +151,7 @@ const Header = () => {
           
           {/* --- MOBILE LOGO FIXED --- */}
           <div className={styles.drawerLogoWrapper}>
-            <Link href="/" onClick={closeMobileMenu}>
+            <Link href="https://www.mydreambeauty.net" onClick={closeMobileMenu}>
              <Image 
               src="/logo.jpg" 
               alt="My Dream" 
