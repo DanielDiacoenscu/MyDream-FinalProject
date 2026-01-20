@@ -1,4 +1,4 @@
-/* src/styles/Header.module.css - PULLED UP LOGO */
+/* src/styles/Header.module.css - MASSIVE OVERFLOW LOGO */
 
 .header {
   position: sticky;
@@ -13,7 +13,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 6rem; /* Compact box */
+  height: 6rem; /* Box stays compact (96px) */
   padding: 0 1.5rem;
   max-width: 1600px;
   margin: 0 auto;
@@ -35,29 +35,32 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  top: -20px; /* PULL UP: Moves logo higher to fix "low down" look */
+  top: -40px; /* Pull up more to accommodate massive size */
   display: flex;
   justify-content: center;
   align-items: flex-start;
   height: auto;
   z-index: 1;
   padding-top: 0;
+  pointer-events: none; /* Let clicks pass through the empty space around the logo */
 }
 
 .logoLinkWrapper {
   display: block;
   line-height: 0;
+  pointer-events: auto; /* Re-enable clicks on the actual logo */
 }
 
 .logoImage {
   width: auto;
-  height: 140px; /* Large size */
+  height: 240px; /* MASSIVE SIZE (Was 140px, added 100px) */
   object-fit: contain;
   transition: height 0.3s ease-in-out;
   mix-blend-mode: multiply;
 }
 
 /* --- SCROLLED STATE --- */
+/* When scrolling, we must shrink it or it will block the view */
 .header.scrolled .topBar { height: 4rem; }
 .header.scrolled .logoImage { height: 60px; }
 .header.scrolled .logoSection { top: 0; align-items: center; height: 100%; }
@@ -167,6 +170,6 @@
     align-items: center;
   }
   
-  .logoImage { height:150px; } 
-  .header.scrolled .logoImage { height:135px; }
+  .logoImage { height: 50px; } 
+  .header.scrolled .logoImage { height: 35px; }
 }
