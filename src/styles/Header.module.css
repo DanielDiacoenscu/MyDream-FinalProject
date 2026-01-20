@@ -1,4 +1,4 @@
-/* src/styles/Header.module.css - MOBILE GIANT LOGO FIX (SCALE + BLEND) */
+/* src/styles/Header.module.css - MOBILE GIANT LOGO FIX (TRANSPARENCY) */
 
 .header {
   position: sticky;
@@ -43,9 +43,7 @@
   z-index: 1;
   pointer-events: none;
   transition: top 0.3s ease-in-out, transform 0.3s ease-in-out;
-  background: transparent !important;
-  /* Ensure the section itself allows blending */
-  mix-blend-mode: multiply;
+  background: transparent !important; /* FORCE TRANSPARENT */
 }
 
 .logoLinkWrapper {
@@ -180,19 +178,21 @@
     height: auto;
     align-items: center;
     background: transparent !important;
-    /* Force blend mode on the container too */
-    mix-blend-mode: multiply;
+    /* Ensure the container doesn't have a background */
+    box-shadow: none !important;
+    border: none !important;
   }
   
   /* MOBILE GIANT LOGO SETTINGS */
   .logoImage { 
     height: 160px; 
-    /* Scale up the image to make the text larger within the whitespace */
     transform: scale(1.5);
-    /* Ensure white background becomes transparent */
+    /* Force multiply to blend the white background */
     mix-blend-mode: multiply; 
-    /* Remove any border radius that highlights the box */
+    /* Remove any border radius */
     border-radius: 0;
+    /* Ensure no background color on the image element itself */
+    background-color: transparent !important;
   } 
   
   .header.scrolled .topBar { 
@@ -201,6 +201,6 @@
   
   .header.scrolled .logoImage { 
     height: 140px; 
-    transform: scale(1.5); /* Keep it scaled when scrolled */
+    transform: scale(1.5); 
   }
 }
