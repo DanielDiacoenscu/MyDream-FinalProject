@@ -1,4 +1,4 @@
-/* src/styles/Header.module.css - PERSISTENT GIANT LOGO */
+/* src/styles/Header.module.css - TOP ALIGNED SCROLLED LOGO */
 
 .header {
   position: sticky;
@@ -34,20 +34,21 @@
 .logoSection {
   position: absolute;
   left: 50%;
-  top: 50%; /* Center vertically relative to the header box */
-  transform: translate(-50%, -50%); /* Perfect center alignment */
+  top: 50%; /* Initial state: Center vertically */
+  transform: translate(-50%, -50%); /* Initial state: Perfect center */
   display: flex;
   justify-content: center;
   align-items: center;
   height: auto;
   z-index: 1;
-  pointer-events: none; /* Allow clicks to pass through the empty area */
+  pointer-events: none;
+  transition: top 0.3s ease-in-out, transform 0.3s ease-in-out; /* Smooth movement */
 }
 
 .logoLinkWrapper {
   display: block;
   line-height: 0;
-  pointer-events: auto; /* Catch clicks on the logo itself */
+  pointer-events: auto;
 }
 
 .logoImage {
@@ -60,9 +61,14 @@
 
 /* --- SCROLLED STATE --- */
 .header.scrolled .topBar { height: 4rem; }
-/* Scrolled size is Original (340) - 20 = 320px */
 .header.scrolled .logoImage { height: 320px; } 
-.header.scrolled .logoSection { transform: translate(-50%, -50%); }
+
+/* KEY CHANGE: Align to top with 2px gap when scrolled */
+.header.scrolled .logoSection { 
+  top: 2px; 
+  transform: translateX(-50%); /* Remove vertical centering, keep horizontal */
+  align-items: flex-start;
+}
 
 /* --- MEGA MENU POSITIONING --- */
 .megaMenu { 
