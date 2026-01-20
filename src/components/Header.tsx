@@ -140,17 +140,17 @@ const Header = () => {
             </div>
           </div>
           
-          {/* --- LOGO SECTION: REPLACED WITH IMAGE (700px) --- */}
+          {/* --- LOGO SECTION: UPDATED TO USE /logo.jpg --- */}
           <div className={styles.logoSection}>
-            <Link href="/" style={{ display: 'block', position: 'relative', width: '700px', height: '300px' }}>
+            <Link href="/" style={{ display: 'block', position: 'relative', height: '80px', width: 'auto' }}>
               <img 
-                src="/logo.png?v=5" 
+                src="/logo.jpg" 
                 alt="My Dream by Tatyana Gyumisheva" 
-                style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
+                style={{ height: '100%', width: 'auto', objectFit: 'contain' }} 
               />
             </Link>
           </div>
-          {/* ------------------------------------------------- */}
+          {/* ------------------------------------------ */}
 
           <div className={styles.rightSection}>
             <Link href={user ? "/account" : "/login"} className={styles.iconButton}><User size={18} /></Link>
@@ -167,15 +167,15 @@ const Header = () => {
         <div className={styles.drawerHeader}>
           <button onClick={closeMobileMenu} className={styles.iconButton}><X size={24} /></button>
           
-          {/* --- MOBILE LOGO: REPLACED WITH IMAGE (320px) --- */}
-          <div className={styles.drawerLogo} style={{ position: 'relative', width: '320px', height: '140px' }}>
+          {/* --- MOBILE LOGO: UPDATED TO USE /logo.jpg --- */}
+          <div className={styles.drawerLogo} style={{ position: 'relative', height: '60px', width: 'auto' }}>
              <img 
-              src="/logo.png?v=5" 
+              src="/logo.jpg" 
               alt="My Dream" 
-              style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
+              style={{ height: '100%', width: 'auto', objectFit: 'contain' }} 
             />
           </div>
-          {/* ------------------------------------------------ */}
+          {/* ----------------------------------------- */}
 
         </div>
         <div className={styles.drawerSearchWrapper}>
