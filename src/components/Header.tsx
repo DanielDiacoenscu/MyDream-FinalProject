@@ -1,4 +1,4 @@
-// src/components/Header.tsx - BIGGER LOGO + TRANSPARENT PNG
+// src/components/Header.tsx - DOUBLE SIZE LOGO
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -137,17 +137,17 @@ const Header = () => {
             </div>
           </div>
           
-          {/* --- LOGO SECTION: BIGGER + PNG --- */}
+          {/* --- LOGO SECTION: DOUBLE SIZE --- */}
           <div className={styles.logoSection}>
-            <Link href="/" style={{ display: 'block', position: 'relative', width: '280px', height: '120px' }}>
+            <Link href="/" style={{ display: 'block', position: 'relative', width: '560px', height: '240px' }}>
               <img 
-                src="/logo.png?v=3" 
+                src="/logo.png?v=4" 
                 alt="My Dream by Tatyana Gyumisheva" 
                 style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
               />
             </Link>
           </div>
-          {/* ---------------------------------- */}
+          {/* --------------------------------- */}
 
           <div className={styles.rightSection}>
             <Link href={user ? "/account" : "/login"} className={styles.iconButton}><User size={18} /></Link>
@@ -163,15 +163,15 @@ const Header = () => {
         <div className={styles.drawerHeader}>
           <button onClick={closeMobileMenu} className={styles.iconButton}><X size={24} /></button>
           
-          {/* --- MOBILE LOGO: PNG --- */}
-          <div className={styles.drawerLogo} style={{ position: 'relative', width: '160px', height: '70px' }}>
+          {/* --- MOBILE LOGO: DOUBLE SIZE --- */}
+          <div className={styles.drawerLogo} style={{ position: 'relative', width: '320px', height: '140px' }}>
              <img 
-              src="/logo.png?v=3" 
+              src="/logo.png?v=4" 
               alt="My Dream" 
               style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
             />
           </div>
-          {/* ------------------------ */}
+          {/* ------------------------------ */}
 
         </div>
         <div className={styles.drawerSearchWrapper}>
