@@ -1,4 +1,4 @@
-/* src/styles/Header.module.css - MOBILE GIANT LOGO FIX (TRANSPARENCY) */
+/* src/styles/Header.module.css - MOBILE GIANT LOGO FIX (DIRECT SIZE + BLEND) */
 
 .header {
   position: sticky;
@@ -43,7 +43,7 @@
   z-index: 1;
   pointer-events: none;
   transition: top 0.3s ease-in-out, transform 0.3s ease-in-out;
-  background: transparent !important; /* FORCE TRANSPARENT */
+  background: transparent !important;
 }
 
 .logoLinkWrapper {
@@ -178,20 +178,14 @@
     height: auto;
     align-items: center;
     background: transparent !important;
-    /* Ensure the container doesn't have a background */
-    box-shadow: none !important;
-    border: none !important;
+    /* Removed mix-blend-mode from container to avoid stacking issues */
   }
   
   /* MOBILE GIANT LOGO SETTINGS */
   .logoImage { 
-    height: 160px; 
-    transform: scale(1.5);
-    /* Force multiply to blend the white background */
+    /* Use direct height instead of scale to avoid stacking context issues */
+    height: 240px; /* 160px * 1.5 = 240px */
     mix-blend-mode: multiply; 
-    /* Remove any border radius */
-    border-radius: 0;
-    /* Ensure no background color on the image element itself */
     background-color: transparent !important;
   } 
   
@@ -200,7 +194,6 @@
   }
   
   .header.scrolled .logoImage { 
-    height: 140px; 
-    transform: scale(1.5); 
+    height: 210px; /* 140px * 1.5 = 210px */
   }
 }
