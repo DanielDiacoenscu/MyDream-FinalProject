@@ -1,4 +1,4 @@
-// src/components/Header.tsx - FINAL, CORRECTED PATHS
+// src/components/Header.tsx - FINAL, CORRECTED PATHS & SIZES
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -43,7 +43,7 @@ const Header = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isResultsVisible, setIsResultsVisible] = useState(false);
 
-  // --- Mobile Search State (NEW) ---
+  // --- Mobile Search State ---
   const [mobileQuery, setMobileQuery] = useState('');
   const [mobileDebouncedQuery, setMobileDebouncedQuery] = useState('');
   const [mobileResults, setMobileResults] = useState<Product[]>([]);
@@ -55,7 +55,7 @@ const Header = () => {
     return () => clearTimeout(handler);
   }, [query]);
 
-  // Debounce for Mobile (NEW)
+  // Debounce for Mobile
   useEffect(() => {
     const handler = setTimeout(() => setMobileDebouncedQuery(mobileQuery), 300);
     return () => clearTimeout(handler);
@@ -76,7 +76,7 @@ const Header = () => {
     }
   }, [debouncedQuery]);
 
-  // API call for Mobile (NEW)
+  // API call for Mobile
   useEffect(() => {
     if (mobileDebouncedQuery.length > 1) {
       setIsMobileLoading(true);
@@ -126,7 +126,6 @@ const Header = () => {
   return (
     <>
       <header ref={searchContainerRef} className={`${styles.header} ${isScrolled ? styles.scrolled : ''}`}>
-        {/* ... Top bar and nav bar are unchanged ... */}
         <div className={styles.topBar}>
           <div className={styles.leftSection}>
             <button onClick={() => setIsMobileMenuOpen(true)} className={`${styles.iconButton} ${styles.mobileOnly}`}><Menu size={24} /></button>
@@ -140,17 +139,17 @@ const Header = () => {
             </div>
           </div>
           
-          {/* --- LOGO SECTION: UPDATED TO USE /logo.jpg --- */}
+          {/* --- DESKTOP LOGO: 700px --- */}
           <div className={styles.logoSection}>
-            <Link href="/" style={{ display: 'block', position: 'relative', height: '80px', width: 'auto' }}>
+            <Link href="/" style={{ display: 'block', position: 'relative', width: '700px', height: 'auto' }}>
               <img 
                 src="/logo.jpg" 
                 alt="My Dream by Tatyana Gyumisheva" 
-                style={{ height: '100%', width: 'auto', objectFit: 'contain' }} 
+                style={{ width: '100%', height: 'auto', objectFit: 'contain' }} 
               />
             </Link>
           </div>
-          {/* ------------------------------------------ */}
+          {/* --------------------------- */}
 
           <div className={styles.rightSection}>
             <Link href={user ? "/account" : "/login"} className={styles.iconButton}><User size={18} /></Link>
@@ -167,15 +166,15 @@ const Header = () => {
         <div className={styles.drawerHeader}>
           <button onClick={closeMobileMenu} className={styles.iconButton}><X size={24} /></button>
           
-          {/* --- MOBILE LOGO: UPDATED TO USE /logo.jpg --- */}
-          <div className={styles.drawerLogo} style={{ position: 'relative', height: '60px', width: 'auto' }}>
+          {/* --- MOBILE LOGO: 320px --- */}
+          <div className={styles.drawerLogo} style={{ position: 'relative', width: '320px', height: 'auto' }}>
              <img 
               src="/logo.jpg" 
               alt="My Dream" 
-              style={{ height: '100%', width: 'auto', objectFit: 'contain' }} 
+              style={{ width: '100%', height: 'auto', objectFit: 'contain' }} 
             />
           </div>
-          {/* ----------------------------------------- */}
+          {/* -------------------------- */}
 
         </div>
         <div className={styles.drawerSearchWrapper}>
@@ -189,7 +188,6 @@ const Header = () => {
           <Search size={20} className={styles.drawerSearchIcon} />
         </div>
         <div className={styles.drawerContent}>
-          {/* --- NEW: Conditional Rendering for Search Results --- */}
           {mobileQuery.length > 1 ? (
             <div className={styles.drawerResultsContainer}>
               {isMobileLoading && <div className={styles.drawerResultsMessage}>Searching...</div>}
