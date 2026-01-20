@@ -61,7 +61,7 @@
 
 /* --- SCROLLED STATE --- */
 /* KEY CHANGE: Increase scrolled height to 5rem (was 4rem) so logo doesn't touch edges */
-.header.scrolled .topBar { height: 5rem; } 
+.header.scrolled .topBar { height: 4rem; } 
 
 .header.scrolled .logoImage { height: 320px; } /* Scrolled size (340 - 20) */
 .header.scrolled .logoSection { 
