@@ -151,6 +151,7 @@ const Header = () => {
           
           {/* --- MOBILE LOGO FIXED --- */}
           <div className={styles.drawerLogoWrapper}>
+            <Link href="/" onClick={closeMobileMenu}>
              <Image 
               src="/logo.jpg" 
               alt="My Dream" 
@@ -158,6 +159,7 @@ const Header = () => {
               height={60}
               style={{ objectFit: 'contain', mixBlendMode: 'multiply' }}
             />
+            </Link>
           </div>
           {/* ------------------------- */}
 
