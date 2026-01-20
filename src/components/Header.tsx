@@ -1,4 +1,5 @@
 // src/components/Header.tsx - FINAL, CORRECTED PATHS
+// Force update to ensure deployment
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
