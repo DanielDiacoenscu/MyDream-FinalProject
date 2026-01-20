@@ -167,6 +167,6 @@
     align-items: center;
   }
   
-  .logoImage { height: 50px; } 
-  .header.scrolled .logoImage { height: 35px; }
+  .logoImage { height:150px; } 
+  .header.scrolled .logoImage { height:135px; }
 }
