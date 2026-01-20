@@ -1,4 +1,4 @@
-// src/components/Header.tsx - CACHE BUSTER VERSION
+// src/components/Header.tsx - BIGGER LOGO + TRANSPARENT PNG
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -137,18 +137,17 @@ const Header = () => {
             </div>
           </div>
           
-          {/* --- LOGO SECTION: ADDED VERSION QUERY TO BUST CACHE --- */}
+          {/* --- LOGO SECTION: BIGGER + PNG --- */}
           <div className={styles.logoSection}>
-            <Link href="/" style={{ display: 'block', position: 'relative', width: '200px', height: '100px' }}>
-              {/* We use a standard img tag here to bypass Next.js Image optimization issues if any */}
+            <Link href="/" style={{ display: 'block', position: 'relative', width: '280px', height: '120px' }}>
               <img 
-                src="/logo.jpg?v=1" 
+                src="/logo.png?v=3" 
                 alt="My Dream by Tatyana Gyumisheva" 
                 style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
               />
             </Link>
           </div>
-          {/* ------------------------------------------------------- */}
+          {/* ---------------------------------- */}
 
           <div className={styles.rightSection}>
             <Link href={user ? "/account" : "/login"} className={styles.iconButton}><User size={18} /></Link>
@@ -164,15 +163,15 @@ const Header = () => {
         <div className={styles.drawerHeader}>
           <button onClick={closeMobileMenu} className={styles.iconButton}><X size={24} /></button>
           
-          {/* --- MOBILE LOGO: ADDED VERSION QUERY --- */}
-          <div className={styles.drawerLogo} style={{ position: 'relative', width: '140px', height: '60px' }}>
+          {/* --- MOBILE LOGO: PNG --- */}
+          <div className={styles.drawerLogo} style={{ position: 'relative', width: '160px', height: '70px' }}>
              <img 
-              src="/logo.jpg?v=1" 
+              src="/logo.png?v=3" 
               alt="My Dream" 
               style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
             />
           </div>
-          {/* ---------------------------------------- */}
+          {/* ------------------------ */}
 
         </div>
         <div className={styles.drawerSearchWrapper}>
