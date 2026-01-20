@@ -1,4 +1,4 @@
-/* src/styles/Header.module.css - TOP ALIGNED SCROLLED LOGO (FIXED) */
+/* src/styles/Header.module.css - TALLER SCROLLED HEADER FOR BREATHING ROOM */
 
 .header {
   position: sticky;
@@ -13,7 +13,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 6rem; /* Compact box (96px) */
+  height: 6rem; /* Initial Compact box (96px) */
   padding: 0 1.5rem;
   max-width: 1600px;
   margin: 0 auto;
@@ -34,15 +34,14 @@
 .logoSection {
   position: absolute;
   left: 50%;
-  top: 50%; /* Initial: Center vertically */
-  transform: translate(-50%, -50%); /* Initial: Perfect center */
+  top: 50%; /* Always center vertically */
+  transform: translate(-50%, -50%); /* Always perfect center */
   display: flex;
   justify-content: center;
   align-items: center;
   height: auto;
   z-index: 1;
   pointer-events: none;
-  /* Ensure smooth transition for position changes */
   transition: top 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 
@@ -61,13 +60,14 @@
 }
 
 /* --- SCROLLED STATE --- */
-.header.scrolled .topBar { height: 4rem; }
-.header.scrolled .logoImage { height: 320px; } 
+/* KEY CHANGE: Increase scrolled height to 5rem (was 4rem) so logo doesn't touch edges */
+.header.scrolled .topBar { height: 5rem; } 
 
-/* KEY CHANGE: When scrolled, align to top with 4px gap */
+.header.scrolled .logoImage { height: 320px; } /* Scrolled size (340 - 20) */
 .header.scrolled .logoSection { 
-  top: 4px; /* A few pixels from the top */
-  transform: translate(-50%, 0); /* Center Horizontal ONLY, respect top: 4px */
+  top: 50%; 
+  transform: translate(-50%, -50%);
+  align-items: center;
 }
 
 /* --- MEGA MENU POSITIONING --- */
@@ -88,7 +88,7 @@
 }
 
 .header.scrolled .megaMenu { 
-  top: 7rem; 
+  top: 8rem; /* Adjusted for 5rem topBar + 3rem navBar */
 }
 
 /* --- DRAWER LOGO --- */
