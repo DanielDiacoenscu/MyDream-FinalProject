@@ -122,8 +122,8 @@ const Header = () => {
           </div>
           
           {/* --- DESKTOP LOGO FIXED --- */}
-          <div className={styles.logoSection} style={{ position: 'relative', zIndex: 10 }}>
-            <Link href="/" className={styles.logoLinkWrapper} style={{ display: 'block', cursor: 'pointer' }}>
+          <div className={styles.logoSection}>
+            <Link href="/" className={styles.logoLinkWrapper}>
               {/* Using standard img tag for absolute control over sizing in this specific layout context, 
                   or Next Image with specific styling to ensure it fills the container */}
               <img 
@@ -151,7 +151,7 @@ const Header = () => {
           
           {/* --- MOBILE LOGO FIXED --- */}
           <div className={styles.drawerLogoWrapper}>
-            <Link href="/" onClick={closeMobileMenu} style={{ display: 'block', cursor: 'pointer' }}>
+            <Link href="/" onClick={closeMobileMenu}>
              <Image 
               src="/logo.jpg" 
               alt="My Dream" 
