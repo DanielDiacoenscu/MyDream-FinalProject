@@ -1,4 +1,4 @@
-/* src/styles/Header.module.css - OVERFLOW LOGO */
+/* src/styles/Header.module.css - PULLED UP LOGO */
 
 .header {
   position: sticky;
@@ -13,12 +13,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 6rem; /* Box size stays COMPACT */
+  height: 6rem; /* Compact box */
   padding: 0 1.5rem;
   max-width: 1600px;
   margin: 0 auto;
   transition: height 0.3s ease-in-out;
-  position: relative; /* Needed for absolute logo positioning */
+  position: relative;
 }
 
 .leftSection, .rightSection {
@@ -26,7 +26,7 @@
   align-items: center;
   flex: 1 0 0%;
   gap: 0.75rem;
-  z-index: 2; /* Ensure icons are clickable above logo area */
+  z-index: 2;
 }
 .rightSection { justify-content: flex-end; }
 
@@ -35,13 +35,13 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  top: 0;
+  top: -20px; /* PULL UP: Moves logo higher to fix "low down" look */
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* Align to top edge */
+  align-items: flex-start;
   height: auto;
   z-index: 1;
-  padding-top: 0.5rem;
+  padding-top: 0;
 }
 
 .logoLinkWrapper {
@@ -51,17 +51,16 @@
 
 .logoImage {
   width: auto;
-  height: 160px; /* MASSIVE LOGO (160px) inside 96px box */
+  height: 140px; /* Large size */
   object-fit: contain;
   transition: height 0.3s ease-in-out;
   mix-blend-mode: multiply;
 }
 
 /* --- SCROLLED STATE --- */
-/* When scrolling, we shrink everything back to normal to save space */
 .header.scrolled .topBar { height: 4rem; }
-.header.scrolled .logoImage { height: 60px; } 
-.header.scrolled .logoSection { align-items: center; padding-top: 0; height: 100%; }
+.header.scrolled .logoImage { height: 60px; }
+.header.scrolled .logoSection { top: 0; align-items: center; height: 100%; }
 
 /* --- MEGA MENU POSITIONING --- */
 .megaMenu { 
