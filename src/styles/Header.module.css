@@ -1,4 +1,4 @@
-/* src/styles/Header.module.css - MOBILE GIANT LOGO FIX (BLEND MODE) */
+/* src/styles/Header.module.css - MOBILE GIANT LOGO FIX (SCALE + BLEND) */
 
 .header {
   position: sticky;
@@ -43,7 +43,9 @@
   z-index: 1;
   pointer-events: none;
   transition: top 0.3s ease-in-out, transform 0.3s ease-in-out;
-  background: transparent !important; /* Ensure no background on container */
+  background: transparent !important;
+  /* Ensure the section itself allows blending */
+  mix-blend-mode: multiply;
 }
 
 .logoLinkWrapper {
@@ -57,7 +59,6 @@
   height: 340px; /* GIANT INITIAL SIZE */
   object-fit: contain;
   transition: height 0.3s ease-in-out;
-  /* KEY FIX: Multiply makes white pixels transparent */
   mix-blend-mode: multiply; 
   display: block;
 }
@@ -179,15 +180,19 @@
     height: auto;
     align-items: center;
     background: transparent !important;
+    /* Force blend mode on the container too */
+    mix-blend-mode: multiply;
   }
   
   /* MOBILE GIANT LOGO SETTINGS */
   .logoImage { 
     height: 160px; 
-    /* Try to blend the white background of the JPG/PNG with the hero image */
+    /* Scale up the image to make the text larger within the whitespace */
+    transform: scale(1.5);
+    /* Ensure white background becomes transparent */
     mix-blend-mode: multiply; 
-    /* Fallback: Round the corners so the white box looks like a tag if blending fails */
-    border-radius: 0 0 12px 12px;
+    /* Remove any border radius that highlights the box */
+    border-radius: 0;
   } 
   
   .header.scrolled .topBar { 
@@ -196,5 +201,6 @@
   
   .header.scrolled .logoImage { 
     height: 140px; 
+    transform: scale(1.5); /* Keep it scaled when scrolled */
   }
 }
