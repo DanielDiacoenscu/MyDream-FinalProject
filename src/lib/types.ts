@@ -10,6 +10,7 @@ export interface Product {
   name: string;
   slug: string;
   price: number;
+  price_bgn?: number; // <--- ADDED
   description: string;
   images: ProductImage[];
 }

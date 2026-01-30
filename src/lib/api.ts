@@ -11,7 +11,8 @@ function mapProductData(item: any): Product | null {
 
   const source = item.attributes ? item.attributes : item;
   const id = item.id;
-  const { name, slug, price, Description, description, Images } = source;
+  // ADDED price_bgn to destructuring
+  const { name, slug, price, price_bgn, Description, description, Images } = source;
   const imagesData = Images?.data || Images || [];
 
   return {
@@ -19,6 +20,7 @@ function mapProductData(item: any): Product | null {
     name: name || 'Unnamed Product',
     slug: slug || '',
     price: price || 0,
+    price_bgn: price_bgn, // <--- MAPPED HERE
     description: description || Description || '',
     images: imagesData.map((img: any) => {
       const imageSource = img.attributes ? img.attributes : img;
@@ -52,7 +54,6 @@ async function fetchAPI(endpoint: string, query: string = '') {
     'Content-Type': 'application/json',
   };
 
-  // FIX: Add Authorization Header if Token Exists
   if (API_TOKEN) {
     headers['Authorization'] = `Bearer ${API_TOKEN}`;
   }
@@ -61,7 +62,7 @@ async function fetchAPI(endpoint: string, query: string = '') {
     const res = await fetch(fullUrlWithQuery, {
       method: 'GET',
       headers,
-      next: { revalidate: 0 }, // FIX: Disable cache to force fresh data
+      next: { revalidate: 0 },
     });
 
     if (!res.ok) {
@@ -106,7 +107,6 @@ export async function getProductsByCategory(categorySlug: string) {
 }
 
 export async function getPageBySlug(slug: string) {
-  // FIX: Changed 'page_components' to '*' to catch 'content' dynamic zone
   const query = `filters[slug][$eq]=${slug}&populate=*`;
   const response = await fetchAPI('/pages', query);
   const pages = processStrapiResponse(response);
@@ -177,7 +177,6 @@ export async function fetchAllCollections(): Promise<any[]> {
   return processStrapiResponse(response);
 }
 
-// --- ORDER FUNCTION ---
 export async function createOrder(orderData: any) {
   const url = `${STRAPI_URL}/api/orders`;
   
@@ -203,7 +202,6 @@ export async function createOrder(orderData: any) {
   }
 }
 
-// --- WISHLIST FUNCTION ---
 export async function updateUserWishlist(token: string, userId: number, productIds: number[]) {
   const url = `${STRAPI_URL}/api/users/${userId}`;
   

@@ -1,4 +1,4 @@
-// src/context/CartContext.tsx - CONNECTED TO THE CENTRAL TYPE
+// src/context/CartContext.tsx - DUAL CURRENCY ENABLED
 'use client';
 
 import { createContext, useContext, useState, ReactNode } from 'react';
@@ -6,8 +6,9 @@ import { StrapiProduct } from '@/types/strapi';
 
 export interface CartItem {
   id: number;
-  name:string;
+  name: string;
   price: number;
+  price_bgn?: number; // <--- ADDED
   quantity: number;
   image: string;
   slug: string;
@@ -25,6 +26,8 @@ interface CartContextType {
   clearCart: () => void;
   cartCount: number;
   cartTotal: number;
+  cartTotalBGN: number; // <--- ADDED
+  formatDualPrice: (price: number, price_bgn?: number) => string; // <--- HELPER
 }
 
 export const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -36,7 +39,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const toggleCart = () => setIsCartOpen(!isCartOpen);
 
   const addToCart = (product: StrapiProduct) => {
-    // Extract image URL safely outside the setter
     const imageUrl = product.Images?.[0]?.url;
 
     if (!imageUrl) {
@@ -55,6 +57,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         id: product.id,
         name: product.name,
         price: product.price,
+        price_bgn: product.price_bgn, // <--- CAPTURE BGN PRICE
         quantity: 1,
         image: `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${imageUrl}`,
         slug: product.slug,
@@ -63,6 +66,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       };
       return [...prevItems, newItem];
     });
+    setIsCartOpen(true); // Auto open cart on add
   };
 
   const removeFromCart = (id: number) => {
@@ -79,12 +83,25 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const clearCart = () => {
-    setCartItems([]);
-  };
+  const clearCart = () => setCartItems([]);
 
   const cartCount = cartItems.reduce((count, item) => count + item.quantity, 0);
+  
+  // Calculate totals
   const cartTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  const cartTotalBGN = cartItems.reduce((total, item) => {
+    // Use explicit BGN price if available, otherwise fallback to approx rate
+    const bgnPrice = item.price_bgn || (item.price * 1.95583);
+    return total + bgnPrice * item.quantity;
+  }, 0);
+
+  const formatDualPrice = (price: number, price_bgn?: number) => {
+    const eur = `€${price.toFixed(2)}`;
+    const bgn = price_bgn 
+      ? `${price_bgn.toFixed(2)} лв.` 
+      : `${(price * 1.95583).toFixed(2)} лв.`; // Fallback calculation
+    return `${eur} / ${bgn}`;
+  };
 
   return (
     <CartContext.Provider value={{ 
@@ -96,7 +113,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       updateQuantity, 
       cartCount, 
       cartTotal,
-      clearCart
+      cartTotalBGN,
+      clearCart,
+      formatDualPrice
     }}>
       {children}
     </CartContext.Provider>

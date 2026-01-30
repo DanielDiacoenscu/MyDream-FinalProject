@@ -2,6 +2,7 @@ export interface StrapiProduct {
   id: number;
   name: string;
   price: number;
+  price_bgn?: number; // <--- ADDED
   slug: string;
   Images: {
     id: number;

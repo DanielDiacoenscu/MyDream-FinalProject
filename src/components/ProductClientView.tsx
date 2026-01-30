@@ -1,46 +1,57 @@
 'use client';
 
-import { useCart } from '@/context/CartContext';
+import { useState } from 'react';
 import ProductImageGallery from '@/components/pdp/ProductImageGallery';
 import ProductInfo from '@/components/pdp/ProductInfo';
 import ProductActions from '@/components/pdp/ProductActions';
 import ProductDescriptionAccordion from '@/components/pdp/ProductDescriptionAccordion';
 import styles from '@/styles/ProductPage.module.css';
+import { StrapiProduct } from '@/types/strapi';
 
-export default function ProductClientView({ product }: { product: any }) {
-  const { addToCart } = useCart();
+interface ProductClientViewProps {
+  product: StrapiProduct;
+}
 
-  if (!product) {
-    return null;
-  }
+const ProductClientView = ({ product }: ProductClientViewProps) => {
+  const [selectedImage, setSelectedImage] = useState(0);
 
-  const { name, subtitle, price, Images, description, rating } = product;
-  
-  // Ensure 'description' is treated as a string, with a fallback.
-  const descriptionText = description || 'No description available.';
+  const images = product.Images?.map(img => ({
+    id: img.id,
+    url: `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${img.url}`,
+    alt: img.alternativeText || product.name
+  })) || [];
 
   return (
-    <div className={styles.pageWrapper}>
-      <main className={styles.mainGrid}>
-      
+    <div className={styles.container}>
+      <div className={styles.grid}>
         <div className={styles.galleryColumn}>
-          <ProductImageGallery images={Images} />
-        </div>
-
-        <div className={styles.detailsColumn}>
-          <ProductInfo 
-            title={name}
-            subtitle={subtitle || ''}
-            price={price}
-            rating={rating || 0}
+          <ProductImageGallery 
+            images={images}
+            selectedImage={selectedImage}
+            onImageSelect={setSelectedImage}
           />
-          <ProductActions product={product} />
-
-          <ProductDescriptionAccordion description={descriptionText} />
-
         </div>
-
-      </main>
+        
+        <div className={styles.infoColumn}>
+          <ProductInfo 
+            title={product.name}
+            subtitle={product.subtitle || 'Luxury Collection'}
+            price={product.price}
+            price_bgn={product.price_bgn} // <--- PASSING IT HERE
+            rating={product.Rating || 5}
+          />
+          
+          <ProductActions product={product} />
+          
+          <ProductDescriptionAccordion 
+            description={product.description || ''}
+            ingredients="Aqua, Glycerin, ..."
+            usage="Apply daily..."
+          />
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default ProductClientView;

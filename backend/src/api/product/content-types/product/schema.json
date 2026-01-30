@@ -53,6 +53,9 @@
       "type": "integer",
       "required": true,
       "default": 100
+    },
+    "price_bgn": {
+      "type": "decimal"
     }
   }
 }

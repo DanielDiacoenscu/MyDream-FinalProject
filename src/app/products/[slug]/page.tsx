@@ -1,22 +1,27 @@
-// src/app/products/[slug]/page.tsx - DEFINITIVE FIX
-import { getProductBySlug } from '../../../lib/api';
+// src/app/products/[slug]/page.tsx
 import { notFound } from 'next/navigation';
 import ProductClientView from '@/components/ProductClientView';
+import { getProductBySlug } from '@/lib/api';
 
-// The type definition remains the same
-type ProductPageParams = { params: { slug: string; } }
+export const dynamic = 'force-dynamic';
 
-// --- THIS IS THE FIX ---
-// Instead of taking 'params' as an argument, we deconstruct it immediately
-// in the function signature to get 'slug' directly.
-export default async function ProductPage({ params: { slug } }: ProductPageParams) {
-  
-  // Now we can use 'slug' directly, and the Next.js engine will be satisfied.
-  const product = await getProductBySlug(slug);
+export default async function ProductPage({ params }: { params: { slug: string } }) {
+  const product = await getProductBySlug(params.slug);
 
   if (!product) {
     notFound();
   }
 
-  return <ProductClientView product={product} />;
+  const transformedProduct = {
+    ...product,
+    Images: product.images?.data?.map((img: any) => ({
+      id: img.id,
+      url: img.attributes.url,
+      alternativeText: img.attributes.alternativeText || ''
+    })) || [],
+    Rating: 5,
+    price_bgn: product.price_bgn // <--- ENSURE THIS IS PASSED
+  };
+
+  return <ProductClientView product={transformedProduct} />;
 }

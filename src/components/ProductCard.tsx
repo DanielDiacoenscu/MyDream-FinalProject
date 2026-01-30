@@ -1,5 +1,6 @@
 'use client';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Heart } from 'lucide-react';
 import StarRating from './StarRating';
 import styles from '@/styles/ProductCard.module.css';
@@ -16,75 +17,62 @@ const ProductCard = ({ product }: ProductCardProps) => {
     return null; 
   }
 
-  const { addToCart } = useCart();
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { addToCart, formatDualPrice } = useCart();
+  const { addToWishlist, isInWishlist, removeFromWishlist } = useWishlist();
 
-  const primaryImage = product.Images?.[0];
-  const imageUrl = primaryImage 
-    ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${primaryImage.url}` 
-    : 'https://placehold.co/400x500';
-  const imageAltText = primaryImage?.alternativeText || product.name || 'Product image';
-
-  const handleAddToCart = () => { addToCart(product); };
-  const isWishlisted = isInWishlist(product.id);
-  const handleWishlistToggle = () => {
-    if (isWishlisted) { 
-      removeFromWishlist(product.id); 
-    } else { 
-      addToWishlist(product); 
+  const handleWishlistClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isInWishlist(product.id)) {
+      removeFromWishlist(product.id);
+    } else {
+      addToWishlist(product);
     }
   };
 
-  // Use lowercase 'price' to match the type definition
-  const displayPrice = typeof product.price === 'number' 
-    ? `${product.price.toFixed(2)} €.` 
-    : 'N/A';
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    addToCart(product);
+  };
+
+  const imageUrl = product.Images && product.Images.length > 0 
+    ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${product.Images[0].url}`
+    : '/placeholder.jpg';
 
   return (
-    <div className={styles.productTile}>
-      <div className={styles.productTileInfo}>
-        <div className={styles.productTileNamePrice}>
-          <a href={`/products/${product.slug || product.id}`} className={styles.productTileName}>
-            <span>{product.name}</span>
-          </a>
+    <Link href={`/products/${product.slug}`} className={styles.card}>
+      <div className={styles.imageContainer}>
+        {product.tag && <span className={styles.tag}>{product.tag}</span>}
+        <button 
+          className={`${styles.wishlistButton} ${isInWishlist(product.id) ? styles.active : ''}`}
+          onClick={handleWishlistClick}
+        >
+          <Heart size={20} fill={isInWishlist(product.id) ? "currentColor" : "none"} />
+        </button>
+        <Image 
+          src={imageUrl} 
+          alt={product.name} 
+          fill 
+          className={styles.image}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
+      </div>
+      <div className={styles.content}>
+        <h3 className={styles.title}>{product.name}</h3>
+        <p className={styles.subtitle}>{product.subtitle || 'Luxury Skincare'}</p>
+        <div className={styles.ratingContainer}>
+           <StarRating rating={product.Rating || 5} />
+        </div>
+        <div className={styles.footer}>
           <span className={styles.price}>
-            <span className={styles.sales}>
-              <span className={styles.value}>{displayPrice}</span>
-            </span>
+            {formatDualPrice(product.price, product.price_bgn)}
           </span>
-        </div>
-        {product.Rating && (
-          <div className={styles.ratings}>
-            <StarRating rating={product.Rating} />
-          </div>
-        )}
-        {product.tag && (
-          <div className={styles.productTileInfoBadge}>{product.tag}</div>
-        )}
-      </div>
-      <a href={`/products/${product.slug || product.id}`} className={styles.productTileImageLink}>
-        <div className={styles.productTileImageContainer}>
-          <Image 
-            src={imageUrl} 
-            alt={imageAltText} 
-            width={400} 
-            height={500} 
-            className={styles.productTileImage}
-            unoptimized={imageUrl.includes('placehold.co')}
-          />
-        </div>
-      </a>
-      <div className={styles.productTileVariantsAndCta}>
-        <div className={styles.productTileCta}>
-          <button className={styles.addToCart} onClick={handleAddToCart}>
-            Добави
-          </button>
-          <button className={styles.wishlistBtn} onClick={handleWishlistToggle}>
-            <Heart size={18} fill={isWishlisted ? 'black' : 'none'} />
+          <button className={styles.addButton} onClick={handleAddToCart}>
+            Add to Cart
           </button>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
