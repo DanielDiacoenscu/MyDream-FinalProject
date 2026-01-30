@@ -6,21 +6,31 @@ import { getProductBySlug } from '@/lib/api';
 export const dynamic = 'force-dynamic';
 
 export default async function ProductPage({ params }: { params: { slug: string } }) {
-  const product = await getProductBySlug(params.slug);
+  const rawProduct = await getProductBySlug(params.slug);
 
-  if (!product) {
+  if (!rawProduct) {
     notFound();
   }
 
+  // Handle Strapi v4 structure (id + attributes)
+  const attributes = rawProduct.attributes || rawProduct;
+  const id = rawProduct.id;
+
   const transformedProduct = {
-    ...product,
-    Images: product.images?.data?.map((img: any) => ({
+    id: id,
+    name: attributes.name,
+    slug: attributes.slug,
+    price: attributes.price,
+    price_bgn: attributes.price_bgn,
+    description: attributes.description || attributes.Description || '',
+    subtitle: attributes.subtitle,
+    tag: attributes.tag,
+    Rating: attributes.Rating || 5,
+    Images: attributes.Images?.data?.map((img: any) => ({
       id: img.id,
       url: img.attributes.url,
       alternativeText: img.attributes.alternativeText || ''
-    })) || [],
-    Rating: 5,
-    price_bgn: product.price_bgn // <--- ENSURE THIS IS PASSED
+    })) || []
   };
 
   return <ProductClientView product={transformedProduct} />;
