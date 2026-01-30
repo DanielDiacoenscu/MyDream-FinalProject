@@ -37,7 +37,7 @@ const ProductClientView = ({ product }: ProductClientViewProps) => {
             title={product.name}
             subtitle={product.subtitle || 'Luxury Collection'}
             price={product.price}
-            price_bgn={product.price_bgn} // <--- PASSING IT HERE
+            price_bgn={product.price_bgn}
             rating={product.Rating || 5}
           />
           
@@ -45,8 +45,6 @@ const ProductClientView = ({ product }: ProductClientViewProps) => {
           
           <ProductDescriptionAccordion 
             description={product.description || ''}
-            ingredients="Aqua, Glycerin, ..."
-            usage="Apply daily..."
           />
         </div>
       </div>
