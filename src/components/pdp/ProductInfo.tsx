@@ -1,18 +1,19 @@
-// src/components/pdp/ProductInfo.tsx - UPGRADED WITH DYNAMIC RATING
+'use client';
+
 import { Star } from 'lucide-react';
 import styles from '@/styles/pdp/ProductInfo.module.css';
-import { useCart } from '@/context/CartContext'; // <--- IMPORT
+import { useCart } from '@/context/CartContext';
 
 interface ProductInfoProps {
   title: string;
   subtitle: string;
   price: number;
-  price_bgn?: number; // <--- ADDED
+  price_bgn?: number;
   rating: number;
 }
 
 const ProductInfo = ({ title, subtitle, price, price_bgn, rating }: ProductInfoProps) => {
-  const { formatDualPrice } = useCart(); // <--- USE HELPER
+  const { formatDualPrice } = useCart();
 
   const renderStars = () => {
     const totalStars = 5;
@@ -35,7 +36,6 @@ const ProductInfo = ({ title, subtitle, price, price_bgn, rating }: ProductInfoP
         {renderStars()}
         <span className={styles.reviewCount}>168 Reviews</span>
       </div>
-      {/* CHANGED: Use formatDualPrice */}
       <p className={styles.price}>
         {formatDualPrice(price, price_bgn)}
       </p>

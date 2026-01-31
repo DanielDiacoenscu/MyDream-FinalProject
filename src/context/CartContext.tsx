@@ -1,4 +1,4 @@
-// src/context/CartContext.tsx - CONNECTED TO THE CENTRAL TYPE
+// src/context/CartContext.tsx - HARDENED
 'use client';
 
 import { createContext, useContext, useState, ReactNode } from 'react';
@@ -96,10 +96,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, 0);
 
   const formatDualPrice = (price: number, price_bgn?: number) => {
-    const eur = `${price.toFixed(2)} €`;
-    const bgn = price_bgn 
-      ? `${price_bgn.toFixed(2)} лв.` 
-      : `${(price * 1.95583).toFixed(2)} лв.`;
+    // Safety check: ensure inputs are numbers
+    const safePrice = Number(price) || 0;
+    const safeBgn = price_bgn !== undefined && price_bgn !== null ? Number(price_bgn) : undefined;
+
+    const eur = `${safePrice.toFixed(2)} €`;
+    const bgn = safeBgn 
+      ? `${safeBgn.toFixed(2)} лв.` 
+      : `${(safePrice * 1.95583).toFixed(2)} лв.`;
     return `${eur} / ${bgn}`;
   };
 
