@@ -1,4 +1,4 @@
-// src/components/ReviewOrder.tsx - FIXED DATA MAPPING
+// src/components/ReviewOrder.tsx - FIXED DATA MAPPING WITH DUAL CURRENCY
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -10,9 +10,12 @@ import styles from '@/styles/Checkout.module.css';
 const ReviewOrder = () => {
   const router = useRouter();
   const { shippingAddress, shippingMethod, shippingCost } = useCheckout();
-  const { cartItems, cartTotal, clearCart } = useCart();
+  // ADDED: cartTotalBGN, formatDualPrice
+  const { cartItems, cartTotal, cartTotalBGN, clearCart, formatDualPrice } = useCart();
 
   const finalTotal = cartTotal + shippingCost;
+  // ADDED: Calculate BGN Total
+  const finalTotalBGN = cartTotalBGN + (shippingCost * 1.95583);
 
   const handlePlaceOrder = async () => {
     // --- DATA MAPPING START ---
@@ -68,11 +71,13 @@ const ReviewOrder = () => {
       <div className={styles.reviewSection}>
         <h3 className={styles.reviewTitle}>Метод на доставка</h3>
         <p>{shippingMethod === 'address' ? 'До адрес' : shippingMethod === 'office' ? 'До офис' : 'До автомат'}</p>
-        <p>Цена: {shippingCost.toFixed(2)} лв.</p>
+        {/* CHANGED: Use formatDualPrice */}
+        <p>Цена: {formatDualPrice(shippingCost, shippingCost * 1.95583)}</p>
       </div>
 
       <div className={styles.totalSection}>
-        <h3>Общо за плащане: {finalTotal.toFixed(2)} лв.</h3>
+        {/* CHANGED: Use formatDualPrice */}
+        <h3>Общо за плащане: {formatDualPrice(finalTotal, finalTotalBGN)}</h3>
       </div>
 
       <button onClick={handlePlaceOrder} className={styles.formButton}>

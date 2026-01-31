@@ -7,7 +7,8 @@ import { useCheckout } from '@/context/CheckoutContext';
 import styles from '@/styles/Checkout.module.css';
 
 const CheckoutSummary = () => {
-  const { cartItems, cartTotal } = useCart();
+  // ADDED: cartTotalBGN, formatDualPrice
+  const { cartItems, cartTotal, cartTotalBGN, formatDualPrice } = useCart();
   const { shippingCost, promoCode, discountAmount, applyPromoCode, removePromoCode } = useCheckout();
   
   const [promoInput, setPromoInput] = useState('');
@@ -17,8 +18,13 @@ const CheckoutSummary = () => {
   const isEligibleForFreeShipping = cartTotal >= 100;
   const finalShippingCost = isEligibleForFreeShipping ? 0 : shippingCost;
   
-  // Calculate Grand Total
+  // Calculate Grand Total (EUR)
   const grandTotal = Math.max(0, cartTotal - discountAmount) + finalShippingCost;
+
+  // ADDED: Calculate Grand Total (BGN)
+  const discountBGN = discountAmount * 1.95583;
+  const shippingBGN = finalShippingCost * 1.95583;
+  const grandTotalBGN = Math.max(0, cartTotalBGN - discountBGN) + shippingBGN;
 
   const handleApplyPromo = async () => {
     if (!promoInput.trim()) return;
@@ -53,7 +59,13 @@ const CheckoutSummary = () => {
               {item.subtitle && <p className={styles.summaryItemSubtitle}>{item.subtitle}</p>}
               <p className={styles.summaryItemQuantity}>Qty: {item.quantity}</p>
             </div>
-            <p className={styles.summaryItemPrice}>{(item.price * item.quantity).toFixed(2)} €.</p>
+            {/* CHANGED: Use formatDualPrice for item total */}
+            <p className={styles.summaryItemPrice}>
+              {formatDualPrice(
+                item.price * item.quantity, 
+                (item.price_bgn || item.price * 1.95583) * item.quantity
+              )}
+            </p>
           </li>
         ))}
       </ul>
@@ -107,24 +119,33 @@ const CheckoutSummary = () => {
       <div className={styles.summaryTotals}>
         <div className={styles.summaryTotalRow}>
           <span>Междинна сума</span>
-          <span>{cartTotal.toFixed(2)} €.</span>
+          {/* CHANGED: Use formatDualPrice */}
+          <span>{formatDualPrice(cartTotal, cartTotalBGN)}</span>
         </div>
         
         {/* --- DISCOUNT ROW --- */}
         {discountAmount > 0 && (
           <div className={styles.summaryTotalRow} style={{ color: '#166534' }}>
             <span>Отстъпка</span>
-            <span>-{discountAmount.toFixed(2)} €.</span>
+            {/* CHANGED: Use formatDualPrice */}
+            <span>-{formatDualPrice(discountAmount, discountBGN)}</span>
           </div>
         )}
 
         <div className={styles.summaryTotalRow}>
           <span>Доставка</span>
-          <span>{isEligibleForFreeShipping ? 'FREE' : `${finalShippingCost.toFixed(2)} €. `}</span>
+          {/* CHANGED: Use formatDualPrice */}
+          <span>
+            {isEligibleForFreeShipping 
+              ? 'FREE' 
+              : formatDualPrice(finalShippingCost, shippingBGN)
+            }
+          </span>
         </div>
         <div className={`${styles.summaryTotalRow} ${styles.grandTotal}`}>
           <span>Общо:</span>
-          <span>{grandTotal.toFixed(2)} €.</span>
+          {/* CHANGED: Use formatDualPrice */}
+          <span>{formatDualPrice(grandTotal, grandTotalBGN)}</span>
         </div>
         {isEligibleForFreeShipping && (
           <p className={styles.freeShippingMessage}>Congratulations, you've earned free shipping!</p>
