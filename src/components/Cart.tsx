@@ -1,4 +1,4 @@
-// src/components/Cart.tsx - DUAL CURRENCY ENABLED
+// src/components/Cart.tsx - DEFINITIVE FIX WITH DUAL CURRENCY
 'use client';
 
 import Image from 'next/image';
@@ -8,6 +8,7 @@ import { useCart } from '../context/CartContext';
 import styles from '../styles/Cart.module.css';
 
 const Cart = () => {
+  // Added cartTotalBGN and formatDualPrice to destructuring
   const { 
     isCartOpen, 
     toggleCart, 
@@ -24,79 +25,88 @@ const Cart = () => {
 
   const handleCheckout = () => {
     toggleCart();
-    router.push('/checkout');
+    setTimeout(() => {
+      router.push('/checkout');
+    }, 200); 
   };
 
   return (
     <>
-      <div className={`${styles.overlay} ${isCartOpen ? styles.open : ''}`} onClick={toggleCart} />
-      <div className={`${styles.cartDrawer} ${isCartOpen ? styles.open : ''}`}>
-        <div className={styles.header}>
-          <h2>Shopping Cart ({cartCount})</h2>
+      <div 
+        className={`${styles.overlay} ${isCartOpen ? styles.open : ''}`} 
+        onClick={toggleCart} 
+      />
+      <aside className={`${styles.drawer} ${isCartOpen ? styles.open : ''}`}>
+        <header className={styles.drawerHeader}>
+          <h2 className={styles.drawerTitle}>
+            Вашата Кошница
+            <span className={styles.cartCountCircle}>{cartCount}</span>
+          </h2>
           <button onClick={toggleCart} className={styles.closeButton}>
             <X size={24} />
           </button>
-        </div>
+        </header>
 
-        <div className={styles.itemsContainer}>
+        <div id="cart-drawer-items-container" className={styles.drawerContent}>
           {cartItems.length === 0 ? (
-            <div className={styles.emptyCart}>
-              <p>Your cart is empty</p>
-              <button onClick={toggleCart} className={styles.continueButton}>
-                Continue Shopping
-              </button>
+            <div className={styles.emptyMessage}>
+              <p>Вашата кошница е празна.</p>
             </div>
           ) : (
-            cartItems.map((item) => (
-              <div key={item.id} className={styles.cartItem}>
-                <div className={styles.itemImage}>
-                  <Image 
-                    src={item.image} 
-                    alt={item.name} 
-                    fill 
-                    style={{ objectFit: 'cover' }} 
-                  />
-                </div>
-                <div className={styles.itemDetails}>
-                  <h3>{item.name}</h3>
-                  <p className={styles.itemPrice}>
-                    {/* CHANGED: Use formatDualPrice */}
-                    {formatDualPrice(item.price, item.price_bgn)}
-                  </p>
-                  <div className={styles.quantityControls}>
-                    <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
-                    <span>{item.quantity}</span>
-                    <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+            <ul className={styles.cartList}>
+              {cartItems.map(item => (
+                <li key={item.id} className={styles.cartItem}>
+                  <div className={styles.itemImage}>
+                    <Image src={item.image} alt={item.name} width={100} height={120} style={{ objectFit: 'cover' }} />
                   </div>
-                </div>
-                <button 
-                  onClick={() => removeFromCart(item.id)} 
-                  className={styles.removeButton}
-                >
-                  <X size={18} />
-                </button>
-              </div>
-            ))
+                  <div className={styles.itemInfo}>
+                    <p className={styles.itemName}>{item.name}</p>
+                    {item.subtitle && <p className={styles.itemSubtitle}>{item.subtitle}</p>}
+                    {item.tag && <span className={styles.itemTag}>{item.tag}</span>}
+                    
+                    {item.price > 0 && (
+                      <div className={styles.itemQuantity}>
+                        <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>−</button>
+                        <span>{item.quantity}</span>
+                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+                      </div>
+                    )}
+                  </div>
+                  <div className={styles.itemActions}>
+                    {item.price > 0 ? (
+                      // CHANGED: Use formatDualPrice
+                      <p className={styles.itemPrice}>
+                        {formatDualPrice(item.price, item.price_bgn)}
+                      </p>
+                    ) : (
+                      <p className={styles.itemPrice}></p>
+                    )}
+                    <button onClick={() => removeFromCart(item.id)} className={styles.removeItem}>
+                      Премахнете
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
           )}
         </div>
 
         {cartItems.length > 0 && (
-          <div className={styles.footer}>
-            <div className={styles.totalRow}>
-              <span>Subtotal</span>
-              <span className={styles.totalAmount}>
-                {/* CHANGED: Use formatDualPrice for total */}
-                {formatDualPrice(cartTotal, cartTotalBGN)}
-              </span>
+          <footer className={styles.drawerFooter}>
+            <div className={styles.total}>
+              <span>Общо</span>
+              {/* CHANGED: Use formatDualPrice for total */}
+              <span>{formatDualPrice(cartTotal, cartTotalBGN)}</span>
             </div>
-            <p className={styles.shippingNote}>Shipping calculated at checkout</p>
+            
             <button onClick={handleCheckout} className={styles.checkoutButton}>
-              <Lock size={18} />
-              Checkout
+              <Lock size={14} style={{ marginRight: '8px' }} />
+              Завършване на Поръчката
             </button>
-          </div>
+
+          </footer>
         )}
-      </div>
+      </aside>
     </>
   );
 };
