@@ -16,23 +16,23 @@ const ProductCard = ({ product }: ProductCardProps) => {
     return null; 
   }
 
-  const { addToCart, formatDualPrice } = useCart(); // <--- IMPORT HELPER
+  const { addToCart, formatDualPrice } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
 
   const primaryImage = product.Images?.[0];
   const imageUrl = primaryImage 
-    ? \`\${process.env.NEXT_PUBLIC_STRAPI_API_URL}\${primaryImage.url}\` 
+    ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${primaryImage.url}` 
     : 'https://placehold.co/400x500';
   const imageAltText = primaryImage?.alternativeText || product.name || 'Product image';
 
   const handleAddToCart = (e: React.MouseEvent) => { 
-    e.preventDefault(); // Prevent navigation
+    e.preventDefault();
     addToCart(product); 
   };
   
   const isWishlisted = isInWishlist(product.id);
   const handleWishlistToggle = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent navigation
+    e.preventDefault();
     e.stopPropagation();
     if (isWishlisted) { 
       removeFromWishlist(product.id); 
@@ -45,12 +45,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
     <div className={styles.productTile}>
       <div className={styles.productTileInfo}>
         <div className={styles.productTileNamePrice}>
-          <a href={\`/products/\${product.slug || product.id}\`} className={styles.productTileName}>
+          <a href={`/products/${product.slug || product.id}`} className={styles.productTileName}>
             <span>{product.name}</span>
           </a>
           <span className={styles.price}>
             <span className={styles.sales}>
-              {/* CHANGED: Use formatDualPrice */}
               <span className={styles.value}>
                 {formatDualPrice(product.price, product.price_bgn)}
               </span>
@@ -66,7 +65,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <div className={styles.productTileInfoBadge}>{product.tag}</div>
         )}
       </div>
-      <a href={\`/products/\${product.slug || product.id}\`} className={styles.productTileImageLink}>
+      <a href={`/products/${product.slug || product.id}`} className={styles.productTileImageLink}>
         <div className={styles.productTileImageContainer}>
           <Image 
             src={imageUrl} 

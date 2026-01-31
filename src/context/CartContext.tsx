@@ -8,7 +8,7 @@ export interface CartItem {
   id: number;
   name:string;
   price: number;
-  price_bgn?: number; // <--- ADDED
+  price_bgn?: number;
   quantity: number;
   image: string;
   slug: string;
@@ -26,8 +26,8 @@ interface CartContextType {
   clearCart: () => void;
   cartCount: number;
   cartTotal: number;
-  cartTotalBGN: number; // <--- ADDED
-  formatDualPrice: (price: number, price_bgn?: number) => string; // <--- ADDED
+  cartTotalBGN: number;
+  formatDualPrice: (price: number, price_bgn?: number) => string;
 }
 
 export const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -57,7 +57,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         id: product.id,
         name: product.name,
         price: product.price,
-        price_bgn: product.price_bgn, // <--- CAPTURE BGN
+        price_bgn: product.price_bgn,
         quantity: 1,
         image: `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${imageUrl}`,
         slug: product.slug,
@@ -90,19 +90,17 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const cartCount = cartItems.reduce((count, item) => count + item.quantity, 0);
   const cartTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   
-  // ADDED: BGN Total Calculation
   const cartTotalBGN = cartItems.reduce((total, item) => {
     const bgnPrice = item.price_bgn || (item.price * 1.95583);
     return total + bgnPrice * item.quantity;
   }, 0);
 
-  // ADDED: Helper
   const formatDualPrice = (price: number, price_bgn?: number) => {
-    const eur = \`\${price.toFixed(2)} €\`;
+    const eur = `${price.toFixed(2)} €`;
     const bgn = price_bgn 
-      ? \`\${price_bgn.toFixed(2)} лв.\` 
-      : \`\${(price * 1.95583).toFixed(2)} лв.\`;
-    return \`\${eur} / \${bgn}\`;
+      ? `${price_bgn.toFixed(2)} лв.` 
+      : `${(price * 1.95583).toFixed(2)} лв.`;
+    return `${eur} / ${bgn}`;
   };
 
   return (
@@ -115,9 +113,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       updateQuantity, 
       cartCount, 
       cartTotal,
-      cartTotalBGN, // <--- EXPORTED
+      cartTotalBGN,
       clearCart,
-      formatDualPrice // <--- EXPORTED
+      formatDualPrice
     }}>
       {children}
     </CartContext.Provider>
