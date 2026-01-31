@@ -11,7 +11,7 @@ function mapProductData(item: any): Product | null {
 
   const source = item.attributes ? item.attributes : item;
   const id = item.id;
-  // ADDED price_bgn to destructuring
+  // Added price_bgn to destructuring
   const { name, slug, price, price_bgn, Description, description, Images } = source;
   const imagesData = Images?.data || Images || [];
 
@@ -20,7 +20,7 @@ function mapProductData(item: any): Product | null {
     name: name || 'Unnamed Product',
     slug: slug || '',
     price: price || 0,
-    price_bgn: price_bgn, // <--- MAPPED HERE
+    price_bgn: price_bgn, // <--- ONLY CHANGE
     description: description || Description || '',
     images: imagesData.map((img: any) => {
       const imageSource = img.attributes ? img.attributes : img;

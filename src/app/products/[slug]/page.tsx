@@ -1,37 +1,20 @@
-// src/app/products/[slug]/page.tsx
+// src/app/products/[slug]/page.tsx - DEFINITIVE FIX
+import { getProductBySlug } from '../../../lib/api';
 import { notFound } from 'next/navigation';
 import ProductClientView from '@/components/ProductClientView';
-import { getProductBySlug } from '@/lib/api';
 
-export const dynamic = 'force-dynamic';
+type ProductPageParams = { params: { slug: string; } }
 
-export default async function ProductPage({ params }: { params: { slug: string } }) {
-  const rawProduct = await getProductBySlug(params.slug);
+export default async function ProductPage({ params: { slug } }: ProductPageParams) {
+  
+  const product = await getProductBySlug(slug);
 
-  if (!rawProduct) {
+  if (!product) {
     notFound();
   }
 
-  // Handle Strapi v4 structure (id + attributes)
-  const attributes = rawProduct.attributes || rawProduct;
-  const id = rawProduct.id;
+  // Ensure price_bgn is passed through if it exists in attributes
+  // (The api.ts update handles the mapping, so 'product' here is already the clean object)
 
-  const transformedProduct = {
-    id: id,
-    name: attributes.name,
-    slug: attributes.slug,
-    price: attributes.price,
-    price_bgn: attributes.price_bgn,
-    description: attributes.description || attributes.Description || '',
-    subtitle: attributes.subtitle,
-    tag: attributes.tag,
-    Rating: attributes.Rating || 5,
-    Images: attributes.Images?.data?.map((img: any) => ({
-      id: img.id,
-      url: img.attributes.url,
-      alternativeText: img.attributes.alternativeText || ''
-    })) || []
-  };
-
-  return <ProductClientView product={transformedProduct} />;
+  return <ProductClientView product={product} />;
 }

@@ -2,9 +2,8 @@ export interface StrapiProduct {
   id: number;
   name: string;
   price: number;
-  price_bgn?: number;
+  price_bgn?: number; // <--- ONLY CHANGE
   slug: string;
-  description?: string; // <--- ADDED THIS
   Images: {
     id: number;
     url: string;

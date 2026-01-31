@@ -1,55 +1,46 @@
 'use client';
 
-import { useState } from 'react';
+import { useCart } from '@/context/CartContext';
 import ProductImageGallery from '@/components/pdp/ProductImageGallery';
 import ProductInfo from '@/components/pdp/ProductInfo';
 import ProductActions from '@/components/pdp/ProductActions';
 import ProductDescriptionAccordion from '@/components/pdp/ProductDescriptionAccordion';
 import styles from '@/styles/ProductPage.module.css';
-import { StrapiProduct } from '@/types/strapi';
 
-interface ProductClientViewProps {
-  product: StrapiProduct;
-}
+export default function ProductClientView({ product }: { product: any }) {
+  const { addToCart } = useCart();
 
-const ProductClientView = ({ product }: ProductClientViewProps) => {
-  const [selectedImage, setSelectedImage] = useState(0);
+  if (!product) {
+    return null;
+  }
 
-  const images = product.Images?.map(img => ({
-    id: img.id,
-    url: `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${img.url}`,
-    alt: img.alternativeText || product.name
-  })) || [];
+  const { name, subtitle, price, price_bgn, Images, description, rating } = product; // <--- ADDED price_bgn
+  
+  const descriptionText = description || 'No description available.';
 
   return (
-    <div className={styles.container}>
-      <div className={styles.grid}>
+    <div className={styles.pageWrapper}>
+      <main className={styles.mainGrid}>
+      
         <div className={styles.galleryColumn}>
-          <ProductImageGallery 
-            images={images}
-            selectedImage={selectedImage}
-            onImageSelect={setSelectedImage}
-          />
+          <ProductImageGallery images={Images} />
         </div>
-        
-        <div className={styles.infoColumn}>
+
+        <div className={styles.detailsColumn}>
           <ProductInfo 
-            title={product.name}
-            subtitle={product.subtitle || 'Luxury Collection'}
-            price={product.price}
-            price_bgn={product.price_bgn}
-            rating={product.Rating || 5}
+            title={name}
+            subtitle={subtitle || ''}
+            price={price}
+            price_bgn={price_bgn} // <--- PASSED
+            rating={rating || 0}
           />
-          
           <ProductActions product={product} />
-          
-          <ProductDescriptionAccordion 
-            description={product.description || ''}
-          />
+
+          <ProductDescriptionAccordion description={descriptionText} />
+
         </div>
-      </div>
+
+      </main>
     </div>
   );
-};
-
-export default ProductClientView;
+}

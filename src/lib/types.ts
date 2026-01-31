@@ -10,7 +10,7 @@ export interface Product {
   name: string;
   slug: string;
   price: number;
-  price_bgn?: number; // <--- ADDED
+  price_bgn?: number; // <--- ONLY CHANGE
   description: string;
   images: ProductImage[];
 }
