@@ -8,24 +8,30 @@ import ProductDescriptionAccordion from '@/components/pdp/ProductDescriptionAcco
 import styles from '@/styles/ProductPage.module.css';
 
 export default function ProductClientView({ product }: { product: any }) {
-  const { addToCart } = useCart();
-
   if (!product) return null;
 
-  // MrRobotsGPT: Since your getProductBySlug returns the RAW Strapi object,
-  // we HAVE to look inside 'attributes'.
+  // Handle raw Strapi nesting
   const data = product.attributes ? product.attributes : product;
-  
-  // Now we destructure from the correct level
   const { name, subtitle, price, price_bgn, Images, description, Rating } = data;
   
-  const descriptionText = description || 'No description available.';
+  // MrRobotsGPT: FIX FOR ERROR #31
+  // If description is a Strapi Blocks object, we need to extract the text or stringify it
+  let descriptionText = 'No description available.';
+  if (typeof description === 'string') {
+    descriptionText = description;
+  } else if (description && typeof description === 'object') {
+    // Try to extract text from Strapi Blocks or just stringify as a fallback
+    try {
+      descriptionText = JSON.stringify(description);
+    } catch (e) {
+      descriptionText = 'Error rendering description object.';
+    }
+  }
 
   return (
     <div className={styles.pageWrapper}>
       <main className={styles.mainGrid}>
         <div className={styles.galleryColumn}>
-          {/* ProductImageGallery needs to handle the raw Images.data array */}
           <ProductImageGallery images={Images} />
         </div>
 
@@ -37,7 +43,6 @@ export default function ProductClientView({ product }: { product: any }) {
             price_bgn={price_bgn}
             rating={Rating || 0}
           />
-          {/* Pass the raw product so Actions can find the ID and attributes */}
           <ProductActions product={product} />
           <ProductDescriptionAccordion description={descriptionText} />
         </div>
