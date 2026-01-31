@@ -1,77 +1,45 @@
-// src/components/pdp/ProductImageGallery.tsx - FIXED PROPS
 'use client';
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import styles from '@/styles/pdp/ProductImageGallery.module.css';
 
-interface ProductImageGalleryProps {
-  images: {
-    id: number;
-    url: string;
-    alt: string;
-  }[];
-  selectedImage?: number; // Made optional to be safe
-  onImageSelect?: (index: number) => void; // Made optional to be safe
-}
+const ProductImageGallery = ({ images }: { images: any }) => {
+  const [mainImage, setMainImage] = useState('');
+  const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_API_URL || '';
 
-const ProductImageGallery = ({ images, selectedImage = 0, onImageSelect }: ProductImageGalleryProps) => {
-  // If parent controls state, use it; otherwise use local state
-  const [localSelected, setLocalSelected] = useState(0);
+  // Dig into Strapi's nested data structure
+  const imageData = images?.data || [];
   
-  const activeIndex = onImageSelect ? selectedImage : localSelected;
-  const handleSelect = (index: number) => {
-    if (onImageSelect) {
-      onImageSelect(index);
-    } else {
-      setLocalSelected(index);
-    }
+  const getFullUrl = (url: string) => {
+    if (!url) return 'https://placehold.co/600x800';
+    return url.startsWith('http') ? url : `${STRAPI_URL}${url}`;
   };
 
-  if (!images || images.length === 0) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.mainImageWrapper}>
-          <Image 
-            src="/placeholder.jpg" 
-            alt="No image available" 
-            fill 
-            className={styles.mainImage}
-            priority
-          />
-        </div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (imageData.length > 0) {
+      const firstImg = imageData[0].attributes?.url || imageData[0].url;
+      setMainImage(getFullUrl(firstImg));
+    }
+  }, [images, imageData]);
+
+  if (!mainImage) return <div className={styles.placeholder}>No Image</div>;
 
   return (
-    <div className={styles.container}>
+    <div className={styles.galleryContainer}>
       <div className={styles.mainImageWrapper}>
-        <Image 
-          src={images[activeIndex]?.url || '/placeholder.jpg'} 
-          alt={images[activeIndex]?.alt || 'Product Image'} 
-          fill 
-          className={styles.mainImage}
-          priority
-        />
+        <Image src={mainImage} alt="Product" fill className={styles.mainImage} priority />
       </div>
-      
-      {images.length > 1 && (
-        <div className={styles.thumbnails}>
-          {images.map((img, index) => (
-            <button
-              key={img.id}
-              className={`${styles.thumbnail} ${index === activeIndex ? styles.active : ''}`}
-              onClick={() => handleSelect(index)}
-            >
-              <Image 
-                src={img.url} 
-                alt={img.alt} 
-                fill 
-                className={styles.thumbnailImage}
-              />
-            </button>
-          ))}
+      {imageData.length > 1 && (
+        <div className={styles.thumbnailGrid}>
+          {imageData.map((img: any, idx: number) => {
+            const url = img.attributes?.url || img.url;
+            const fullUrl = getFullUrl(url);
+            return (
+              <div key={idx} className={styles.thumbnailWrapper} onClick={() => setMainImage(fullUrl)}>
+                <Image src={fullUrl} alt="" width={80} height={100} />
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
