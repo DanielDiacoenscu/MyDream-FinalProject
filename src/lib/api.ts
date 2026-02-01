@@ -1,5 +1,3 @@
-// src/lib/api.ts - FIXED: Added Auth Header & Corrected Populate
-
 import qs from 'qs';
 import { Product } from './types';
 
@@ -11,7 +9,6 @@ function mapProductData(item: any): Product | null {
 
   const source = item.attributes ? item.attributes : item;
   const id = item.id;
-  // Added price_bgn to destructuring
   const { name, slug, price, price_bgn, Description, description, Images } = source;
   const imagesData = Images?.data || Images || [];
 
@@ -20,7 +17,7 @@ function mapProductData(item: any): Product | null {
     name: name || 'Unnamed Product',
     slug: slug || '',
     price: price || 0,
-    price_bgn: price_bgn, // <--- ONLY CHANGE
+    price_bgn: price_bgn,
     description: description || Description || '',
     images: imagesData.map((img: any) => {
       const imageSource = img.attributes ? img.attributes : img;
@@ -100,10 +97,13 @@ export async function getProductBySlug(slug: string) {
   return products.length > 0 ? products[0] : null;
 }
 
-export async function getProductsByCategory(categorySlug: string) {
-  const query = `filters[categories][slug][$eq]=${categorySlug}&populate=*`;
-  const response = await fetchAPI('/products', query);
-  return processStrapiResponse(response);
+export async function getProductsByCategory(categorySlug: string, page: number = 1, pageSize: number = 24) {
+  const query = qs.stringify({
+    filters: { categories: { slug: { $eq: categorySlug } } },
+    populate: '*',
+    pagination: { page, pageSize },
+  });
+  return await fetchAPI('/products', query);
 }
 
 export async function getPageBySlug(slug: string) {
@@ -113,10 +113,12 @@ export async function getPageBySlug(slug: string) {
   return pages.length > 0 ? pages[0] : null;
 }
 
-export async function getAllProducts() {
-  const query = 'populate=*';
-  const response = await fetchAPI('/products', query);
-  return processStrapiResponse(response);
+export async function getAllProducts(page: number = 1, pageSize: number = 24) {
+  const query = qs.stringify({
+    populate: '*',
+    pagination: { page, pageSize },
+  });
+  return await fetchAPI('/products', query);
 }
 
 export async function getCategories() {
@@ -143,29 +145,15 @@ export async function getCategoryDetails(slug: string) {
 }
 
 export async function searchProducts(query: string): Promise<Product[]> {
-  if (!query) {
-    return [];
-  }
-
+  if (!query) return [];
   const filters = `filters[name][$containsi]=${encodeURIComponent(query)}`;
   const populate = 'populate=*';
   const pagination = 'pagination[limit]=5';
-
   const querystring = [filters, populate, pagination].join('&');
-  const endpoint = `/products`;
-
   try {
-    const data = await fetchAPI(endpoint, querystring);
-
-    if (!data || !Array.isArray(data.data)) {
-        return [];
-    }
-
-    const products = data.data
-      .map(mapProductData)
-      .filter((p: Product | null): p is Product => p !== null);
-
-    return products;
+    const data = await fetchAPI('/products', querystring);
+    if (!data || !Array.isArray(data.data)) return [];
+    return data.data.map(mapProductData).filter((p: Product | null): p is Product => p !== null);
   } catch (error) {
     console.error("searchProducts API Error:", error);
     return [];
@@ -179,22 +167,13 @@ export async function fetchAllCollections(): Promise<any[]> {
 
 export async function createOrder(orderData: any) {
   const url = `${STRAPI_URL}/api/orders`;
-  
   try {
     const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ data: orderData }),
     });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Order submission failed:', response.status, errorText);
-      throw new Error(`Failed to create order: ${response.statusText}`);
-    }
-
+    if (!response.ok) throw new Error(`Failed to create order: ${response.statusText}`);
     return await response.json();
   } catch (error) {
     console.error('Error in createOrder:', error);
@@ -204,7 +183,6 @@ export async function createOrder(orderData: any) {
 
 export async function updateUserWishlist(token: string, userId: number, productIds: number[]) {
   const url = `${STRAPI_URL}/api/users/${userId}`;
-  
   try {
     const response = await fetch(url, {
       method: 'PUT',
@@ -214,13 +192,7 @@ export async function updateUserWishlist(token: string, userId: number, productI
       },
       body: JSON.stringify({ wishlist: productIds }),
     });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Strapi Error Details:', errorText);
-      throw new Error(`Failed to update wishlist: ${response.status} ${errorText}`);
-    }
-
+    if (!response.ok) throw new Error(`Failed to update wishlist: ${response.status}`);
     return await response.json();
   } catch (error) {
     console.error('Error updating wishlist:', error);

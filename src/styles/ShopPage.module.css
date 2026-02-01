@@ -1,49 +1,55 @@
-/* src/styles/ShopPage.module.css - THE CORRECT, RESPONSIVE VERSION */
 .pageContainer {
   max-width: 1400px;
-  margin: 40px auto;
-  padding: 0 20px;
+  margin: 20px auto;
+  padding: 0 15px;
 }
 
 .title {
-  font-family: var(--font-secondary);
-  font-size: 2rem; /* Smaller base font size for mobile */
+  font-size: 1.5rem;
   text-align: center;
-  margin-bottom: 40px;
-  font-weight: 400;
+  margin-bottom: 30px;
 }
 
 .productGrid {
   display: grid;
-  /* --- THIS IS THE FIX (Part 1) --- */
-  /* Default to a single column for mobile devices */
-  grid-template-columns: 1fr; 
-  gap: 30px; /* Increased gap for better spacing in a single column */
+  grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile */
+  gap: 10px; /* Tight gap for mobile */
 }
 
-/* --- THIS IS THE FIX (Part 2) --- */
-/* Introduce 2 columns for larger phones */
-@media (min-width: 480px) {
-  .productGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px; /* Revert to smaller gap for multi-column */
-  }
-}
-
-/* Introduce 3 columns for tablets */
 @media (min-width: 768px) {
   .productGrid {
     grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .title {
+    font-size: 2rem;
   }
 }
 
-/* Introduce 4 columns for desktop */
 @media (min-width: 1024px) {
   .productGrid {
     grid-template-columns: repeat(4, 1fr);
     gap: 30px;
   }
-  .title {
-    font-size: 36px; /* Restore original title size on desktop */
-  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 40px 0;
+}
+
+.pageBtn {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.activePage {
+  background: #000;
+  color: #fff;
+  border-color: #000;
 }
