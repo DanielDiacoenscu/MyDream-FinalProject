@@ -69,7 +69,7 @@ export async function getNavigationLinks() {
 export async function getBestsellerProducts() {
   const query = 'populate=Images&filters[bestseller][$eq]=true';
   const response = await fetchAPI('/products', query);
-  return processStrapiResponse(response); // Returns ARRAY
+  return processStrapiResponse(response);
 }
 
 export async function getProductBySlug(slug: string) {
@@ -79,13 +79,11 @@ export async function getProductBySlug(slug: string) {
   return products.length > 0 ? products[0] : null;
 }
 
-// This one returns the FULL response for the Shop page (to get meta.pagination)
 export async function getProductsPaginated(page: number = 1, pageSize: number = 24) {
   const query = qs.stringify({ populate: '*', pagination: { page, pageSize } });
   return await fetchAPI('/products', query);
 }
 
-// Keep this returning an ARRAY so it doesn't break existing components
 export async function getAllProducts() {
   const query = 'populate=*&pagination[limit]=100';
   const response = await fetchAPI('/products', query);
@@ -96,6 +94,13 @@ export async function getProductsByCategory(categorySlug: string) {
   const query = `filters[categories][slug][$eq]=${categorySlug}&populate=*`;
   const response = await fetchAPI('/products', query);
   return processStrapiResponse(response);
+}
+
+export async function getPageBySlug(slug: string) {
+  const query = `filters[slug][$eq]=${slug}&populate=*`;
+  const response = await fetchAPI('/pages', query);
+  const pages = processStrapiResponse(response);
+  return pages.length > 0 ? pages[0] : null;
 }
 
 export async function getCategories() {
@@ -109,6 +114,19 @@ export async function getCategoryBySlug(slug: string) {
   const response = await fetchAPI('/categories', query);
   const categories = processStrapiResponse(response);
   return categories.length > 0 ? categories[0] : null;
+}
+
+export async function getCategoryDetails(slug: string) {
+  try {
+    const response = await fetchAPI(`/categories?filters[slug][$eq]=${slug}`);
+    if (response && response.data && response.data.length > 0) {
+      return response.data[0];
+    }
+    return null;
+  } catch (error) {
+    console.error('Failed to fetch category details:', error);
+    return null;
+  }
 }
 
 export async function searchProducts(query: string): Promise<Product[]> {
