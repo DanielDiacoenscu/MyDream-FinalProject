@@ -86,7 +86,7 @@ const BestSellers = () => {
         <Slider {...settings}>
           {bestsellers.map((product) => (
             <div key={product.id} className={styles.slide}>
-              <div className="product-card-mobile-wrapper">
+              <div className="mobile-product-card-container">
                 <ProductCard product={product} />
               </div>
             </div>
@@ -99,34 +99,31 @@ const BestSellers = () => {
           .slick-slide {
             padding: 0 10px !important;
           }
-          
-          /* FORCE BUTTONS TO SHOW ON MOBILE */
-          /* We target common class names for the 'Add to Bag' and 'Wishlist' buttons */
-          .product-card-mobile-wrapper [class*="actions"],
-          .product-card-mobile-wrapper [class*="button"],
-          .product-card-mobile-wrapper [class*="btn"],
-          .product-card-mobile-wrapper button {
+
+          /* FORCE PRODUCT CARD BUTTONS TO SHOW */
+          /* We target the common 'actions' or 'hover' containers in ProductCard */
+          .mobile-product-card-container [class*="actions"],
+          .mobile-product-card-container [class*="button"],
+          .mobile-product-card-container [class*="hover"],
+          .mobile-product-card-container [class*="Add"],
+          .mobile-product-card-container button {
             opacity: 1 !important;
             visibility: visible !important;
             display: flex !important;
-            transform: none !important;
-            bottom: 0 !important; /* Ensure they aren't shifted off-screen */
+            transform: translateY(0) !important; /* Stop them from being hidden below the card */
+            position: relative !important;
+            bottom: auto !important;
           }
 
-          /* Ensure the container for buttons is visible */
-          .product-card-mobile-wrapper [class*="hover"],
-          .product-card-mobile-wrapper [class*="overlay"] {
-            opacity: 1 !important;
-            visibility: visible !important;
-            background: transparent !important;
+          /* Ensure the image doesn't push the buttons out of view */
+          .mobile-product-card-container img {
+            max-height: 350px !important;
+            object-fit: contain !important;
           }
 
-          /* ARROW STYLING - MATCH DESKTOP */
+          /* ARROW STYLING */
           .${styles.arrow} {
             display: flex !important;
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
             background: white !important;
             border: 1px solid #eee !important;
             border-radius: 50%;
@@ -134,23 +131,13 @@ const BestSellers = () => {
             height: 40px;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            z-index: 20;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
           }
-
-          .${styles.nextArrow} { right: 0px !important; }
-          .${styles.prevArrow} { left: 0px !important; }
-
-          /* Fix card height so buttons have space */
-          .product-card-mobile-wrapper {
-            min-height: 520px;
-            display: flex;
-            flex-direction: column;
-          }
+          .${styles.nextArrow} { right: -5px !important; }
+          .${styles.prevArrow} { left: -5px !important; }
         }
       `}</style>
     </section>
   );
 };
-
-export default BestSellers;
