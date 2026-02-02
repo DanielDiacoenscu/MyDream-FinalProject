@@ -33,15 +33,9 @@ async function fetchAPI(endpoint: string, query: string = '') {
 
   try {
     const res = await fetch(fullUrlWithQuery, { method: 'GET', headers, next: { revalidate: 0 } });
-    if (!res.ok) {
-      console.error(`API Error on ${endpoint}:`, res.status);
-      return null;
-    }
+    if (!res.ok) return null;
     return await res.json();
-  } catch (error) { 
-    console.error(`Fetch Error on ${endpoint}:`, error);
-    return null; 
-  }
+  } catch (error) { return null; }
 }
 
 function processStrapiResponse(response: any): any[] {
@@ -51,31 +45,31 @@ function processStrapiResponse(response: any): any[] {
 }
 
 export async function getBestsellerProducts() {
+  // DEEP POPULATE: Force Strapi to give us the products and their images
   const query = qs.stringify({
     filters: { slug: { $eq: 'best-sellers' } },
     populate: {
       products: {
-        populate: ['Images']
+        populate: '*' 
       }
     }
   }, { encodeValuesOnly: true });
 
-  // We try /collections first. If your collection type is named differently, change this string.
   const response = await fetchAPI('/collections', query);
   
-  console.log("DEBUG: Strapi Response for Bestsellers:", response);
+  console.log("DEBUG: Full Collection Object:", response);
 
   if (response && response.data && response.data.length > 0) {
     const attributes = response.data[0].attributes;
-    // Check if products exist in the response
+    
+    // Strapi 4 usually puts relations in .data, but let's check both
     const productsData = attributes?.products?.data || attributes?.products || [];
+    
+    console.log("DEBUG: Extracted Products Data:", productsData);
+
     if (Array.isArray(productsData) && productsData.length > 0) {
       return productsData.map(mapProductData).filter(Boolean);
-    } else {
-      console.warn("DEBUG: Collection found but 'products' field is empty or missing data wrapper.");
     }
-  } else {
-    console.warn("DEBUG: No collection found with slug 'best-sellers'. Check your Strapi slug.");
   }
   
   return [];
