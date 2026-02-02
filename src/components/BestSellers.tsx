@@ -95,23 +95,33 @@ const BestSellers = () => {
       </div>
 
       <style jsx global>{`
-        /* FORCE MOBILE TO LOOK LIKE DESKTOP */
         @media (max-width: 768px) {
           .slick-slide {
-            padding: 0 15px !important;
+            padding: 0 10px !important;
           }
           
-          /* Force ProductCard buttons to be visible */
-          .product-card-mobile-wrapper button,
-          .product-card-mobile-wrapper .add-to-cart-btn,
-          .product-card-mobile-wrapper .wishlist-btn {
+          /* FORCE BUTTONS TO SHOW ON MOBILE */
+          /* We target common class names for the 'Add to Bag' and 'Wishlist' buttons */
+          .product-card-mobile-wrapper [class*="actions"],
+          .product-card-mobile-wrapper [class*="button"],
+          .product-card-mobile-wrapper [class*="btn"],
+          .product-card-mobile-wrapper button {
             opacity: 1 !important;
             visibility: visible !important;
             display: flex !important;
             transform: none !important;
+            bottom: 0 !important; /* Ensure they aren't shifted off-screen */
           }
 
-          /* Match Desktop Arrow Styling */
+          /* Ensure the container for buttons is visible */
+          .product-card-mobile-wrapper [class*="hover"],
+          .product-card-mobile-wrapper [class*="overlay"] {
+            opacity: 1 !important;
+            visibility: visible !important;
+            background: transparent !important;
+          }
+
+          /* ARROW STYLING - MATCH DESKTOP */
           .${styles.arrow} {
             display: flex !important;
             position: absolute;
@@ -120,29 +130,20 @@ const BestSellers = () => {
             background: white !important;
             border: 1px solid #eee !important;
             border-radius: 50%;
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            cursor: pointer;
-            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            z-index: 20;
           }
 
-          .${styles.nextArrow} {
-            right: -5px !important;
-            z-index: 10;
-          }
+          .${styles.nextArrow} { right: 0px !important; }
+          .${styles.prevArrow} { left: 0px !important; }
 
-          .${styles.prevArrow} {
-            left: -5px !important;
-            z-index: 10;
-          }
-
-          /* Ensure the card itself is large and clear */
+          /* Fix card height so buttons have space */
           .product-card-mobile-wrapper {
-            width: 100%;
-            min-height: 480px;
+            min-height: 520px;
             display: flex;
             flex-direction: column;
           }
