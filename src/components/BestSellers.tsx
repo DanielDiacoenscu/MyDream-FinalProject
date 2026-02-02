@@ -10,8 +10,8 @@ import styles from '@/styles/BestSellers.module.css';
 const NextArrow = (props: any) => {
   const { onClick } = props;
   return (
-    <button className={`${styles.arrow} ${styles.nextArrow}`} onClick={onClick} style={{ zIndex: 5 }}>
-      <ChevronRight size={24} />
+    <button className={`${styles.arrow} ${styles.nextArrow}`} onClick={onClick} style={{ zIndex: 10, right: '5px' }}>
+      <ChevronRight size={30} />
     </button>
   );
 };
@@ -19,8 +19,8 @@ const NextArrow = (props: any) => {
 const PrevArrow = (props: any) => {
   const { onClick } = props;
   return (
-    <button className={`${styles.arrow} ${styles.prevArrow}`} onClick={onClick} style={{ zIndex: 5 }}>
-      <ChevronLeft size={24} />
+    <button className={`${styles.arrow} ${styles.prevArrow}`} onClick={onClick} style={{ zIndex: 10, left: '5px' }}>
+      <ChevronLeft size={30} />
     </button>
   );
 };
@@ -50,25 +50,23 @@ const BestSellers = () => {
     dots: true,
     infinite: bestsellers.length > 1,
     speed: 500,
-    slidesToShow: 4,
+    slidesToShow: 4, // Desktop default
     slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [
       {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1,
-        }
+        breakpoint: 1200,
+        settings: { slidesToShow: 3 }
       },
       {
         breakpoint: 768,
         settings: {
-          slidesToShow: 1, // THIS FIXES THE TINY CARDS
+          slidesToShow: 1, // FORCE ONE LARGE CARD
           slidesToScroll: 1,
           arrows: true,
           dots: true,
+          centerMode: false
         }
       }
     ],
@@ -88,7 +86,7 @@ const BestSellers = () => {
         <Slider {...settings}>
           {bestsellers.map((product) => (
             <div key={product.id} className={styles.slide}>
-              <div className={styles.mobileCardFix}>
+              <div className="mobile-card-wrapper">
                 <ProductCard product={product} />
               </div>
             </div>
@@ -98,16 +96,25 @@ const BestSellers = () => {
 
       <style jsx global>{`
         @media (max-width: 768px) {
-          .slick-track {
-            display: flex !important;
-            align-items: stretch !important;
+          .slick-slide > div {
+            display: block !important;
+            width: 100% !important;
           }
-          .slick-slide {
-            height: inherit !important;
-            padding: 0 15px !important; /* Gives the card space to breathe */
+          .mobile-card-wrapper {
+            width: 100% !important;
+            padding: 0 10px;
+            box-sizing: border-box;
           }
-          .${styles.carouselContainer} {
-            padding: 0 30px !important; /* Keeps arrows from overlapping text */
+          /* Force the ProductCard to take full width */
+          .mobile-card-wrapper > div {
+            width: 100% !important;
+            max-width: 100% !important;
+          }
+          .slick-list {
+            margin: 0 -10px;
+          }
+          .slick-dots {
+            bottom: -30px;
           }
         }
       `}</style>
