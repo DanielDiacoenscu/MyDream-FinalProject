@@ -10,7 +10,7 @@ import styles from '@/styles/BestSellers.module.css';
 const NextArrow = (props: any) => {
   const { onClick } = props;
   return (
-    <button className={`${styles.arrow} ${styles.nextArrow}`} onClick={onClick} aria-label="Next">
+    <button className={`${styles.arrow} ${styles.nextArrow} custom-nav-arrow`} onClick={onClick}>
       <ChevronRight size={24} />
     </button>
   );
@@ -19,7 +19,7 @@ const NextArrow = (props: any) => {
 const PrevArrow = (props: any) => {
   const { onClick } = props;
   return (
-    <button className={`${styles.arrow} ${styles.prevArrow}`} onClick={onClick} aria-label="Previous">
+    <button className={`${styles.arrow} ${styles.prevArrow} custom-nav-arrow`} onClick={onClick}>
       <ChevronLeft size={24} />
     </button>
   );
@@ -28,16 +28,13 @@ const PrevArrow = (props: any) => {
 const BestSellers = () => {
   const [bestsellers, setBestsellers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [slidesToShow, setSlidesToShow] = useState(4);
 
   useEffect(() => {
     const fetchBestsellers = async () => {
       try {
         setIsLoading(true);
         const products = await getBestsellerProducts();
-        if (products && products.length > 0) {
-          setBestsellers(products);
-        }
+        if (products && products.length > 0) setBestsellers(products);
       } catch (error) {
         console.error("Failed to fetch bestsellers:", error);
       } finally {
@@ -45,31 +42,26 @@ const BestSellers = () => {
       }
     };
     fetchBestsellers();
-
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setSlidesToShow(1);
-      } else if (window.innerWidth < 1024) {
-        setSlidesToShow(2);
-      } else {
-        setSlidesToShow(4);
-      }
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const settings = {
     dots: false,
-    infinite: bestsellers.length > slidesToShow,
+    infinite: bestsellers.length > 1,
     speed: 500,
-    slidesToShow: slidesToShow,
+    slidesToShow: 4,
     slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
-    arrows: true,
+    responsive: [
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 1, // FORCE ONE
+          slidesToScroll: 1,
+          arrows: true
+        }
+      }
+    ]
   };
 
   if (isLoading || bestsellers.length === 0) return null;
@@ -82,72 +74,61 @@ const BestSellers = () => {
         <h2 className={styles.title}>BEST SELLERS</h2>
       </div>
       
-      <div className={styles.carouselContainer}>
+      <div className="bestsellers-force-wrapper">
         <Slider {...settings}>
           {bestsellers.map((product) => (
-            <div key={product.id} className={styles.slide}>
-              <div className="product-card-mobile-wrapper">
-                <ProductCard product={product} />
-              </div>
+            <div key={product.id} className="force-full-width-slide">
+              <ProductCard product={product} />
             </div>
           ))}
         </Slider>
       </div>
 
-      <style jsx global>{`
-        /* FORCE MOBILE TO LOOK LIKE DESKTOP */
+      <style dangerouslySetInnerHTML={{ __html: `
         @media (max-width: 768px) {
-          .slick-slide {
-            padding: 0 15px !important;
+          .bestsellers-force-wrapper {
+            padding: 0 40px !important;
+            display: block !important;
           }
+          .force-full-width-slide {
+            width: 100% !important;
+            display: block !important;
+            padding: 10px !important;
+          }
+          .slick-track {
+            display: flex !important;
+            width: 10000px !important; /* Force horizontal track */
+          }
+          .slick-slide {
+            width: calc(100vw - 80px) !important; /* Force slide to be screen width minus padding */
+            float: left !important;
+            height: auto !important;
+          }
+          .custom-nav-arrow {
+            display: flex !important;
+            position: absolute !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            z-index: 100 !important;
+            background: white !important;
+            border: 1px solid #ddd !important;
+            border-radius: 50% !important;
+            width: 40px !important;
+            height: 40px !important;
+            align-items: center !important;
+            justify-content: center !important;
+          }
+          .slick-next { right: -30px !important; }
+          .slick-prev { left: -30px !important; }
           
-          /* Force ProductCard buttons to be visible */
-          .product-card-mobile-wrapper button,
-          .product-card-mobile-wrapper .add-to-cart-btn,
-          .product-card-mobile-wrapper .wishlist-btn {
+          /* Force buttons inside ProductCard to show */
+          .force-full-width-slide button {
             opacity: 1 !important;
             visibility: visible !important;
-            display: flex !important;
-            transform: none !important;
-          }
-
-          /* Match Desktop Arrow Styling */
-          .${styles.arrow} {
-            display: flex !important;
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: white !important;
-            border: 1px solid #eee !important;
-            border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            cursor: pointer;
-            transition: all 0.2s ease;
-          }
-
-          .${styles.nextArrow} {
-            right: -5px !important;
-            z-index: 10;
-          }
-
-          .${styles.prevArrow} {
-            left: -5px !important;
-            z-index: 10;
-          }
-
-          /* Ensure the card itself is large and clear */
-          .product-card-mobile-wrapper {
-            width: 100%;
-            min-height: 480px;
-            display: flex;
-            flex-direction: column;
+            display: block !important;
           }
         }
-      `}</style>
+      `}} />
     </section>
   );
 };
