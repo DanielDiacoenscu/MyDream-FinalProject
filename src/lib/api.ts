@@ -4,35 +4,26 @@ import { Product } from './types';
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_API_URL || '';
 const API_TOKEN = process.env.STRAPI_API_TOKEN || process.env.NEXT_PUBLIC_API_TOKEN || '';
 
-function mapProductData(item: any): Product | null {
+function mapProductData(item: any): any {
   if (!item) return null;
   const source = item.attributes ? item.attributes : item;
   const id = item.id;
-  const { name, slug, price, price_bgn, Description, description, Images } = source;
-  const imagesData = Images?.data || Images || [];
+  
+  // Extract images correctly for your ProductCard
+  const imagesData = source.Images?.data || source.Images || [];
+  const mappedImages = imagesData.map((img: any) => {
+    const imgSource = img.attributes ? img.attributes : img;
+    return {
+      url: imgSource.url,
+      alternativeText: imgSource.alternativeText || ''
+    };
+  });
 
   return {
     id,
-    name: name || 'Unnamed Product',
-    slug: slug || '',
-    price: price || 0,
-    price_bgn: price_bgn,
-    description: description || Description || '',
-    images: imagesData.map((img: any) => {
-      const imageSource = img.attributes ? img.attributes : img;
-      let imageUrl = '/placeholder.jpg';
-      if (imageSource && typeof imageSource.url === 'string') {
-        const path = imageSource.url;
-        if (path.startsWith('http')) {
-          imageUrl = path;
-        } else {
-          const strapiUrl = STRAPI_URL.endsWith('/') ? STRAPI_URL.slice(0, -1) : STRAPI_URL;
-          const imagePath = path.startsWith('/') ? path : `/${path}`;
-          imageUrl = `${strapiUrl}${imagePath}`;
-        }
-      }
-      return { url: imageUrl, alternativeText: imageSource.alternativeText || '' };
-    }),
+    ...source,
+    Images: mappedImages, // Flattened images array
+    images: mappedImages, // Backup for other components
   };
 }
 
@@ -55,48 +46,38 @@ function processStrapiResponse(response: any): any[] {
   return [];
 }
 
-export async function getNavigationLinks() {
-  const response = await fetchAPI('/categories');
-  return processStrapiResponse(response);
-}
-
+// FIXED: This now flattens the data so ProductCard can read it
 export async function getBestsellerProducts() {
   const query = 'populate=Images&filters[bestseller][$eq]=true';
   const response = await fetchAPI('/products', query);
-  return processStrapiResponse(response);
+  const products = processStrapiResponse(response);
+  return products.map(mapProductData).filter(Boolean);
 }
 
 export async function getProductBySlug(slug: string) {
   const query = `filters[slug][$eq]=${slug}&populate=*`;
   const response = await fetchAPI('/products', query);
   const products = processStrapiResponse(response);
-  return products.length > 0 ? products[0] : null;
+  return products.length > 0 ? mapProductData(products[0]) : null;
 }
 
-// USE THIS FOR THE SHOP PAGE PAGINATION
-export async function getProductsPaginated(page: number = 1, pageSize: number = 24) {
-  const query = qs.stringify({ populate: '*', pagination: { page, pageSize } });
-  return await fetchAPI('/products', query);
-}
-
-// RETURNS ARRAY - PREVENTS SHOP PAGE CRASH
 export async function getAllProducts() {
   const query = 'populate=*&pagination[limit]=100';
   const response = await fetchAPI('/products', query);
-  return processStrapiResponse(response);
+  const products = processStrapiResponse(response);
+  return products.map(mapProductData).filter(Boolean);
 }
 
 export async function getProductsByCategory(categorySlug: string) {
   const query = `filters[categories][slug][$eq]=${categorySlug}&populate=*`;
   const response = await fetchAPI('/products', query);
-  return processStrapiResponse(response);
+  const products = processStrapiResponse(response);
+  return products.map(mapProductData).filter(Boolean);
 }
 
-export async function getPageBySlug(slug: string) {
-  const query = `filters[slug][$eq]=${slug}&populate=*`;
-  const response = await fetchAPI('/pages', query);
-  const pages = processStrapiResponse(response);
-  return pages.length > 0 ? pages[0] : null;
+export async function getNavigationLinks() {
+  const response = await fetchAPI('/categories');
+  return processStrapiResponse(response);
 }
 
 export async function getCategories() {
@@ -105,26 +86,9 @@ export async function getCategories() {
   return processStrapiResponse(response);
 }
 
-export async function getCategoryBySlug(slug: string) {
-  const query = `filters[slug][$eq]=${slug}`;
-  const response = await fetchAPI('/categories', query);
-  const categories = processStrapiResponse(response);
-  return categories.length > 0 ? categories[0] : null;
-}
-
 export async function getCategoryDetails(slug: string) {
-  try {
-    const response = await fetchAPI(`/categories?filters[slug][$eq]=${slug}`);
-    return (response && response.data && response.data.length > 0) ? response.data[0] : null;
-  } catch (error) { return null; }
-}
-
-export async function searchProducts(query: string): Promise<Product[]> {
-  if (!query) return [];
-  const filters = `filters[name][$containsi]=${encodeURIComponent(query)}&populate=*&pagination[limit]=5`;
-  const data = await fetchAPI('/products', filters);
-  if (!data || !Array.isArray(data.data)) return [];
-  return data.data.map(mapProductData).filter((p: any): p is Product => p !== null);
+  const response = await fetchAPI(`/categories?filters[slug][$eq]=${slug}`);
+  return (response && response.data && response.data.length > 0) ? response.data[0] : null;
 }
 
 export async function fetchAllCollections() {
