@@ -43,16 +43,10 @@ async function fetchAPI(endpoint: string, query: string = '') {
   if (API_TOKEN) headers['Authorization'] = `Bearer ${API_TOKEN}`;
 
   try {
-    const res = await fetch(fullUrlWithQuery, {
-      method: 'GET',
-      headers,
-      next: { revalidate: 0 },
-    });
+    const res = await fetch(fullUrlWithQuery, { method: 'GET', headers, next: { revalidate: 0 } });
     if (!res.ok) return null;
     return await res.json();
-  } catch (error) {
-    return null;
-  }
+  } catch (error) { return null; }
 }
 
 function processStrapiResponse(response: any): any[] {
@@ -79,11 +73,13 @@ export async function getProductBySlug(slug: string) {
   return products.length > 0 ? products[0] : null;
 }
 
+// USE THIS FOR THE SHOP PAGE PAGINATION
 export async function getProductsPaginated(page: number = 1, pageSize: number = 24) {
   const query = qs.stringify({ populate: '*', pagination: { page, pageSize } });
   return await fetchAPI('/products', query);
 }
 
+// RETURNS ARRAY - PREVENTS SHOP PAGE CRASH
 export async function getAllProducts() {
   const query = 'populate=*&pagination[limit]=100';
   const response = await fetchAPI('/products', query);
@@ -119,14 +115,8 @@ export async function getCategoryBySlug(slug: string) {
 export async function getCategoryDetails(slug: string) {
   try {
     const response = await fetchAPI(`/categories?filters[slug][$eq]=${slug}`);
-    if (response && response.data && response.data.length > 0) {
-      return response.data[0];
-    }
-    return null;
-  } catch (error) {
-    console.error('Failed to fetch category details:', error);
-    return null;
-  }
+    return (response && response.data && response.data.length > 0) ? response.data[0] : null;
+  } catch (error) { return null; }
 }
 
 export async function searchProducts(query: string): Promise<Product[]> {
@@ -144,20 +134,12 @@ export async function fetchAllCollections() {
 
 export async function createOrder(orderData: any) {
   const url = `${STRAPI_URL}/api/orders`;
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ data: orderData }),
-  });
+  const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data: orderData }) });
   return await response.json();
 }
 
 export async function updateUserWishlist(token: string, userId: number, productIds: number[]) {
   const url = `${STRAPI_URL}/api/users/${userId}`;
-  const response = await fetch(url, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-    body: JSON.stringify({ wishlist: productIds }),
-  });
+  const response = await fetch(url, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ wishlist: productIds }) });
   return await response.json();
 }
