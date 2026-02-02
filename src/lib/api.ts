@@ -45,31 +45,45 @@ function processStrapiResponse(response: any): any[] {
 }
 
 export async function getBestsellerProducts() {
-  // DEEP POPULATE: Force Strapi to give us the products and their images
+  // TRY 1: Fetch via Collection Relation (Aggressive Populate)
   const query = qs.stringify({
     filters: { slug: { $eq: 'best-sellers' } },
     populate: {
       products: {
-        populate: '*' 
+        populate: '*'
       }
-    }
+    },
+    publicationState: 'live'
   }, { encodeValuesOnly: true });
 
   const response = await fetchAPI('/collections', query);
   
-  console.log("DEBUG: Full Collection Object:", response);
-
   if (response && response.data && response.data.length > 0) {
-    const attributes = response.data[0].attributes;
-    
-    // Strapi 4 usually puts relations in .data, but let's check both
-    const productsData = attributes?.products?.data || attributes?.products || [];
-    
-    console.log("DEBUG: Extracted Products Data:", productsData);
-
-    if (Array.isArray(productsData) && productsData.length > 0) {
-      return productsData.map(mapProductData).filter(Boolean);
+    const attrs = response.data[0].attributes;
+    const products = attrs?.products?.data || attrs?.products;
+    if (Array.isArray(products) && products.length > 0) {
+      console.log("SUCCESS: Found products via Collection relation");
+      return products.map(mapProductData).filter(Boolean);
     }
+  }
+
+  // TRY 2: Fallback - Fetch products directly filtered by collection slug
+  // This works if your Strapi has the inverse relation visible
+  console.warn("FALLBACK: Trying direct product filter by collection slug...");
+  const fallbackQuery = qs.stringify({
+    filters: {
+      collections: {
+        slug: { $eq: 'best-sellers' }
+      }
+    },
+    populate: '*'
+  }, { encodeValuesOnly: true });
+
+  const fallbackRes = await fetchAPI('/products', fallbackQuery);
+  const fallbackProducts = processStrapiResponse(fallbackRes);
+  
+  if (fallbackProducts.length > 0) {
+    return fallbackProducts.map(mapProductData).filter(Boolean);
   }
   
   return [];
