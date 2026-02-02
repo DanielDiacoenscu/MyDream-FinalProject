@@ -10,8 +10,8 @@ import styles from '@/styles/BestSellers.module.css';
 const NextArrow = (props: any) => {
   const { onClick } = props;
   return (
-    <button className={`${styles.arrow} ${styles.nextArrow}`} onClick={onClick} style={{ zIndex: 10, right: '-5px', background: 'rgba(255,255,255,0.8)', borderRadius: '50%', padding: '5px' }}>
-      <ChevronRight size={32} color="black" />
+    <button className={`${styles.arrow} ${styles.nextArrow}`} onClick={onClick} style={{ zIndex: 50, right: '10px' }}>
+      <ChevronRight size={35} color="#000" />
     </button>
   );
 };
@@ -19,8 +19,8 @@ const NextArrow = (props: any) => {
 const PrevArrow = (props: any) => {
   const { onClick } = props;
   return (
-    <button className={`${styles.arrow} ${styles.prevArrow}`} onClick={onClick} style={{ zIndex: 10, left: '-5px', background: 'rgba(255,255,255,0.8)', borderRadius: '50%', padding: '5px' }}>
-      <ChevronLeft size={32} color="black" />
+    <button className={`${styles.arrow} ${styles.prevArrow}`} onClick={onClick} style={{ zIndex: 50, left: '10px' }}>
+      <ChevronLeft size={35} color="#000" />
     </button>
   );
 };
@@ -57,17 +57,19 @@ const BestSellers = () => {
     responsive: [
       {
         breakpoint: 1024,
-        settings: { slidesToShow: 3 }
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        }
       },
       {
         breakpoint: 768,
         settings: {
-          slidesToShow: 1,
+          slidesToShow: 1, // ONLY ONE CARD
           slidesToScroll: 1,
           arrows: true,
           dots: true,
           centerMode: false,
-          fade: false
         }
       }
     ],
@@ -87,7 +89,7 @@ const BestSellers = () => {
         <Slider {...settings}>
           {bestsellers.map((product) => (
             <div key={product.id} className={styles.slide}>
-              <div className="mega-card-wrapper">
+              <div className="mobile-single-card-wrapper">
                 <ProductCard product={product} />
               </div>
             </div>
@@ -97,33 +99,36 @@ const BestSellers = () => {
 
       <style jsx global>{`
         @media (max-width: 768px) {
-          /* FORCE THE SLIDE TO BE HUGE */
+          /* FORCE ONE CARD TO FILL THE SCREEN */
           .slick-slide {
-            padding: 0 10px !important;
-          }
-          .mega-card-wrapper {
-            width: 100% !important;
-            min-height: 600px !important; /* X2 HEIGHT */
+            width: 100vw !important;
             display: flex !important;
-            justify-content: center;
+            justify-content: center !important;
+            padding: 0 20px !important;
           }
-          /* TARGET THE PRODUCT CARD DIRECTLY */
-          .mega-card-wrapper > div {
+          .mobile-single-card-wrapper {
             width: 100% !important;
-            max-width: 100% !important;
-            height: 100% !important;
-            transform: scale(1.1); /* EXTRA PUSH */
+            max-width: 400px; /* Keeps it from getting TOO wide on tablets */
+            margin: 0 auto;
           }
-          /* MAKE THE IMAGE CONTAINER WITHIN PRODUCTCARD LARGER */
-          .mega-card-wrapper img {
-            object-fit: cover !important;
-            height: 400px !important; /* FORCE LARGE IMAGE */
+          /* Make the card content larger */
+          .mobile-single-card-wrapper > div {
+            width: 100% !important;
+            min-height: 500px;
+          }
+          /* Ensure arrows are visible over the large card */
+          .${styles.arrow} {
+            background: rgba(255, 255, 255, 0.7) !important;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
           }
           .slick-dots {
-            bottom: -40px !important;
-          }
-          .slick-list {
-            overflow: visible !important; /* Prevent clipping of scaled cards */
+            bottom: -35px;
           }
         }
       `}</style>
