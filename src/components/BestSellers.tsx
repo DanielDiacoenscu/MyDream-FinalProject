@@ -47,7 +47,7 @@ const BestSellers = () => {
   }, []);
 
   const settings = {
-    dots: false,
+    dots: true, // Added dots for mobile navigation clarity
     infinite: bestsellers.length > 1,
     speed: 500,
     slidesToShow: 4,
@@ -67,19 +67,9 @@ const BestSellers = () => {
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
-          centerMode: true,
-          centerPadding: '40px', // Shows a bit of the next/prev cards
           arrows: true,
-        }
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          centerMode: true,
-          centerPadding: '20px', // Maximum size for the main card
-          arrows: true,
+          dots: true,
+          adaptiveHeight: true
         }
       }
     ],
@@ -99,7 +89,7 @@ const BestSellers = () => {
         <Slider {...settings}>
           {bestsellers.map((product) => (
             <div key={product.id} className={styles.slide}>
-              <div style={{ padding: '0 10px' }}> {/* Adds a little breathing room between cards */}
+              <div className={styles.cardWrapper}>
                 <ProductCard product={product} />
               </div>
             </div>
