@@ -101,10 +101,12 @@ const BestSellers = () => {
           }
 
           /* FORCE PRODUCT CARD BUTTONS TO SHOW ON MOBILE */
+          /* We target the common 'actions' or 'hover' containers in ProductCard */
           .mobile-product-card-container [class*="actions"],
           .mobile-product-card-container [class*="button"],
           .mobile-product-card-container [class*="hover"],
           .mobile-product-card-container [class*="Add"],
+          .mobile-product-card-container [class*="cardActions"],
           .mobile-product-card-container button {
             opacity: 1 !important;
             visibility: visible !important;
@@ -112,6 +114,18 @@ const BestSellers = () => {
             transform: translateY(0) !important;
             position: relative !important;
             bottom: auto !important;
+            background-color: #333 !important; /* Force background color for visibility */
+            color: white !important;
+          }
+
+          /* Ensure the container for buttons is visible */
+          .mobile-product-card-container [class*="overlay"],
+          .mobile-product-card-container [class*="hoverContent"] {
+            opacity: 1 !important;
+            visibility: visible !important;
+            display: block !important;
+            position: relative !important;
+            transform: none !important;
           }
 
           /* ARROW STYLING */
