@@ -1,27 +1,33 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Slider from 'react-slick';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import ProductCard from './ProductCard';
 import { getBestsellerProducts } from '@/lib/api';
 import styles from '@/styles/BestSellers.module.css';
-import { useIsMobile } from '@/hooks/useIsMobile';
 
 const NextArrow = (props: any) => {
   const { onClick } = props;
-  return <button className={`${styles.arrow} ${styles.nextArrow}`} onClick={onClick}><ChevronRight size={24} /></button>;
+  return (
+    <button className={`${styles.arrow} ${styles.nextArrow}`} onClick={onClick} aria-label="Next">
+      <ChevronRight size={24} />
+    </button>
+  );
 };
+
 const PrevArrow = (props: any) => {
   const { onClick } = props;
-  return <button className={`${styles.arrow} ${styles.prevArrow}`} onClick={onClick}><ChevronLeft size={24} /></button>;
+  return (
+    <button className={`${styles.arrow} ${styles.prevArrow}`} onClick={onClick} aria-label="Previous">
+      <ChevronLeft size={24} />
+    </button>
+  );
 };
 
 const BestSellers = () => {
   const [bestsellers, setBestsellers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const isMobile = useIsMobile();
-  const mobileSliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchBestsellers = async () => {
@@ -40,26 +46,38 @@ const BestSellers = () => {
     fetchBestsellers();
   }, []);
 
-  const handleMobileScroll = (direction: 'left' | 'right') => {
-    if (mobileSliderRef.current) {
-      const scrollAmount = mobileSliderRef.current.clientWidth * 0.8;
-      mobileSliderRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
-      });
-    }
-  };
-
-  const desktopSettings = {
+  const settings = {
     dots: false,
-    infinite: bestsellers.length > 4,
+    infinite: bestsellers.length > 1,
     speed: 500,
-    slidesToShow: Math.min(bestsellers.length, 4),
+    slidesToShow: 4,
     slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [
-      { breakpoint: 1024, settings: { slidesToShow: Math.min(bestsellers.length, 3) } }
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+        }
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+          arrows: true, // Force arrows on mobile
+        }
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          arrows: true, // Force arrows on mobile
+        }
+      }
     ],
   };
 
@@ -74,42 +92,13 @@ const BestSellers = () => {
       </div>
       
       <div className={styles.carouselContainer}>
-        {isMobile ? (
-          <div className={styles.mobileSliderWrapper} style={{ position: 'relative', width: '100%' }}>
-            {/* FORCED VISIBILITY ARROWS */}
-            <button 
-              className={`${styles.mobileArrow} ${styles.mobilePrevArrow}`} 
-              onClick={() => handleMobileScroll('left')}
-              style={{ zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            >
-              <ChevronLeft size={24} />
-            </button>
-            
-            <div className={styles.mobileSliderContainer} ref={mobileSliderRef} style={{ overflowX: 'auto', scrollSnapType: 'x mandatory', display: 'flex' }}>
-              {bestsellers.map((product) => (
-                <div key={product.id} className={styles.mobileSlide} style={{ scrollSnapAlign: 'start', flexShrink: 0 }}>
-                  <ProductCard product={product} />
-                </div>
-              ))}
+        <Slider {...settings}>
+          {bestsellers.map((product) => (
+            <div key={product.id} className={styles.slide}>
+              <ProductCard product={product} />
             </div>
-
-            <button 
-              className={`${styles.mobileArrow} ${styles.mobileNextArrow}`} 
-              onClick={() => handleMobileScroll('right')}
-              style={{ zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            >
-              <ChevronRight size={24} />
-            </button>
-          </div>
-        ) : (
-          <Slider {...desktopSettings}>
-            {bestsellers.map((product) => (
-              <div key={product.id} className={styles.slide}>
-                <ProductCard product={product} />
-              </div>
-            ))}
-          </Slider>
-        )}
+          ))}
+        </Slider>
       </div>
     </section>
   );
