@@ -33,9 +33,15 @@ async function fetchAPI(endpoint: string, query: string = '') {
 
   try {
     const res = await fetch(fullUrlWithQuery, { method: 'GET', headers, next: { revalidate: 0 } });
-    if (!res.ok) return null;
+    if (!res.ok) {
+      console.error(`API Error on ${endpoint}:`, res.status);
+      return null;
+    }
     return await res.json();
-  } catch (error) { return null; }
+  } catch (error) { 
+    console.error(`Fetch Error on ${endpoint}:`, error);
+    return null; 
+  }
 }
 
 function processStrapiResponse(response: any): any[] {
@@ -54,14 +60,22 @@ export async function getBestsellerProducts() {
     }
   }, { encodeValuesOnly: true });
 
+  // We try /collections first. If your collection type is named differently, change this string.
   const response = await fetchAPI('/collections', query);
   
-  // BULLETPROOF EXTRACTION
+  console.log("DEBUG: Strapi Response for Bestsellers:", response);
+
   if (response && response.data && response.data.length > 0) {
     const attributes = response.data[0].attributes;
-    if (attributes && attributes.products && attributes.products.data) {
-      return attributes.products.data.map(mapProductData).filter(Boolean);
+    // Check if products exist in the response
+    const productsData = attributes?.products?.data || attributes?.products || [];
+    if (Array.isArray(productsData) && productsData.length > 0) {
+      return productsData.map(mapProductData).filter(Boolean);
+    } else {
+      console.warn("DEBUG: Collection found but 'products' field is empty or missing data wrapper.");
     }
+  } else {
+    console.warn("DEBUG: No collection found with slug 'best-sellers'. Check your Strapi slug.");
   }
   
   return [];
