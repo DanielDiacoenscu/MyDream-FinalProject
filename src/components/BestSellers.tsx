@@ -10,8 +10,8 @@ import styles from '@/styles/BestSellers.module.css';
 const NextArrow = (props: any) => {
   const { onClick } = props;
   return (
-    <button className={`${styles.arrow} ${styles.nextArrow}`} onClick={onClick} style={{ zIndex: 10, right: '5px' }}>
-      <ChevronRight size={30} />
+    <button className={`${styles.arrow} ${styles.nextArrow}`} onClick={onClick} style={{ zIndex: 10, right: '-5px', background: 'rgba(255,255,255,0.8)', borderRadius: '50%', padding: '5px' }}>
+      <ChevronRight size={32} color="black" />
     </button>
   );
 };
@@ -19,8 +19,8 @@ const NextArrow = (props: any) => {
 const PrevArrow = (props: any) => {
   const { onClick } = props;
   return (
-    <button className={`${styles.arrow} ${styles.prevArrow}`} onClick={onClick} style={{ zIndex: 10, left: '5px' }}>
-      <ChevronLeft size={30} />
+    <button className={`${styles.arrow} ${styles.prevArrow}`} onClick={onClick} style={{ zIndex: 10, left: '-5px', background: 'rgba(255,255,255,0.8)', borderRadius: '50%', padding: '5px' }}>
+      <ChevronLeft size={32} color="black" />
     </button>
   );
 };
@@ -50,23 +50,24 @@ const BestSellers = () => {
     dots: true,
     infinite: bestsellers.length > 1,
     speed: 500,
-    slidesToShow: 4, // Desktop default
+    slidesToShow: 4,
     slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [
       {
-        breakpoint: 1200,
+        breakpoint: 1024,
         settings: { slidesToShow: 3 }
       },
       {
         breakpoint: 768,
         settings: {
-          slidesToShow: 1, // FORCE ONE LARGE CARD
+          slidesToShow: 1,
           slidesToScroll: 1,
           arrows: true,
           dots: true,
-          centerMode: false
+          centerMode: false,
+          fade: false
         }
       }
     ],
@@ -86,7 +87,7 @@ const BestSellers = () => {
         <Slider {...settings}>
           {bestsellers.map((product) => (
             <div key={product.id} className={styles.slide}>
-              <div className="mobile-card-wrapper">
+              <div className="mega-card-wrapper">
                 <ProductCard product={product} />
               </div>
             </div>
@@ -96,25 +97,33 @@ const BestSellers = () => {
 
       <style jsx global>{`
         @media (max-width: 768px) {
-          .slick-slide > div {
-            display: block !important;
-            width: 100% !important;
+          /* FORCE THE SLIDE TO BE HUGE */
+          .slick-slide {
+            padding: 0 10px !important;
           }
-          .mobile-card-wrapper {
+          .mega-card-wrapper {
             width: 100% !important;
-            padding: 0 10px;
-            box-sizing: border-box;
+            min-height: 600px !important; /* X2 HEIGHT */
+            display: flex !important;
+            justify-content: center;
           }
-          /* Force the ProductCard to take full width */
-          .mobile-card-wrapper > div {
+          /* TARGET THE PRODUCT CARD DIRECTLY */
+          .mega-card-wrapper > div {
             width: 100% !important;
             max-width: 100% !important;
+            height: 100% !important;
+            transform: scale(1.1); /* EXTRA PUSH */
           }
-          .slick-list {
-            margin: 0 -10px;
+          /* MAKE THE IMAGE CONTAINER WITHIN PRODUCTCARD LARGER */
+          .mega-card-wrapper img {
+            object-fit: cover !important;
+            height: 400px !important; /* FORCE LARGE IMAGE */
           }
           .slick-dots {
-            bottom: -30px;
+            bottom: -40px !important;
+          }
+          .slick-list {
+            overflow: visible !important; /* Prevent clipping of scaled cards */
           }
         }
       `}</style>
