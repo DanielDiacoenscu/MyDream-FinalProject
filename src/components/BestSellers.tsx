@@ -10,8 +10,8 @@ import styles from '@/styles/BestSellers.module.css';
 const NextArrow = (props: any) => {
   const { onClick } = props;
   return (
-    <button className={`${styles.arrow} ${styles.nextArrow}`} onClick={onClick} style={{ zIndex: 10 }}>
-      <ChevronRight size={32} />
+    <button className={`${styles.arrow} ${styles.nextArrow}`} onClick={onClick} aria-label="Next">
+      <ChevronRight size={24} />
     </button>
   );
 };
@@ -19,8 +19,8 @@ const NextArrow = (props: any) => {
 const PrevArrow = (props: any) => {
   const { onClick } = props;
   return (
-    <button className={`${styles.arrow} ${styles.prevArrow}`} onClick={onClick} style={{ zIndex: 10 }}>
-      <ChevronLeft size={32} />
+    <button className={`${styles.arrow} ${styles.prevArrow}`} onClick={onClick} aria-label="Previous">
+      <ChevronLeft size={24} />
     </button>
   );
 };
@@ -46,14 +46,13 @@ const BestSellers = () => {
     };
     fetchBestsellers();
 
-    // Handle screen resize manually to avoid slick's buggy responsive settings
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setSlidesToShow(1); // ONE CARD ON MOBILE
+        setSlidesToShow(1);
       } else if (window.innerWidth < 1024) {
         setSlidesToShow(2);
       } else {
-        setSlidesToShow(4); // FOUR ON DESKTOP
+        setSlidesToShow(4);
       }
     };
 
@@ -87,7 +86,7 @@ const BestSellers = () => {
         <Slider {...settings}>
           {bestsellers.map((product) => (
             <div key={product.id} className={styles.slide}>
-              <div className={styles.cardWrapper}>
+              <div className="product-card-mobile-wrapper">
                 <ProductCard product={product} />
               </div>
             </div>
@@ -96,22 +95,57 @@ const BestSellers = () => {
       </div>
 
       <style jsx global>{`
+        /* FORCE MOBILE TO LOOK LIKE DESKTOP */
         @media (max-width: 768px) {
           .slick-slide {
-            padding: 0 20px !important;
+            padding: 0 15px !important;
           }
+          
+          /* Force ProductCard buttons to be visible */
+          .product-card-mobile-wrapper button,
+          .product-card-mobile-wrapper .add-to-cart-btn,
+          .product-card-mobile-wrapper .wishlist-btn {
+            opacity: 1 !important;
+            visibility: visible !important;
+            display: flex !important;
+            transform: none !important;
+          }
+
+          /* Match Desktop Arrow Styling */
           .${styles.arrow} {
             display: flex !important;
-            background: rgba(255, 255, 255, 0.8) !important;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white !important;
+            border: 1px solid #eee !important;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.2s ease;
           }
-          .${styles.nextArrow} { right: 5px !important; }
-          .${styles.prevArrow} { left: 5px !important; }
+
+          .${styles.nextArrow} {
+            right: -5px !important;
+            z-index: 10;
+          }
+
+          .${styles.prevArrow} {
+            left: -5px !important;
+            z-index: 10;
+          }
+
+          /* Ensure the card itself is large and clear */
+          .product-card-mobile-wrapper {
+            width: 100%;
+            min-height: 480px;
+            display: flex;
+            flex-direction: column;
+          }
         }
       `}</style>
     </section>
