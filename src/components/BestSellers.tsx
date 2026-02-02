@@ -10,11 +10,7 @@ import styles from '@/styles/BestSellers.module.css';
 const NextArrow = (props: any) => {
   const { onClick } = props;
   return (
-    <button 
-      className={`${styles.arrow} ${styles.nextArrow}`} 
-      onClick={onClick} 
-      style={{ display: 'flex', zIndex: 2, right: '-10px' }}
-    >
+    <button className={`${styles.arrow} ${styles.nextArrow}`} onClick={onClick} style={{ zIndex: 5 }}>
       <ChevronRight size={24} />
     </button>
   );
@@ -23,11 +19,7 @@ const NextArrow = (props: any) => {
 const PrevArrow = (props: any) => {
   const { onClick } = props;
   return (
-    <button 
-      className={`${styles.arrow} ${styles.prevArrow}`} 
-      onClick={onClick} 
-      style={{ display: 'flex', zIndex: 2, left: '-10px' }}
-    >
+    <button className={`${styles.arrow} ${styles.prevArrow}`} onClick={onClick} style={{ zIndex: 5 }}>
       <ChevronLeft size={24} />
     </button>
   );
@@ -55,7 +47,7 @@ const BestSellers = () => {
   }, []);
 
   const settings = {
-    dots: false,
+    dots: true,
     infinite: bestsellers.length > 1,
     speed: 500,
     slidesToShow: 4,
@@ -67,15 +59,16 @@ const BestSellers = () => {
         breakpoint: 1024,
         settings: {
           slidesToShow: 3,
+          slidesToScroll: 1,
         }
       },
       {
         breakpoint: 768,
         settings: {
-          slidesToShow: 1, // One BIG card
+          slidesToShow: 1, // THIS FIXES THE TINY CARDS
           slidesToScroll: 1,
           arrows: true,
-          centerMode: false, // No shrinking
+          dots: true,
         }
       }
     ],
@@ -91,17 +84,33 @@ const BestSellers = () => {
         <h2 className={styles.title}>BEST SELLERS</h2>
       </div>
       
-      <div className={styles.carouselContainer} style={{ padding: '0 20px' }}>
+      <div className={styles.carouselContainer}>
         <Slider {...settings}>
           {bestsellers.map((product) => (
             <div key={product.id} className={styles.slide}>
-              <div style={{ padding: '10px', minHeight: '450px' }}>
+              <div className={styles.mobileCardFix}>
                 <ProductCard product={product} />
               </div>
             </div>
           ))}
         </Slider>
       </div>
+
+      <style jsx global>{`
+        @media (max-width: 768px) {
+          .slick-track {
+            display: flex !important;
+            align-items: stretch !important;
+          }
+          .slick-slide {
+            height: inherit !important;
+            padding: 0 15px !important; /* Gives the card space to breathe */
+          }
+          .${styles.carouselContainer} {
+            padding: 0 30px !important; /* Keeps arrows from overlapping text */
+          }
+        }
+      `}</style>
     </section>
   );
 };
