@@ -100,8 +100,7 @@ const BestSellers = () => {
             padding: 0 10px !important;
           }
 
-          /* FORCE PRODUCT CARD BUTTONS TO SHOW */
-          /* We target the common 'actions' or 'hover' containers in ProductCard */
+          /* FORCE PRODUCT CARD BUTTONS TO SHOW ON MOBILE */
           .mobile-product-card-container [class*="actions"],
           .mobile-product-card-container [class*="button"],
           .mobile-product-card-container [class*="hover"],
@@ -110,15 +109,9 @@ const BestSellers = () => {
             opacity: 1 !important;
             visibility: visible !important;
             display: flex !important;
-            transform: translateY(0) !important; /* Stop them from being hidden below the card */
+            transform: translateY(0) !important;
             position: relative !important;
             bottom: auto !important;
-          }
-
-          /* Ensure the image doesn't push the buttons out of view */
-          .mobile-product-card-container img {
-            max-height: 350px !important;
-            object-fit: contain !important;
           }
 
           /* ARROW STYLING */
@@ -141,3 +134,5 @@ const BestSellers = () => {
     </section>
   );
 };
+
+export default BestSellers;
