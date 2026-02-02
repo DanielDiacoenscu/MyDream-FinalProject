@@ -3,7 +3,7 @@ import qs from 'qs';
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_API_URL || '';
 const API_TOKEN = process.env.STRAPI_API_TOKEN || process.env.NEXT_PUBLIC_API_TOKEN || '';
 
-// FLATTENING LOGIC FOR YOUR COMPONENTS
+// FLATTENING LOGIC
 function mapProductData(item: any): any {
   if (!item) return null;
   const source = item.attributes ? item.attributes : item;
@@ -45,11 +45,29 @@ function processStrapiResponse(response: any): any[] {
   return [];
 }
 
+// FIXED: Fetching from the Collection relation instead of a boolean filter
 export async function getBestsellerProducts() {
-  const query = 'populate=Images&filters[bestseller][$eq]=true';
-  const response = await fetchAPI('/products', query);
-  const products = processStrapiResponse(response);
-  return products.map(mapProductData).filter(Boolean);
+  // We fetch the collection with slug 'best-sellers' and populate its products
+  const query = qs.stringify({
+    filters: {
+      slug: { $eq: 'best-sellers' }
+    },
+    populate: {
+      products: {
+        populate: ['Images']
+      }
+    }
+  }, { encodeValuesOnly: true });
+
+  const response = await fetchAPI('/collections', query);
+  
+  if (response && response.data && response.data.length > 0) {
+    const collection = response.data[0].attributes;
+    const products = collection.products?.data || [];
+    return products.map(mapProductData).filter(Boolean);
+  }
+  
+  return [];
 }
 
 export async function getProductBySlug(slug: string) {
