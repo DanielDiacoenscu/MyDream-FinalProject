@@ -1,29 +1,28 @@
 import qs from 'qs';
-import { Product } from './types';
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_API_URL || '';
 const API_TOKEN = process.env.STRAPI_API_TOKEN || process.env.NEXT_PUBLIC_API_TOKEN || '';
 
+// FLATTENING LOGIC FOR YOUR COMPONENTS
 function mapProductData(item: any): any {
   if (!item) return null;
   const source = item.attributes ? item.attributes : item;
   const id = item.id;
   
-  // Extract images correctly for your ProductCard
   const imagesData = source.Images?.data || source.Images || [];
-  const mappedImages = imagesData.map((img: any) => {
+  const mappedImages = Array.isArray(imagesData) ? imagesData.map((img: any) => {
     const imgSource = img.attributes ? img.attributes : img;
     return {
       url: imgSource.url,
       alternativeText: imgSource.alternativeText || ''
     };
-  });
+  }) : [];
 
   return {
     id,
     ...source,
-    Images: mappedImages, // Flattened images array
-    images: mappedImages, // Backup for other components
+    Images: mappedImages,
+    images: mappedImages,
   };
 }
 
@@ -46,7 +45,6 @@ function processStrapiResponse(response: any): any[] {
   return [];
 }
 
-// FIXED: This now flattens the data so ProductCard can read it
 export async function getBestsellerProducts() {
   const query = 'populate=Images&filters[bestseller][$eq]=true';
   const response = await fetchAPI('/products', query);
@@ -80,15 +78,37 @@ export async function getNavigationLinks() {
   return processStrapiResponse(response);
 }
 
+export async function getPageBySlug(slug: string) {
+  const query = `filters[slug][$eq]=${slug}&populate=*`;
+  const response = await fetchAPI('/pages', query);
+  const pages = processStrapiResponse(response);
+  return pages.length > 0 ? pages[0] : null;
+}
+
 export async function getCategories() {
   const query = 'populate=*';
   const response = await fetchAPI('/categories', query);
   return processStrapiResponse(response);
 }
 
+export async function getCategoryBySlug(slug: string) {
+  const query = `filters[slug][$eq]=${slug}`;
+  const response = await fetchAPI('/categories', query);
+  const categories = processStrapiResponse(response);
+  return categories.length > 0 ? categories[0] : null;
+}
+
 export async function getCategoryDetails(slug: string) {
   const response = await fetchAPI(`/categories?filters[slug][$eq]=${slug}`);
   return (response && response.data && response.data.length > 0) ? response.data[0] : null;
+}
+
+export async function searchProducts(query: string) {
+  if (!query) return [];
+  const filters = `filters[name][$containsi]=${encodeURIComponent(query)}&populate=*&pagination[limit]=5`;
+  const data = await fetchAPI('/products', filters);
+  const products = processStrapiResponse(data);
+  return products.map(mapProductData).filter(Boolean);
 }
 
 export async function fetchAllCollections() {
