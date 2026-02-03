@@ -10,7 +10,7 @@ import styles from '@/styles/BestSellers.module.css';
 const NextArrow = (props: any) => {
   const { onClick } = props;
   return (
-    <button className={`${styles.arrow} ${styles.nextArrow}`} onClick={onClick} aria-label="Next">
+    <button className={`${styles.arrow} ${styles.nextArrow}`} onClick={onClick}>
       <ChevronRight size={24} />
     </button>
   );
@@ -19,7 +19,7 @@ const NextArrow = (props: any) => {
 const PrevArrow = (props: any) => {
   const { onClick } = props;
   return (
-    <button className={`${styles.arrow} ${styles.prevArrow}`} onClick={onClick} aria-label="Previous">
+    <button className={`${styles.arrow} ${styles.prevArrow}`} onClick={onClick}>
       <ChevronLeft size={24} />
     </button>
   );
@@ -28,48 +28,43 @@ const PrevArrow = (props: any) => {
 const BestSellers = () => {
   const [bestsellers, setBestsellers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [slidesToShow, setSlidesToShow] = useState(4);
 
   useEffect(() => {
     const fetchBestsellers = async () => {
       try {
         setIsLoading(true);
         const products = await getBestsellerProducts();
-        if (products && products.length > 0) {
-          setBestsellers(products);
-        }
+        if (products) setBestsellers(products);
       } catch (error) {
-        console.error("Failed to fetch bestsellers:", error);
+        console.error(error);
       } finally {
         setIsLoading(false);
       }
     };
     fetchBestsellers();
-
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setSlidesToShow(1);
-      } else if (window.innerWidth < 1024) {
-        setSlidesToShow(2);
-      } else {
-        setSlidesToShow(4);
-      }
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const settings = {
     dots: false,
-    infinite: bestsellers.length > slidesToShow,
+    infinite: true,
     speed: 500,
-    slidesToShow: slidesToShow,
+    slidesToShow: 4,
     slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
-    arrows: true,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: { slidesToShow: 2 }
+      },
+      {
+        breakpoint: 768,
+        settings: { 
+          slidesToShow: 1,
+          arrows: true 
+        }
+      }
+    ]
   };
 
   if (isLoading || bestsellers.length === 0) return null;
@@ -81,70 +76,15 @@ const BestSellers = () => {
         <div className={styles.divider}></div>
         <h2 className={styles.title}>BEST SELLERS</h2>
       </div>
-      
       <div className={styles.carouselContainer}>
         <Slider {...settings}>
           {bestsellers.map((product) => (
             <div key={product.id} className={styles.slide}>
-              <div className="mobile-product-card-container">
-                <ProductCard product={product} />
-              </div>
+              <ProductCard product={product} />
             </div>
           ))}
         </Slider>
       </div>
-
-      <style jsx global>{`
-        @media (max-width: 768px) {
-          .slick-slide {
-            padding: 0 10px !important;
-          }
-
-          /* FORCE PRODUCT CARD BUTTONS TO SHOW ON MOBILE */
-          /* We target the common 'actions' or 'hover' containers in ProductCard */
-          .mobile-product-card-container [class*="actions"],
-          .mobile-product-card-container [class*="button"],
-          .mobile-product-card-container [class*="hover"],
-          .mobile-product-card-container [class*="Add"],
-          .mobile-product-card-container [class*="cardActions"],
-          .mobile-product-card-container button {
-            opacity: 1 !important;
-            visibility: visible !important;
-            display: flex !important;
-            transform: translateY(0) !important;
-            position: relative !important;
-            bottom: auto !important;
-            background-color: #333 !important; /* Force background color for visibility */
-            color: white !important;
-          }
-
-          /* Ensure the container for buttons is visible */
-          .mobile-product-card-container [class*="overlay"],
-          .mobile-product-card-container [class*="hoverContent"] {
-            opacity: 1 !important;
-            visibility: visible !important;
-            display: block !important;
-            position: relative !important;
-            transform: none !important;
-          }
-
-          /* ARROW STYLING */
-          .${styles.arrow} {
-            display: flex !important;
-            background: white !important;
-            border: 1px solid #eee !important;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            z-index: 100;
-          }
-          .${styles.nextArrow} { right: -5px !important; }
-          .${styles.prevArrow} { left: -5px !important; }
-        }
-      `}</style>
     </section>
   );
 };

@@ -61,7 +61,6 @@
   color: #333;
 }
 
-/* --- RESTORED HOVER BUTTONS --- */
 .productTileVariantsAndCta {
   background-color: transparent;
   padding: 1rem;
@@ -122,10 +121,6 @@
 .wishlistBtn:hover { background-color: #111; }
 
 @media (max-width: 768px) {
-  .productGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
   .productTileInfo {
     padding: 0.5rem;
     height: 100px;
@@ -136,7 +131,16 @@
   .price {
     font-size: 0.75rem;
   }
+  /* THE FIX: REMOVE DISPLAY NONE AND FORCE VISIBILITY */
   .productTileVariantsAndCta {
-    display: none;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: flex !important;
+    position: relative !important; /* Moves it below the image for better mobile fit */
+    padding: 0 0.5rem 0.5rem 0.5rem !important;
+    background-color: #f7f7f7 !important;
+  }
+  .productTileCta {
+    width: 100% !important;
   }
 }
