@@ -76,7 +76,7 @@ const CheckoutSummary = () => {
           <div style={{ display: 'flex', gap: '10px' }}>
             <input 
               type="text" 
-              placeholder="Promo Code" 
+              placeholder="Промо код" 
               value={promoInput}
               onChange={(e) => setPromoInput(e.target.value)}
               className={styles.formInput}
@@ -88,7 +88,7 @@ const CheckoutSummary = () => {
               className={styles.formButton}
               style={{ width: 'auto', marginTop: 0, padding: '10px 20px', fontSize: '12px' }}
             >
-              {isLoading ? '...' : 'APPLY'}
+              {isLoading ? '...' : 'ПРИЛОЖИ'}
             </button>
           </div>
         ) : (
@@ -148,7 +148,7 @@ const CheckoutSummary = () => {
           <span>{formatDualPrice(grandTotal, grandTotalBGN)}</span>
         </div>
         {isEligibleForFreeShipping && (
-          <p className={styles.freeShippingMessage}>Congratulations, you've earned free shipping!</p>
+          <p className={styles.freeShippingMessage}>Поздравления, спечелихте безплатна доставка!</p>
         )}
       </div>
     </div>
@@ -156,3 +156,4 @@ const CheckoutSummary = () => {
 };
 
 export default CheckoutSummary;
+
