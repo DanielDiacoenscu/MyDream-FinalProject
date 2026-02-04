@@ -50,7 +50,7 @@ const BestSellers = () => {
     dots: false,
     infinite: true,
     speed: 500,
-    slidesToShow: 4, // DESKTOP UNTOUCHED
+    slidesToShow: 4,
     slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
@@ -65,9 +65,10 @@ const BestSellers = () => {
       {
         breakpoint: 768,
         settings: {
-          slidesToShow: 1, // FORCE ONE PRODUCT
+          slidesToShow: 1,
           slidesToScroll: 1,
-          arrows: true // FORCE ARROWS
+          arrows: true,
+          centerMode: false
         }
       }
     ],
@@ -95,39 +96,41 @@ const BestSellers = () => {
 
       <style jsx global>{`
         @media (max-width: 768px) {
-          /* FORCE IDENTICAL DESKTOP ARROWS ON MOBILE */
+          /* FORCE ONE SLIDE TO BE 100% WIDTH */
+          .slick-slide {
+            width: 100vw !important;
+            padding: 0 20px !important;
+          }
+          
+          .slick-track {
+            display: flex !important;
+            align-items: stretch !important;
+          }
+
+          /* IDENTICAL DESKTOP ARROWS */
           .${styles.arrow} {
             display: flex !important;
             position: absolute;
-            top: 50%;
+            top: 40% !important; /* Move them up so they don't block the text */
             transform: translateY(-50%);
             background: white !important;
             border: 1px solid #eee !important;
             border-radius: 50% !important;
-            width: 40px !important;
-            height: 40px !important;
+            width: 45px !important;
+            height: 45px !important;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
             z-index: 100;
-            color: #333 !important;
+            color: #111 !important;
           }
           
           .${styles.nextArrow} { 
-            right: 5px !important; 
+            right: 10px !important; 
           }
           
           .${styles.prevArrow} { 
-            left: 5px !important; 
-          }
-
-          /* Give the single card some breathing room */
-          .slick-slide {
-            padding: 0 15px !important;
-          }
-          
-          .slick-list {
-            margin: 0 -15px !important;
+            left: 10px !important; 
           }
         }
       `}</style>
