@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Slider from 'react-slick';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import ProductCard from './ProductCard';
@@ -10,7 +10,7 @@ import styles from '@/styles/BestSellers.module.css';
 const NextArrow = (props: any) => {
   const { onClick } = props;
   return (
-    <button className={`${styles.arrow} ${styles.nextArrow}`} onClick={onClick} aria-label="Next">
+    <button className={`${styles.arrow} ${styles.nextArrow}`} onClick={onClick}>
       <ChevronRight size={24} />
     </button>
   );
@@ -19,7 +19,7 @@ const NextArrow = (props: any) => {
 const PrevArrow = (props: any) => {
   const { onClick } = props;
   return (
-    <button className={`${styles.arrow} ${styles.prevArrow}`} onClick={onClick} aria-label="Previous">
+    <button className={`${styles.arrow} ${styles.prevArrow}`} onClick={onClick}>
       <ChevronLeft size={24} />
     </button>
   );
@@ -28,23 +28,30 @@ const PrevArrow = (props: any) => {
 const BestSellers = () => {
   const [bestsellers, setBestsellers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchBestsellers = async () => {
       try {
         setIsLoading(true);
         const products = await getBestsellerProducts();
-        if (products && products.length > 0) {
-          setBestsellers(products);
-        }
+        if (products) setBestsellers(products);
       } catch (error) {
-        console.error("Failed to fetch bestsellers:", error);
+        console.error(error);
       } finally {
         setIsLoading(false);
       }
     };
     fetchBestsellers();
   }, []);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const { scrollLeft, clientWidth } = scrollRef.current;
+      const scrollTo = direction === 'left' ? scrollLeft - clientWidth : scrollLeft + clientWidth;
+      scrollRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
+    }
+  };
 
   const settings = {
     dots: false,
@@ -54,24 +61,6 @@ const BestSellers = () => {
     slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-        }
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          arrows: true,
-          centerMode: false
-        }
-      }
-    ],
   };
 
   if (isLoading || bestsellers.length === 0) return null;
@@ -84,53 +73,63 @@ const BestSellers = () => {
         <h2 className={styles.title}>BEST SELLERS</h2>
       </div>
       
+      {/* DESKTOP SLIDER (Uses react-slick) */}
       <div className={styles.carouselContainer}>
-        <Slider {...settings}>
-          {bestsellers.map((product) => (
-            <div key={product.id} className={styles.slide}>
-              <ProductCard product={product} />
+        <div className="desktop-only">
+          <Slider {...settings}>
+            {bestsellers.map((product) => (
+              <div key={product.id} className={styles.slide}>
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </Slider>
+        </div>
+
+        {/* MOBILE SLIDER (Uses your EXACT CSS classes) */}
+        <div className="mobile-only">
+          <div className={styles.mobileSliderWrapper}>
+            <button 
+              className={`${styles.mobileArrow} ${styles.mobilePrevArrow}`} 
+              onClick={() => scroll('left')}
+            >
+              <ChevronLeft size={24} />
+            </button>
+            
+            <div className={styles.mobileSliderContainer} ref={scrollRef}>
+              {bestsellers.map((product) => (
+                <div key={product.id} className={styles.mobileSlide}>
+                  <ProductCard product={product} />
+                </div>
+              ))}
             </div>
-          ))}
-        </Slider>
+
+            <button 
+              className={`${styles.mobileArrow} ${styles.mobileNextArrow}`} 
+              onClick={() => scroll('right')}
+            >
+              <ChevronRight size={24} />
+            </button>
+          </div>
+        </div>
       </div>
 
-      <style jsx global>{`
+      <style jsx>{`
+        @media (min-width: 769px) {
+          .mobile-only { display: none; }
+        }
         @media (max-width: 768px) {
-          /* FORCE ONE SLIDE TO BE 100% WIDTH */
-          .slick-slide {
-            width: 100vw !important;
-            padding: 0 20px !important;
-          }
-          
-          .slick-track {
-            display: flex !important;
-            align-items: stretch !important;
-          }
-
-          /* IDENTICAL DESKTOP ARROWS */
-          .${styles.arrow} {
-            display: flex !important;
-            position: absolute;
-            top: 40% !important; /* Move them up so they don't block the text */
-            transform: translateY(-50%);
+          .desktop-only { display: none; }
+          /* Force arrows to look like desktop on mobile */
+          :global(.${styles.mobileArrow}) {
             background: white !important;
             border: 1px solid #eee !important;
             border-radius: 50% !important;
-            width: 45px !important;
-            height: 45px !important;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-            z-index: 100;
-            color: #111 !important;
-          }
-          
-          .${styles.nextArrow} { 
-            right: 10px !important; 
-          }
-          
-          .${styles.prevArrow} { 
-            left: 10px !important; 
+            width: 40px !important;
+            height: 40px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
           }
         }
       `}</style>
