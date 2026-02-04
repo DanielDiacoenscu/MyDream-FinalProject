@@ -41,7 +41,7 @@
   align-items: center;
   height: auto;
   z-index: 1;
-  pointer-events: none;
+  pointer-events: auto;
   transition: top 0.3s ease-in-out, transform 0.3s ease-in-out;
   background: transparent !important;
 }
