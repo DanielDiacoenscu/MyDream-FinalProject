@@ -10,7 +10,7 @@ import styles from '@/styles/BestSellers.module.css';
 const NextArrow = (props: any) => {
   const { onClick } = props;
   return (
-    <button className={`${styles.arrow} ${styles.nextArrow}`} onClick={onClick}>
+    <button className={`${styles.arrow} ${styles.nextArrow}`} onClick={onClick} aria-label="Next">
       <ChevronRight size={24} />
     </button>
   );
@@ -19,7 +19,7 @@ const NextArrow = (props: any) => {
 const PrevArrow = (props: any) => {
   const { onClick } = props;
   return (
-    <button className={`${styles.arrow} ${styles.prevArrow}`} onClick={onClick}>
+    <button className={`${styles.arrow} ${styles.prevArrow}`} onClick={onClick} aria-label="Previous">
       <ChevronLeft size={24} />
     </button>
   );
@@ -34,9 +34,11 @@ const BestSellers = () => {
       try {
         setIsLoading(true);
         const products = await getBestsellerProducts();
-        if (products) setBestsellers(products);
+        if (products && products.length > 0) {
+          setBestsellers(products);
+        }
       } catch (error) {
-        console.error(error);
+        console.error("Failed to fetch bestsellers:", error);
       } finally {
         setIsLoading(false);
       }
@@ -48,23 +50,27 @@ const BestSellers = () => {
     dots: false,
     infinite: true,
     speed: 500,
-    slidesToShow: 4,
+    slidesToShow: 4, // DESKTOP UNTOUCHED
     slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [
       {
         breakpoint: 1024,
-        settings: { slidesToShow: 2 }
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        }
       },
       {
         breakpoint: 768,
-        settings: { 
-          slidesToShow: 1,
-          arrows: true 
+        settings: {
+          slidesToShow: 1, // FORCE ONE PRODUCT
+          slidesToScroll: 1,
+          arrows: true // FORCE ARROWS
         }
       }
-    ]
+    ],
   };
 
   if (isLoading || bestsellers.length === 0) return null;
@@ -76,6 +82,7 @@ const BestSellers = () => {
         <div className={styles.divider}></div>
         <h2 className={styles.title}>BEST SELLERS</h2>
       </div>
+      
       <div className={styles.carouselContainer}>
         <Slider {...settings}>
           {bestsellers.map((product) => (
@@ -85,6 +92,45 @@ const BestSellers = () => {
           ))}
         </Slider>
       </div>
+
+      <style jsx global>{`
+        @media (max-width: 768px) {
+          /* FORCE IDENTICAL DESKTOP ARROWS ON MOBILE */
+          .${styles.arrow} {
+            display: flex !important;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white !important;
+            border: 1px solid #eee !important;
+            border-radius: 50% !important;
+            width: 40px !important;
+            height: 40px !important;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+            z-index: 100;
+            color: #333 !important;
+          }
+          
+          .${styles.nextArrow} { 
+            right: 5px !important; 
+          }
+          
+          .${styles.prevArrow} { 
+            left: 5px !important; 
+          }
+
+          /* Give the single card some breathing room */
+          .slick-slide {
+            padding: 0 15px !important;
+          }
+          
+          .slick-list {
+            margin: 0 -15px !important;
+          }
+        }
+      `}</style>
     </section>
   );
 };
