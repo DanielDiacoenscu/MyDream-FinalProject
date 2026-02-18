@@ -11,9 +11,9 @@ const PromoSection = () => {
         loop
         muted
         playsInline
-        key="/promo-video.mp4" // Adding a key can help force a re-render
+        key="/promo-video2.mp4" // Adding a key can help force a re-render
       >
-        <source src="/promo-video.mp4" type="video/mp4" />
+        <source src="/promo-video2.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
 
