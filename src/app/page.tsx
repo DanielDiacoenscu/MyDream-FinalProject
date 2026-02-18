@@ -7,7 +7,7 @@ import CategoryGrid from "../components/CategoryGrid";
 import ShopByCollection from '../components/ShopByCollection';
 
 export default function HomePage() {
-  const localHeroVideoUrl = "/herosection.mp4";
+  const localHeroVideoUrl = "/herosection2.mp4";
 
   return (
     <main>
