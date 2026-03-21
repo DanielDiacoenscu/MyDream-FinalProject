@@ -97,14 +97,14 @@ export async function getProductBySlug(slug: string) {
 }
 
 export async function getAllProducts() {
-  const query = 'populate=*&pagination[limit]=100';
+  const query = 'populate=*&pagination[limit]=1000';
   const response = await fetchAPI('/products', query);
   const products = processStrapiResponse(response);
   return products.map(mapProductData).filter(Boolean);
 }
 
 export async function getProductsByCategory(categorySlug: string) {
-  const query = `filters[categories][slug][$eq]=${categorySlug}&populate=*`;
+  const query = `filters[categories][slug][$eq]=${categorySlug}&populate=*&pagination[limit]=1000`;
   const response = await fetchAPI('/products', query);
   const products = processStrapiResponse(response);
   return products.map(mapProductData).filter(Boolean);
