@@ -34,22 +34,19 @@
 .logoSection {
   position: absolute;
   left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  top: 50%; /* Always center vertically */
+  transform: translate(-50%, -50%); /* Always perfect center */
   display: flex;
   justify-content: center;
   align-items: center;
-  /* STRICT HEIGHT LIMITS */
-  height: 96px; /* Match the header height */
-  width: 200px; /* Restrict width */
-  overflow: hidden; /* CROP the giant invisible parts of the image */
-  z-index: 10;
+  height: auto;
+  z-index: 1;
+  pointer-events: auto;
   transition: top 0.3s ease-in-out, transform 0.3s ease-in-out;
   background: transparent !important;
 }
 
 .logoLinkWrapper {
-  
   display: block;
   line-height: 0;
   background: transparent !important;
@@ -57,16 +54,11 @@
 
 .logoImage {
   width: auto;
-  height: 340px; /* Keep the giant size so the text is readable */
+  height: 340px; /* GIANT INITIAL SIZE */
   object-fit: contain;
   transition: height 0.3s ease-in-out;
   mix-blend-mode: multiply; 
   display: block;
-  /* Center the giant image inside the small cropped box */
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
 /* --- SCROLLED STATE --- */
@@ -140,11 +132,11 @@
 .accordionContent { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-in-out; padding-left: 1rem; }
 .accordionContent.open { max-height: 500px; }
 .accordionLink { display: block; padding: 0.75rem 0; color: #333; text-decoration: none; font-size: 0.9rem; }
-.overlay { position: fixed; inset: 0; background-color: rgba(0,0,0,0.5); z-index: 1200; opacity: 0; transition: opacity 0.4s;  }
-.overlay.open { opacity: 1;  }
+.overlay { position: fixed; inset: 0; background-color: rgba(0,0,0,0.5); z-index: 1200; opacity: 0; transition: opacity 0.4s; pointer-events: none; }
+.overlay.open { opacity: 1; pointer-events: auto; }
 .countBadge { position: absolute; top: -6px; right: -6px; background-color: #111; color: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 10px; line-height: 1; font-weight: bold; }
 .inlineSearchContainer { position: relative; width: 100%; max-width: 280px; }
-.inlineSearchIcon { position: absolute; left: 0; top: 50%; transform: translateY(-50%); color: #888;  }
+.inlineSearchIcon { position: absolute; left: 0; top: 50%; transform: translateY(-50%); color: #888; pointer-events: none; }
 .inlineSearchInput { width: 100%; border: none; padding: 0.4rem 0 0.4rem 2rem; font-size: 0.9rem; background-color: transparent; outline: none; }
 .inlineSearchInput::placeholder { font-family: var(--font-primary); font-size: 0.85rem; color: #a1a1a1; font-weight: 300; }
 .resultsPanel { position: absolute; top: 100%; left: 0; width: 100%; background-color: #fff; border-top: 1px solid #e5e7eb; box-shadow: 0 8px 16px rgba(0,0,0,0.08); z-index: 20; max-height: 400px; overflow-y: auto; }
@@ -186,13 +178,11 @@
     height: auto;
     align-items: center;
     background: transparent !important;
-    /* Removed mix-blend-mode from container to avoid stacking issues */
   }
   
   /* MOBILE GIANT LOGO SETTINGS */
   .logoImage { 
-    /* Use direct height instead of scale to avoid stacking context issues */
-    height: 240px; /* 160px * 1.5 = 240px */
+    height: 240px; 
     mix-blend-mode: multiply; 
     background-color: transparent !important;
   } 
@@ -202,6 +192,6 @@
   }
   
   .header.scrolled .logoImage { 
-    height: 210px; /* 140px * 1.5 = 210px */
+    height: 210px; 
   }
 }
