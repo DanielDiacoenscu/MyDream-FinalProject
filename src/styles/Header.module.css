@@ -34,31 +34,37 @@
 .logoSection {
   position: absolute;
   left: 50%;
-  top: 50%; /* Always center vertically */
-  transform: translate(-50%, -50%); /* Always perfect center */
+  top: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   justify-content: center;
   align-items: center;
   height: auto;
   z-index: 1;
-  pointer-events: none;
+  pointer-events: none; /* Ghost container */
   transition: top 0.3s ease-in-out, transform 0.3s ease-in-out;
   background: transparent !important;
 }
 
 .logoLinkWrapper {
-  display: block;
-  line-height: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px; /* Normal clickable height */
+  width: 240px; /* Normal clickable width */
   background: transparent !important;
+  pointer-events: auto; /* Make this specific box solid/clickable */
+  cursor: pointer;
 }
 
 .logoImage {
   width: auto;
-  height: 340px; /* GIANT INITIAL SIZE */
+  height: 340px; /* Keep your giant visual size */
   object-fit: contain;
   transition: height 0.3s ease-in-out;
   mix-blend-mode: multiply; 
   display: block;
+  pointer-events: none; /* Let clicks pass through the giant image */
 }
 
 /* --- SCROLLED STATE --- */
