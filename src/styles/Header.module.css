@@ -47,6 +47,7 @@
 }
 
 .logoLinkWrapper {
+  pointer-events: auto;
   display: block;
   line-height: 0;
   background: transparent !important;
