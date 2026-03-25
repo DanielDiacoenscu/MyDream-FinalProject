@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { getProductsByCategory, getCategoryBySlug } from '../../../lib/api';
+import { getProductsByCategory, getCategories } from '../../../lib/api';
 import ProductCard from '@/components/ProductCard';
 import { Product } from '@/lib/types';
 
@@ -17,27 +17,28 @@ export default function CategoryPage() {
       const fetchData = async () => {
         setIsLoading(true);
         
-        const [fetchedProducts, categoryDetails] = await Promise.all([
+        // Fetch products and ALL categories (bypassing Strapi's buggy filters)
+        const [fetchedProducts, allCategories] = await Promise.all([
           getProductsByCategory(slug),
-          getCategoryBySlug(slug)
+          getCategories()
         ]);
 
         setProducts(fetchedProducts);
 
-        console.log("Category Details fetched:", categoryDetails);
+        // Find the exact category from the full list using JavaScript
+        const categoryDetails = allCategories.find((cat: any) => {
+          const catSlug = cat.attributes?.slug || cat.slug;
+          return catSlug === slug;
+        });
 
-        // EXACT MATCH TO YOUR COLLECTIONS LOGIC
         if (categoryDetails) {
           const data = categoryDetails.attributes || categoryDetails;
-          
           if (data.name) {
             setCategoryName(data.name);
           } else {
-            // Fallback if name is somehow empty
             setCategoryName(slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '));
           }
         } else {
-          // Fallback if categoryDetails is null
           setCategoryName(slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '));
         }
 
