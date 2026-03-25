@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { getProductsByCategory, getCategories } from '../../../lib/api';
+import { getProductsByCategory, getCategoryBySlug } from '../../../lib/api';
 import ProductCard from '@/components/ProductCard';
 import { Product } from '@/lib/types';
 
@@ -17,25 +17,28 @@ export default function CategoryPage() {
       const fetchData = async () => {
         setIsLoading(true);
         
-        // Fetch products and ALL categories
-        const [fetchedProducts, allCategories] = await Promise.all([
+        const [fetchedProducts, categoryDetails] = await Promise.all([
           getProductsByCategory(slug),
-          getCategories()
+          getCategoryBySlug(slug)
         ]);
 
         setProducts(fetchedProducts);
 
-        // Foolproof: Find the exact category in the list using JavaScript
-        const categoryDetails = allCategories.find((cat: any) => cat.slug === slug);
+        console.log("Category Details fetched:", categoryDetails);
 
-        // Safely extract the name
-        const actualName = categoryDetails?.name || categoryDetails?.attributes?.name;
-
-        if (actualName) {
-          setCategoryName(actualName);
+        // EXACT MATCH TO YOUR COLLECTIONS LOGIC
+        if (categoryDetails) {
+          const data = categoryDetails.attributes || categoryDetails;
+          
+          if (data.name) {
+            setCategoryName(data.name);
+          } else {
+            // Fallback if name is somehow empty
+            setCategoryName(slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '));
+          }
         } else {
-          const formattedName = slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-          setCategoryName(formattedName);
+          // Fallback if categoryDetails is null
+          setCategoryName(slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '));
         }
 
         setIsLoading(false);
