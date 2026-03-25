@@ -98,12 +98,23 @@ export async function getProductsByCategory(categorySlug: string) {
 }
 
 export async function getNavigationLinks() {
-  // 1. Fetch categories and populate BOTH subcategories and parentCategory
-  const response = await fetchAPI('/categories', 'populate=subcategories,parentCategory&pagination[limit]=100');
+  // 1. Revert to the safe query that we know works perfectly
+  const response = await fetchAPI('/categories', 'populate=subcategories&pagination[limit]=100');
   const categories = processStrapiResponse(response);
   
-  // 2. FOOLPROOF FILTER: Only keep categories that DO NOT have a parent
-  return categories.filter((cat: any) => !cat.parentCategory);
+  // 2. Find all IDs that are used as subcategories
+  const subcategoryIds = new Set();
+  categories.forEach((cat: any) => {
+    if (cat.subcategories) {
+      const subs = Array.isArray(cat.subcategories) ? cat.subcategories : [cat.subcategories];
+      subs.forEach((sub: any) => {
+        if (sub && sub.id) subcategoryIds.add(sub.id);
+      });
+    }
+  });
+
+  // 3. Return only categories that are NOT in the subcategoryIds set
+  return categories.filter((cat: any) => !subcategoryIds.has(cat.id));
 }
 
 export async function getPageBySlug(slug: string) {
