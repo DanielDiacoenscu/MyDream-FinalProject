@@ -111,7 +111,8 @@ export async function getProductsByCategory(categorySlug: string) {
 }
 
 export async function getNavigationLinks() {
-  const response = await fetchAPI('/categories');
+  const query = 'populate=subcategories';
+  const response = await fetchAPI('/categories', query);
   return processStrapiResponse(response);
 }
 
@@ -123,20 +124,20 @@ export async function getPageBySlug(slug: string) {
 }
 
 export async function getCategories() {
-  const query = 'populate=*';
+  const query = 'populate=*&populate[subcategories][populate]=*';
   const response = await fetchAPI('/categories', query);
   return processStrapiResponse(response);
 }
 
 export async function getCategoryBySlug(slug: string) {
-  const query = `filters[slug][$eq]=${slug}`;
+  const query = `filters[slug][$eq]=${slug}&populate=*&populate[subcategories][populate]=*`;
   const response = await fetchAPI('/categories', query);
   const categories = processStrapiResponse(response);
   return categories.length > 0 ? categories[0] : null;
 }
 
 export async function getCategoryDetails(slug: string) {
-  const response = await fetchAPI(`/categories?filters[slug][$eq]=${slug}`);
+  const response = await fetchAPI(`/categories?filters[slug][$eq]=${slug}&populate=*&populate[subcategories][populate]=*`);
   return (response && response.data && response.data.length > 0) ? response.data[0] : null;
 }
 
