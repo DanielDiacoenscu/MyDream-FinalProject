@@ -153,9 +153,9 @@ const Header = () => {
                               <Link href={`/categories/${category.slug}`}>
                                 {category.name}
                               </Link>
-                              {category.subcategories && category.subcategories.length > 0 && (
+                              {category.subcategories && (Array.isArray(category.subcategories) ? category.subcategories : [category.subcategories]).length > 0 && (
                                 <div style={{ paddingLeft: '1rem' }}>
-                                  {category.subcategories.map(sub => (
+                                  {(Array.isArray(category.subcategories) ? category.subcategories : [category.subcategories]).map((sub: any) => (
                                     <Link key={sub.id} href={`/categories/${sub.slug}`} style={{ color: '#666' }}>
                                       - {sub.name}
                                     </Link>
@@ -220,9 +220,9 @@ const Header = () => {
                               <Link href={`/categories/${category.slug}`} className={styles.accordionLink} onClick={closeMobileMenu}>
                                 {category.name}
                               </Link>
-                              {category.subcategories && category.subcategories.length > 0 && (
+                              {category.subcategories && (Array.isArray(category.subcategories) ? category.subcategories : [category.subcategories]).length > 0 && (
                                 <div style={{ paddingLeft: '1rem' }}>
-                                  {category.subcategories.map(sub => (
+                                  {(Array.isArray(category.subcategories) ? category.subcategories : [category.subcategories]).map((sub: any) => (
                                     <Link key={sub.id} href={`/categories/${sub.slug}`} className={styles.accordionLink} onClick={closeMobileMenu} style={{ color: '#666' }}>
                                       - {sub.name}
                                     </Link>
