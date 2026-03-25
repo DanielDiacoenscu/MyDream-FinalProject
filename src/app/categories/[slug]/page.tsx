@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { getProductsByCategory, getCategoryDetails } from '../../../lib/api';
+import { getProductsByCategory, getCategoryBySlug } from '../../../lib/api';
 import ProductCard from '@/components/ProductCard';
 import { Product } from '@/lib/types';
 
@@ -17,15 +17,19 @@ export default function CategoryPage() {
       const fetchData = async () => {
         setIsLoading(true);
         
+        // Swapped to getCategoryBySlug which correctly parses the Strapi response
         const [fetchedProducts, categoryDetails] = await Promise.all([
           getProductsByCategory(slug),
-          getCategoryDetails(slug)
+          getCategoryBySlug(slug)
         ]);
 
         setProducts(fetchedProducts);
 
-        if (categoryDetails && (categoryDetails.name || categoryDetails.attributes?.name)) {
-          setCategoryName(categoryDetails.name || categoryDetails.attributes?.name);
+        // Safely extract the name whether it's flat (Strapi v5) or nested
+        const actualName = categoryDetails?.name || categoryDetails?.attributes?.name;
+
+        if (actualName) {
+          setCategoryName(actualName);
         } else {
           const formattedName = slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
           setCategoryName(formattedName);
