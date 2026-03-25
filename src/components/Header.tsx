@@ -13,7 +13,13 @@ import { NavigationLink } from '@/types/navigation';
 import { getNavigationLinks, searchProducts } from '@/lib/api';
 import { Product } from '@/lib/types';
 
-interface StrapiCategory { id: number; name: string; slug: string; }
+// 1. UPDATED INTERFACE TO INCLUDE SUBCATEGORIES
+interface StrapiCategory { 
+  id: number; 
+  name: string; 
+  slug: string; 
+  subcategories?: StrapiCategory[]; 
+}
 
 const MOCK_NAV_DATA: NavigationLink[] = [
   { id: 1, label: 'Магазин', href: '/shop', mega_menu: null },
@@ -121,19 +127,11 @@ const Header = () => {
             </div>
           </div>
           
-          {/* --- DESKTOP LOGO FIXED --- */}
           <div className={styles.logoSection}>
             <Link href="https://www.mydreambeauty.net" className={styles.logoLinkWrapper}>
-              {/* Using standard img tag for absolute control over sizing in this specific layout context, 
-                  or Next Image with specific styling to ensure it fills the container */}
-              <img 
-                src="/logo.jpg" 
-                alt="My Dream by Tatyana Gyumisheva" 
-                className={styles.logoImage}
-              />
+              <img src="/logo.jpg" alt="My Dream by Tatyana Gyumisheva" className={styles.logoImage} />
             </Link>
           </div>
-          {/* -------------------------- */}
 
           <div className={styles.rightSection}>
             <Link href={user ? "/account" : "/login"} className={styles.iconButton}><User size={18} /></Link>
@@ -141,28 +139,61 @@ const Header = () => {
             <button onClick={toggleCart} className={styles.iconButton} style={{ position: 'relative' }}><ShoppingBag size={18} />{cartCount > 0 && ( <span className={styles.countBadge}>{cartCount}</span> )}</button>
           </div>
         </div>
-        <nav className={styles.navBar}>{navLinks.map((link) => (<div key={link.id} className={styles.navItem}><Link href={link.href} className={styles.navLink}>{link.label}</Link>{link.mega_menu && (<div className={styles.megaMenu}><div className={styles.megaMenuContent}><div className={styles.megaMenuColumns}><div className={styles.megaMenuColumn}>{dynamicCategories.map((category) => ( category && category.slug && ( <Link key={category.id} href={`/categories/${category.slug}`}>{category.name}</Link> ))) }</div></div><div className={styles.megaMenuImage}><Link href={link.mega_menu.image_href}><img src={link.mega_menu.image.url} alt={link.mega_menu.image.alt} /><p>{link.mega_menu.image_title}</p></Link></div></div></div>)}</div>))}</nav>
+        
+        <nav className={styles.navBar}>
+          {navLinks.map((link) => (
+            <div key={link.id} className={styles.navItem}>
+              <Link href={link.href} className={styles.navLink}>{link.label}</Link>
+              {link.mega_menu && (
+                <div className={styles.megaMenu}>
+                  <div className={styles.megaMenuContent}>
+                    <div className={styles.megaMenuColumns}>
+                      <div className={styles.megaMenuColumn}>
+                        {/* 2. UPDATED DESKTOP MEGA MENU TO SHOW SUBCATEGORIES */}
+                        {dynamicCategories.map((category) => (
+                          category && category.slug && (
+                            <div key={category.id} style={{ marginBottom: '1rem' }}>
+                              <Link href={`/categories/${category.slug}`} style={{ fontWeight: 'bold', display: 'block', marginBottom: '0.5rem' }}>
+                                {category.name}
+                              </Link>
+                              {category.subcategories && category.subcategories.length > 0 && (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', paddingLeft: '0.5rem' }}>
+                                  {category.subcategories.map(sub => (
+                                    <Link key={sub.id} href={`/categories/${sub.slug}`} style={{ color: '#666', fontSize: '0.85rem' }}>
+                                      {sub.name}
+                                    </Link>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          )
+                        ))}
+                      </div>
+                    </div>
+                    <div className={styles.megaMenuImage}>
+                      <Link href={link.mega_menu.image_href}>
+                        <img src={link.mega_menu.image.url} alt={link.mega_menu.image.alt} />
+                        <p>{link.mega_menu.image_title}</p>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </nav>
+
         {isResultsVisible && (<div className={styles.resultsPanel}>{isLoading && <div className={styles.resultsMessage}>Searching...</div>}{!isLoading && results.length === 0 && debouncedQuery.length > 1 && (<div className={styles.resultsMessage}>No products found for &quot;{debouncedQuery}&quot;.</div>)}{results.length > 0 && (<ul className={styles.resultsList}>{results.slice(0, 5).map((product) => (<li key={product.id}><Link href={`/products/${product.slug}`} onClick={closeDesktopSearch} className={styles.resultItem}><div className={styles.resultImage}><Image src={product.images[0]?.url || '/placeholder.jpg'} alt={product.name} fill style={{ objectFit: 'cover' }} /></div><span className={styles.resultName}>{product.name}</span></Link></li>))}</ul>)}</div>)}
       </header>
 
       <div className={`${styles.mobileNavDrawer} ${isMobileMenuOpen ? styles.open : ''}`}>
         <div className={styles.drawerHeader}>
           <button onClick={closeMobileMenu} className={styles.iconButton}><X size={24} /></button>
-          
-          {/* --- MOBILE LOGO FIXED --- */}
           <div className={styles.drawerLogoWrapper}>
             <Link href="https://www.mydreambeauty.net" onClick={closeMobileMenu}>
-             <Image 
-              src="/logo.jpg" 
-              alt="My Dream" 
-              width={180}
-              height={60}
-              style={{ objectFit: 'contain', mixBlendMode: 'multiply' }}
-            />
+             <Image src="/logo.jpg" alt="My Dream" width={180} height={60} style={{ objectFit: 'contain', mixBlendMode: 'multiply' }} />
             </Link>
           </div>
-          {/* ------------------------- */}
-
         </div>
         <div className={styles.drawerSearchWrapper}>
           <input type="text" placeholder="Search For..." className={styles.drawerSearchInput} value={mobileQuery} onChange={(e) => setMobileQuery(e.target.value)} />
@@ -176,7 +207,45 @@ const Header = () => {
               {mobileResults.length > 0 && (<ul className={styles.drawerResultsList}>{mobileResults.map(product => (<li key={product.id}><Link href={`/products/${product.slug}`} className={styles.drawerResultItem} onClick={closeMobileMenu}><div className={styles.drawerResultImage}><Image src={product.images[0]?.url || '/placeholder.jpg'} alt={product.name} fill style={{ objectFit: 'cover' }} /></div><span className={styles.drawerResultName}>{product.name}</span></Link></li>))}</ul>)}
             </div>
           ) : (
-            <nav className={styles.drawerNav}>{navLinks.map((link) => (<div key={link.id} className={styles.accordionItem}>{link.label === 'Категории' ? (<><div className={styles.accordionHeader} onClick={() => handleAccordionToggle(link.id)}><span>{link.label}</span>{openAccordion === link.id ? <Minus size={20} /> : <Plus size={20} />}</div><div className={`${styles.accordionContent} ${openAccordion === link.id ? styles.open : ''}`}>{dynamicCategories.map(subLink => ( subLink && subLink.slug && ( <Link key={subLink.id} href={`/categories/${subLink.slug}`} className={styles.accordionLink} onClick={closeMobileMenu}>{subLink.name}</Link> ))) }</div></>) : ( <div className={styles.accordionHeader}><Link href={link.href} onClick={closeMobileMenu}>{link.label}</Link></div> )}</div>))}</nav>
+            <nav className={styles.drawerNav}>
+              {navLinks.map((link) => (
+                <div key={link.id} className={styles.accordionItem}>
+                  {link.label === 'Категории' ? (
+                    <>
+                      <div className={styles.accordionHeader} onClick={() => handleAccordionToggle(link.id)}>
+                        <span>{link.label}</span>
+                        {openAccordion === link.id ? <Minus size={20} /> : <Plus size={20} />}
+                      </div>
+                      <div className={`${styles.accordionContent} ${openAccordion === link.id ? styles.open : ''}`}>
+                        {/* 3. UPDATED MOBILE DRAWER TO SHOW SUBCATEGORIES */}
+                        {dynamicCategories.map(category => (
+                          category && category.slug && (
+                            <div key={category.id} style={{ marginBottom: '0.75rem' }}>
+                              <Link href={`/categories/${category.slug}`} className={styles.accordionLink} onClick={closeMobileMenu} style={{ fontWeight: 'bold', padding: '0.25rem 0' }}>
+                                {category.name}
+                              </Link>
+                              {category.subcategories && category.subcategories.length > 0 && (
+                                <div style={{ paddingLeft: '1rem', display: 'flex', flexDirection: 'column' }}>
+                                  {category.subcategories.map(sub => (
+                                    <Link key={sub.id} href={`/categories/${sub.slug}`} className={styles.accordionLink} onClick={closeMobileMenu} style={{ padding: '0.25rem 0', fontSize: '0.85rem', color: '#555' }}>
+                                      - {sub.name}
+                                    </Link>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          )
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <div className={styles.accordionHeader}>
+                      <Link href={link.href} onClick={closeMobileMenu}>{link.label}</Link>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </nav>
           )}
         </div>
       </div>
