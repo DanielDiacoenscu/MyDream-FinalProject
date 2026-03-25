@@ -13,7 +13,6 @@ import { NavigationLink } from '@/types/navigation';
 import { getNavigationLinks, searchProducts } from '@/lib/api';
 import { Product } from '@/lib/types';
 
-// 1. UPDATED INTERFACE TO INCLUDE SUBCATEGORIES
 interface StrapiCategory { 
   id: number; 
   name: string; 
@@ -39,7 +38,6 @@ const Header = () => {
   const [dynamicCategories, setDynamicCategories] = useState<StrapiCategory[]>([]);
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
-  // Search State
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [results, setResults] = useState<Product[]>([]);
@@ -149,18 +147,17 @@ const Header = () => {
                   <div className={styles.megaMenuContent}>
                     <div className={styles.megaMenuColumns}>
                       <div className={styles.megaMenuColumn}>
-                        {/* 2. UPDATED DESKTOP MEGA MENU TO SHOW SUBCATEGORIES */}
                         {dynamicCategories.map((category) => (
                           category && category.slug && (
-                            <div key={category.id} style={{ marginBottom: '1rem' }}>
-                              <Link href={`/categories/${category.slug}`} style={{ fontWeight: 'bold', display: 'block', marginBottom: '0.5rem' }}>
+                            <div key={category.id}>
+                              <Link href={`/categories/${category.slug}`}>
                                 {category.name}
                               </Link>
                               {category.subcategories && category.subcategories.length > 0 && (
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', paddingLeft: '0.5rem' }}>
+                                <div style={{ paddingLeft: '1rem' }}>
                                   {category.subcategories.map(sub => (
-                                    <Link key={sub.id} href={`/categories/${sub.slug}`} style={{ color: '#666', fontSize: '0.85rem' }}>
-                                      {sub.name}
+                                    <Link key={sub.id} href={`/categories/${sub.slug}`} style={{ color: '#666' }}>
+                                      - {sub.name}
                                     </Link>
                                   ))}
                                 </div>
@@ -217,17 +214,16 @@ const Header = () => {
                         {openAccordion === link.id ? <Minus size={20} /> : <Plus size={20} />}
                       </div>
                       <div className={`${styles.accordionContent} ${openAccordion === link.id ? styles.open : ''}`}>
-                        {/* 3. UPDATED MOBILE DRAWER TO SHOW SUBCATEGORIES */}
                         {dynamicCategories.map(category => (
                           category && category.slug && (
-                            <div key={category.id} style={{ marginBottom: '0.75rem' }}>
-                              <Link href={`/categories/${category.slug}`} className={styles.accordionLink} onClick={closeMobileMenu} style={{ fontWeight: 'bold', padding: '0.25rem 0' }}>
+                            <div key={category.id}>
+                              <Link href={`/categories/${category.slug}`} className={styles.accordionLink} onClick={closeMobileMenu}>
                                 {category.name}
                               </Link>
                               {category.subcategories && category.subcategories.length > 0 && (
-                                <div style={{ paddingLeft: '1rem', display: 'flex', flexDirection: 'column' }}>
+                                <div style={{ paddingLeft: '1rem' }}>
                                   {category.subcategories.map(sub => (
-                                    <Link key={sub.id} href={`/categories/${sub.slug}`} className={styles.accordionLink} onClick={closeMobileMenu} style={{ padding: '0.25rem 0', fontSize: '0.85rem', color: '#555' }}>
+                                    <Link key={sub.id} href={`/categories/${sub.slug}`} className={styles.accordionLink} onClick={closeMobileMenu} style={{ color: '#666' }}>
                                       - {sub.name}
                                     </Link>
                                   ))}
