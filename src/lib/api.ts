@@ -45,14 +45,9 @@ function processStrapiResponse(response: any): any[] {
 }
 
 export async function getBestsellerProducts() {
-  // TRY 1: Fetch via Collection Relation (Aggressive Populate)
   const query = qs.stringify({
     filters: { slug: { $eq: 'best-sellers' } },
-    populate: {
-      products: {
-        populate: '*'
-      }
-    },
+    populate: { products: { populate: '*' } },
     publicationState: 'live'
   }, { encodeValuesOnly: true });
 
@@ -62,20 +57,12 @@ export async function getBestsellerProducts() {
     const attrs = response.data[0].attributes;
     const products = attrs?.products?.data || attrs?.products;
     if (Array.isArray(products) && products.length > 0) {
-      console.log("SUCCESS: Found products via Collection relation");
       return products.map(mapProductData).filter(Boolean);
     }
   }
 
-  // TRY 2: Fallback - Fetch products directly filtered by collection slug
-  // This works if your Strapi has the inverse relation visible
-  console.warn("FALLBACK: Trying direct product filter by collection slug...");
   const fallbackQuery = qs.stringify({
-    filters: {
-      collections: {
-        slug: { $eq: 'best-sellers' }
-      }
-    },
+    filters: { collections: { slug: { $eq: 'best-sellers' } } },
     populate: '*'
   }, { encodeValuesOnly: true });
 
@@ -111,9 +98,12 @@ export async function getProductsByCategory(categorySlug: string) {
 }
 
 export async function getNavigationLinks() {
-  const query = 'populate=subcategories';
-  const response = await fetchAPI('/categories', query);
-  return processStrapiResponse(response);
+  // 1. Fetch categories and populate BOTH subcategories and parentCategory
+  const response = await fetchAPI('/categories', 'populate=subcategories,parentCategory&pagination[limit]=100');
+  const categories = processStrapiResponse(response);
+  
+  // 2. FOOLPROOF FILTER: Only keep categories that DO NOT have a parent
+  return categories.filter((cat: any) => !cat.parentCategory);
 }
 
 export async function getPageBySlug(slug: string) {
