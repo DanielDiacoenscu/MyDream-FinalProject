@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { getProductsByCategory, getCategoryBySlug } from '../../../lib/api';
+import { getProductsByCategory, getCategories } from '../../../lib/api';
 import ProductCard from '@/components/ProductCard';
 import { Product } from '@/lib/types';
 
@@ -17,15 +17,18 @@ export default function CategoryPage() {
       const fetchData = async () => {
         setIsLoading(true);
         
-        // Swapped to getCategoryBySlug which correctly parses the Strapi response
-        const [fetchedProducts, categoryDetails] = await Promise.all([
+        // Fetch products and ALL categories
+        const [fetchedProducts, allCategories] = await Promise.all([
           getProductsByCategory(slug),
-          getCategoryBySlug(slug)
+          getCategories()
         ]);
 
         setProducts(fetchedProducts);
 
-        // Safely extract the name whether it's flat (Strapi v5) or nested
+        // Foolproof: Find the exact category in the list using JavaScript
+        const categoryDetails = allCategories.find((cat: any) => cat.slug === slug);
+
+        // Safely extract the name
         const actualName = categoryDetails?.name || categoryDetails?.attributes?.name;
 
         if (actualName) {
