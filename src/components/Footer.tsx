@@ -66,7 +66,7 @@ const Footer = () => {
           {/* GIF Section */}
           <div className={styles.gifSection}>
             <Image 
-              src="/Scene.gif"
+              src="/"
               alt="Clean Beauty Delivered" 
               width={650} 
               height={371} 
