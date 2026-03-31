@@ -7,9 +7,9 @@ import styles from '../styles/ShopByCollection.module.css';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const collections = [
-  { id: 1, name: 'Изграждане с акрил', slug: 'colour-wash', image: '/1.jpg', discoverText: 'Разгледайте Колекция Изграждане с акрил' },
-  { id: 2, name: "Златните четки", slug: 'portofino-97', image: '/2.jpg', discoverText: "Разгледайте Златните четки на Татяна Гюмишева" },
-  { id: 3, name: 'Изграждане с гел', slug: 'fragrance', image: '/3.jpg', discoverText: 'Разлгедайте Колекция Изграждане с гел' },
+  { id: 1, name: 'Изграждане с акрил', slug: 'colour-wash', image: '/izgrajdane-s-akril.jpg', discoverText: 'Разгледайте Колекция Изграждане с акрил' },
+  { id: 2, name: "Златните четки", slug: 'portofino-97', image: '/zlatnite-chetki.jpg', discoverText: "Разгледайте Златните четки на Татяна Гюмишева" },
+  { id: 3, name: 'Изграждане с гел', slug: 'fragrance', image: '/izgrajdane-s-gel.jpg', discoverText: 'Разлгедайте Колекция Изграждане с гел' },
 ];
 
 const ShopByCollection = () => {
