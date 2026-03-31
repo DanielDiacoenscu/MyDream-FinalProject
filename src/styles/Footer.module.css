@@ -22,7 +22,7 @@
 /* --- 1. DESKTOP LAYOUT (4 Columns) --- */
 @media (min-width: 992px) {
   .footerGrid {
-    grid-template-columns: 1fr 1fr 1fr 1.5fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 40px;
   }
 }
