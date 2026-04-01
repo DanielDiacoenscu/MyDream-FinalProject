@@ -4,8 +4,8 @@ import Image from 'next/image';
 // This path is now correct because it is relative to this new file's location.
 import styles from '../../styles/OurStory.module.css';
 
-const imageOneUrl = '/manicure1.jpg';
-const imageTwoUrl = '/manicure2.jpg';
+const imageOneUrl = '/for-us-one.jpg';
+const imageTwoUrl = '/for-us-two.jpg';
 
 export default function OurStoryPage() {
   return (
