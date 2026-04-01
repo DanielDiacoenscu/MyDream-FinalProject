@@ -21,7 +21,6 @@ const ProductActions = ({ product }: { product: any }) => {
 
   return (
     <div className={styles.actions}>
-      <button className={styles.discoverButton}>Discover Victoria's Technique</button>
       <div className={styles.addToBagWrapper}>
         <button className={styles.addToBagButton} onClick={() => addToCart(product)}>
           Добави

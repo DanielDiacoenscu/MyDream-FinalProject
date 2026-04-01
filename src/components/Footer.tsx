@@ -15,7 +15,6 @@ const footerData = [
       { href: '/contact-us', text: 'Контакти' }, // <-- CORRECTED
       { href: '/fa-qs', text: 'Често задавани въпроси' },             // <-- CORRECTED
       { href: '/shipping', text: 'Доставки' },
-      { href: '/returns', text: 'Връщане' },
     ],
   },
   {
