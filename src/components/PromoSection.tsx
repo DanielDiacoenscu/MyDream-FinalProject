@@ -23,7 +23,7 @@ const PromoSection = () => {
         <p className={styles.description}>
         „Красивите нокти не са лукс – те са визитка.“
         </p>
-        <Link href="/categories/instrumenti-za-manikyur-i-pedikyur" className={styles.ctaButton}>
+        <Link href="/categories/instruments" className={styles.ctaButton}>
           РАЗГЛЕДАЙТЕ
         </Link>
       </div>
